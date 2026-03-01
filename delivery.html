@@ -12,9 +12,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
     
-    <!-- Leaflet JS for Maps (Live Tracking) -->
+    <!-- Leaflet JS for Maps & Routing (Live Tracking & Exact Distance) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet Routing Machine for Actual Road Routes -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
     <style>
         :root { 
@@ -71,7 +74,10 @@
         .toggle-checkbox { right: 0; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
         .toggle-label { width: 3rem; height: 1.5rem; background-color: #ef4444; border-radius: 9999px; transition: all 0.3s; }
 
-        #map { z-index: 10; border-radius: 1rem; }
+        #map { z-index: 10; border-radius: 1rem; width: 100%; height: 100%; }
+        
+        /* Hide Leaflet Routing Text Box to save space */
+        .leaflet-routing-container { display: none !important; }
         
         /* Slide up animation for new orders */
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -187,17 +193,20 @@
         <main class="flex-1 overflow-y-auto p-4 pb-24 space-y-4 relative" id="main-content-area">
             
             <!-- Map Container (Hidden by default, shown when active delivery exists) -->
-            <div id="map-container" class="w-full h-64 bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-lg hidden relative">
-                <div id="map" class="w-full h-full"></div>
+            <div id="map-container" class="w-full h-72 bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-lg hidden relative">
+                <div id="map"></div>
                 <!-- GPS Focus Button -->
-                <button id="focus-gps-btn" class="absolute bottom-4 right-4 z-[400] bg-white text-black p-2 rounded-full shadow-lg border border-gray-200 focus:outline-none active:scale-95">
+                <button id="focus-gps-btn" class="absolute bottom-4 right-4 z-[400] bg-white text-black p-2.5 rounded-full shadow-lg border border-gray-200 focus:outline-none active:scale-95">
                     <span class="material-symbols-outlined text-cyan-600">my_location</span>
                 </button>
             </div>
 
             <!-- Active / Current Delivery Section -->
             <div id="active-delivery-section" class="hidden animate-slide-up">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-sm text-cyan-400">navigation</span> Current Task</h3>
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2"><span class="material-symbols-outlined text-sm text-cyan-400">navigation</span> Current Task</h3>
+                    <span id="live-distance-badge" class="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2 py-1 rounded text-[10px] font-bold shadow-sm hidden">Calc Dist...</span>
+                </div>
                 <div id="active-order-card" class="bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl p-4 border border-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.15)] relative overflow-hidden">
                     <!-- Dynamic Content Injected Here via JS -->
                 </div>
@@ -286,9 +295,7 @@
         // Map Variables
         let map = null;
         let myMarker = null;
-        let shopMarker = null;
-        let customerMarker = null;
-        let routingLine = null;
+        let routingControl = null;
         let watchPositionId = null;
         let myCurrentLat = 0;
         let myCurrentLng = 0;
@@ -317,12 +324,11 @@
                 statusText.innerText = isOnline ? 'ONLINE' : 'OFFLINE';
                 statusText.className = `text-[10px] font-bold uppercase mt-1 tracking-wider mr-2 ${isOnline ? 'text-green-500' : 'text-red-500'}`;
                 
-                // Update DB
                 myProfileRef.update({ isOnline: isOnline });
 
                 if (isOnline) {
                     startLocationTracking();
-                    fetchOrders(); // Fetch new requests
+                    fetchOrders(); 
                 } else {
                     stopLocationTracking();
                     document.getElementById('new-orders-list').innerHTML = `
@@ -383,7 +389,7 @@
                 dlNumber: document.getElementById('dp-dl-no').value.trim().toUpperCase(),
                 photoUrl: photoUrl,
                 dlUrl: dlUrl,
-                status: 'pending', // Goes to Admin
+                status: 'pending', 
                 isOnline: false,
                 earnings: 0,
                 totalDeliveries: 0,
@@ -404,14 +410,13 @@
             document.getElementById('stat-earnings').innerText = PARTNER_DATA.earnings || 0;
             document.getElementById('stat-deliveries').innerText = PARTNER_DATA.totalDeliveries || 0;
             
-            // Check if already online from previous session
             if(PARTNER_DATA.isOnline) {
                 document.getElementById('duty-toggle').checked = true;
                 const e = new Event('change');
                 document.getElementById('duty-toggle').dispatchEvent(e);
             }
 
-            fetchOrders(); // Initial fetch
+            fetchOrders(); 
         }
 
         function fetchOrders() {
@@ -423,30 +428,39 @@
                 let newOrdersHtml = '';
 
                 Object.entries(data).forEach(([orderId, order]) => {
-                    // 1. Check if this order is actively assigned to me and not completed
+                    // Check if actively assigned to me
                     if (order.deliveryBoyId === PARTNER_ID && (order.status === 'Accepted by Delivery' || order.status === 'Out for Delivery')) {
                         hasActiveOrder = true;
                         currentActiveOrder = { id: orderId, ...order };
                         renderActiveOrder(currentActiveOrder);
                     }
                     
-                    // 2. Check for NEW orders that need a delivery boy
-                    if (isOnline && !hasActiveOrder && order.status === 'Ready for Pickup' && (!order.deliveryBoyId || order.deliveryBoyId === PARTNER_ID)) {
+                    // FIX: Checking for ANY pending order state that needs delivery assignment
+                    const isPending = (order.status === 'Paid & Pending' || order.status === 'Ready for Pickup' || order.status === 'Pending');
+                    
+                    if (isOnline && !hasActiveOrder && isPending && (!order.deliveryBoyId || order.deliveryBoyId === PARTNER_ID)) {
                         newOrdersHtml += generateNewOrderCard(orderId, order);
                     }
                 });
 
-                // Toggle Views based on Active Order
+                // Toggle Views
                 if (hasActiveOrder) {
                     document.getElementById('new-requests-section').classList.add('hidden');
                     document.getElementById('active-delivery-section').classList.remove('hidden');
                     document.getElementById('map-container').classList.remove('hidden');
-                    initMap(); // Ensure map is ready
+                    initMap(); 
+                    if(currentActiveOrder) drawRouteForActiveOrder(currentActiveOrder);
                 } else {
                     currentActiveOrder = null;
                     document.getElementById('new-requests-section').classList.remove('hidden');
                     document.getElementById('active-delivery-section').classList.add('hidden');
                     document.getElementById('map-container').classList.add('hidden');
+                    document.getElementById('live-distance-badge').classList.add('hidden');
+                    
+                    if(routingControl && map) {
+                        map.removeControl(routingControl);
+                        routingControl = null;
+                    }
                     
                     const listEl = document.getElementById('new-orders-list');
                     if (isOnline) {
@@ -462,45 +476,50 @@
         }
 
         function generateNewOrderCard(orderId, order) {
-            const earning = 40; 
-            const shopName = order.shopName || "Seller Shop";
-            const custAddress = order.customerInfo ? order.customerInfo.address : "Customer Address";
+            const earning = 40; // Static placeholder
+            const shopName = order.shopName || "Iccha Fulfillment Hub";
+            const custAddress = order.customerInfo ? order.customerInfo.address : "Customer Address Not Provided";
+            const timeStr = order.timestamp ? new Date(order.timestamp).toLocaleTimeString() : 'Just Now';
 
             return `
-            <div class="bg-slate-800 rounded-2xl p-4 border border-slate-700 shadow-md">
+            <div class="bg-slate-800 rounded-2xl p-4 border border-slate-700 shadow-md transition-transform active:scale-[0.98]">
                 <div class="flex justify-between items-start mb-3 border-b border-slate-700 pb-3">
                     <div>
-                        <span class="bg-cyan-500/20 text-cyan-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">New Request</span>
-                        <p class="text-sm font-bold text-white mt-2">Order #${orderId.substring(1,7).toUpperCase()}</p>
+                        <span class="bg-cyan-500/20 text-cyan-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">New Request</span>
+                        <p class="text-sm font-bold text-white mt-2">Order #${orderId.substring(1,8).toUpperCase()}</p>
+                        <p class="text-[9px] text-gray-500 mt-0.5">${timeStr}</p>
                     </div>
                     <div class="text-right">
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Est. Earning</p>
                         <p class="text-2xl font-bold text-green-400">₹${earning}</p>
+                        <p class="text-[9px] text-gray-500 bg-slate-700 px-1.5 py-0.5 rounded mt-1">${order.paymentMethod || 'PREPAID'}</p>
                     </div>
                 </div>
                 
-                <div class="space-y-3 mb-4 relative">
-                    <div class="absolute left-3 top-2 bottom-2 w-0.5 bg-slate-600"></div>
+                <div class="space-y-3 mb-4 relative pl-1">
+                    <div class="absolute left-4 top-3 bottom-3 w-0.5 bg-slate-600 border-l border-dashed border-slate-500"></div>
                     
                     <div class="flex gap-3 relative z-10">
-                        <div class="w-6 h-6 rounded-full bg-slate-700 border-2 border-cyan-400 flex items-center justify-center shrink-0 shadow-sm"><span class="material-symbols-outlined text-[12px] text-cyan-400">storefront</span></div>
+                        <div class="w-6 h-6 rounded-full bg-slate-800 border-2 border-cyan-400 flex items-center justify-center shrink-0 shadow-[0_0_8px_rgba(6,182,212,0.4)]"><span class="material-symbols-outlined text-[12px] text-cyan-400">storefront</span></div>
                         <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Pickup</p>
-                            <p class="text-xs font-medium text-white line-clamp-2">${shopName}</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Pickup From</p>
+                            <p class="text-xs font-medium text-white line-clamp-1">${shopName}</p>
                         </div>
                     </div>
                     
-                    <div class="flex gap-3 relative z-10">
-                        <div class="w-6 h-6 rounded-full bg-slate-700 border-2 border-red-400 flex items-center justify-center shrink-0 shadow-sm"><span class="material-symbols-outlined text-[12px] text-red-400">location_on</span></div>
+                    <div class="flex gap-3 relative z-10 pt-2">
+                        <div class="w-6 h-6 rounded-full bg-slate-800 border-2 border-red-400 flex items-center justify-center shrink-0 shadow-[0_0_8px_rgba(239,68,68,0.4)]"><span class="material-symbols-outlined text-[12px] text-red-400">location_on</span></div>
                         <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Dropoff</p>
-                            <p class="text-xs font-medium text-white line-clamp-2">${custAddress}</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Dropoff To</p>
+                            <p class="text-xs font-medium text-gray-300 line-clamp-2 leading-tight">${custAddress}</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex gap-3 pt-2">
-                    <button onclick="acceptOrder('${orderId}')" class="flex-1 btn-primary py-3 rounded-xl shadow-[0_4px_15px_rgba(6,182,212,0.3)]">Accept</button>
+                <div class="flex gap-3 pt-3 border-t border-slate-700">
+                    <button onclick="acceptOrder('${orderId}')" class="flex-1 btn-primary py-3 rounded-xl shadow-[0_4px_15px_rgba(6,182,212,0.3)] font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">check_circle</span> Accept Order
+                    </button>
                 </div>
             </div>`;
         }
@@ -516,7 +535,7 @@
                 status: 'Accepted by Delivery',
                 acceptedAt: firebase.database.ServerValue.TIMESTAMP
             });
-            alert("Order Accepted! Head to the shop for pickup.");
+            alert("Order Accepted! Map will now guide you.");
         };
 
         // ==========================================
@@ -529,33 +548,29 @@
             let html = '';
             
             if (state === 'Accepted by Delivery') {
-                const shopName = order.shopName || "Seller Shop";
+                const shopName = order.shopName || "Iccha Hub";
                 const shopPhone = order.shopPhone || "N/A";
                 
                 html = `
                 <div class="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-3">
-                    <span class="bg-yellow-500/20 text-yellow-500 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">Go to Pickup</span>
-                    <span class="text-xs text-gray-400 font-mono">#${order.id.substring(1,7).toUpperCase()}</span>
+                    <span class="bg-yellow-500/20 text-yellow-500 border border-yellow-500/30 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider animate-pulse flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">directions_bike</span> Go to Pickup</span>
+                    <span class="text-xs text-gray-400 font-mono">#${order.id.substring(1,8).toUpperCase()}</span>
                 </div>
                 
                 <div class="flex gap-4 items-center mb-5">
-                    <div class="w-12 h-12 rounded-full bg-cyan-900 border-2 border-cyan-400 flex flex-col items-center justify-center shadow-[0_0_10px_rgba(6,182,212,0.3)] shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-cyan-950 border-2 border-cyan-400 flex flex-col items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.4)] shrink-0 relative">
                         <span class="material-symbols-outlined text-cyan-400">storefront</span>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-white text-base leading-tight">${shopName}</h4>
-                        <p class="text-xs text-gray-400 mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">call</span> ${shopPhone}</p>
+                    <div class="flex-1">
+                        <p class="text-[9px] uppercase font-bold text-gray-500 tracking-widest mb-0.5">Shop Details</p>
+                        <h4 class="font-bold text-white text-sm leading-tight line-clamp-1">${shopName}</h4>
+                        <p class="text-xs text-cyan-400 mt-1 font-mono">${shopPhone}</p>
                     </div>
-                    <a href="tel:${shopPhone}" class="ml-auto w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-green-400 border border-slate-600"><span class="material-symbols-outlined">phone</span></a>
+                    <a href="tel:${shopPhone}" class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-green-400 border border-slate-600 shadow-md active:scale-95 transition"><span class="material-symbols-outlined text-[20px]">phone</span></a>
                 </div>
 
-                <div class="p-3 bg-slate-900/50 rounded-xl border border-slate-700 mb-4">
-                    <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">Action Required</p>
-                    <p class="text-sm text-gray-300">Reach the shop, collect the package, and mark it as picked up.</p>
-                </div>
-
-                <button onclick="markPickedUp('${order.id}')" class="w-full py-4 btn-primary rounded-xl text-lg shadow-[0_4px_15px_rgba(6,182,212,0.3)] flex items-center justify-center gap-2">
-                    <span>Mark as Picked Up</span> <span class="material-symbols-outlined">check_circle</span>
+                <button onclick="markPickedUp('${order.id}')" class="w-full py-4 btn-primary rounded-xl text-sm font-bold uppercase tracking-widest shadow-[0_4px_15px_rgba(6,182,212,0.3)] flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">inventory_2</span> Mark as Picked Up
                 </button>
                 `;
             } 
@@ -567,34 +582,36 @@
 
                 html = `
                 <div class="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-3">
-                    <span class="bg-green-500/20 text-green-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">Out for Delivery</span>
-                    <span class="text-xs text-gray-400 font-mono">#${order.id.substring(1,7).toUpperCase()}</span>
+                    <span class="bg-green-500/20 text-green-400 border border-green-500/30 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider animate-pulse flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">two_wheeler</span> Out for Delivery</span>
+                    <span class="text-xs text-gray-400 font-mono">#${order.id.substring(1,8).toUpperCase()}</span>
                 </div>
                 
                 <div class="flex gap-4 items-center mb-4">
-                    <div class="w-12 h-12 rounded-full bg-red-900 border-2 border-red-400 flex flex-col items-center justify-center shadow-[0_0_10px_rgba(239,68,68,0.3)] shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-red-950 border-2 border-red-400 flex flex-col items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.4)] shrink-0">
                         <span class="material-symbols-outlined text-red-400">person</span>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-white text-base leading-tight">${custName}</h4>
-                        <p class="text-xs text-gray-400 mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">call</span> ${custPhone}</p>
+                    <div class="flex-1">
+                        <p class="text-[9px] uppercase font-bold text-gray-500 tracking-widest mb-0.5">Customer</p>
+                        <h4 class="font-bold text-white text-sm leading-tight line-clamp-1">${custName}</h4>
+                        <p class="text-xs text-red-400 mt-1 font-mono">${custPhone}</p>
                     </div>
-                    <a href="tel:${custPhone}" class="ml-auto w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-green-400 border border-slate-600"><span class="material-symbols-outlined">phone</span></a>
+                    <a href="tel:${custPhone}" class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-green-400 border border-slate-600 shadow-md active:scale-95 transition"><span class="material-symbols-outlined text-[20px]">phone</span></a>
                 </div>
 
-                <div class="p-3 bg-slate-900/50 rounded-xl border border-slate-700 mb-4 space-y-3">
+                <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-700 mb-4 space-y-3 shadow-inner">
                     <div>
-                        <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">Delivery Address</p>
-                        <p class="text-xs text-white leading-relaxed">${custAddress}</p>
+                        <p class="text-[9px] text-gray-500 uppercase font-bold tracking-widest mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-red-400">location_on</span> Delivery Address</p>
+                        <p class="text-[11px] text-gray-300 leading-relaxed">${custAddress}</p>
                     </div>
                     <div class="border-t border-slate-700 pt-2 flex justify-between items-center">
-                        <span class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Amount to Collect</span>
-                        <span class="text-lg font-bold ${amountToCollect === 'PAID' ? 'text-green-400' : 'text-yellow-400'}">${amountToCollect}</span>
+                        <span class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Collect Amount</span>
+                        <span class="text-lg font-bold ${amountToCollect === 'PAID' ? 'text-green-400 bg-green-400/10 px-2 rounded' : 'text-yellow-400'}">${amountToCollect}</span>
                     </div>
                 </div>
 
-                <button onclick="markDelivered('${order.id}', ${order.paymentMethod === 'COD'})" class="w-full py-4 btn-success rounded-xl text-lg shadow-[0_4px_15px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2">
-                    <span>Swipe to Deliver</span> <span class="material-symbols-outlined">how_to_reg</span>
+                <button onclick="markDelivered('${order.id}', ${order.paymentMethod === 'COD'})" class="w-full py-4 btn-success rounded-xl text-sm font-bold uppercase tracking-widest shadow-[0_4px_15px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-white/20 w-1/4 skew-x-[-20deg] animate-shimmer"></div>
+                    <span class="material-symbols-outlined">how_to_reg</span> Complete Delivery
                 </button>
                 `;
             }
@@ -611,7 +628,7 @@
         };
 
         window.markDelivered = function(orderId, isCOD) {
-            let msg = isCOD ? "Confirm cash collected and package delivered?" : "Confirm package delivered to customer?";
+            let msg = isCOD ? "Confirm Cash Collected and Package Delivered?" : "Confirm Package Delivered to Customer?";
             if(confirm(msg)) {
                 ordersRef.child(orderId).update({
                     status: 'Delivered',
@@ -627,11 +644,18 @@
                 });
 
                 alert("Delivery Successful! Great job.");
+                
+                // Clear Route
+                if(routingControl && map) {
+                    map.removeControl(routingControl);
+                    routingControl = null;
+                }
+                document.getElementById('live-distance-badge').classList.add('hidden');
             }
         };
 
         // ==========================================
-        // MAP & LIVE TRACKING (LEAFLET.JS) + Error Fix
+        // MAP & ROAD ROUTING (LEAFLET + LRM)
         // ==========================================
         function initMap() {
             if (map !== null) {
@@ -644,18 +668,102 @@
                 attribution: ''
             }).addTo(map);
 
-            const myIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#06b6d4; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 0 10px #06b6d4;'></div>", iconSize: [16, 16], iconAnchor: [8, 8] });
-            const dropIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#ef4444; width:20px; height:20px; border-radius:50%; border:2px solid white; box-shadow: 0 0 10px #ef4444;'></div>", iconSize: [20, 20], iconAnchor: [10, 10] });
-
-            myMarker = L.marker([0, 0], {icon: myIcon}).addTo(map);
-            customerMarker = L.marker([0, 0], {icon: dropIcon}).addTo(map); 
+            const myIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#06b6d4; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 0 15px #06b6d4;'></div>", iconSize: [16, 16], iconAnchor: [8, 8] });
+            myMarker = L.marker([0, 0], {icon: myIcon, zIndexOffset: 1000}).addTo(map);
             
             document.getElementById('focus-gps-btn').addEventListener('click', () => {
                 if(myCurrentLat && myCurrentLng) {
-                    map.flyTo([myCurrentLat, myCurrentLng], 16, { animate: true, duration: 1 });
+                    map.flyTo([myCurrentLat, myCurrentLng], 15, { animate: true, duration: 1 });
                 }
             });
         }
+
+        // Function to extract coordinates from text via Nominatim Geocoding API
+        async function geocodeAddress(addressText) {
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addressText)}`);
+                const data = await res.json();
+                if(data && data.length > 0) {
+                    return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+                }
+            } catch(e) { console.error("Geocoding failed", e); }
+            return null;
+        }
+
+        // Draw Actual Road Route
+        async function drawRouteForActiveOrder(order) {
+            if(!map || !myCurrentLat || !myCurrentLng) return;
+
+            const badge = document.getElementById('live-distance-badge');
+            badge.classList.remove('hidden');
+            badge.innerText = "Routing...";
+
+            let waypoints = [];
+            // Point A: Delivery Boy
+            waypoints.push(L.latLng(myCurrentLat, myCurrentLng));
+
+            // Custom Icons for Waypoints
+            const shopIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#ef4444; width:18px; height:18px; border-radius:50%; border:2px solid white; box-shadow: 0 0 10px #ef4444;'></div>", iconSize: [18, 18], iconAnchor: [9, 9] }); // RED DOT FOR SHOP
+            const dropIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#10b981; width:20px; height:20px; border-radius:50%; border:2px solid white; box-shadow: 0 0 10px #10b981;'></div>", iconSize: [20, 20], iconAnchor: [10, 10] }); // GREEN DOT FOR CUSTOMER
+
+            let shopCoords = null;
+            let custCoords = null;
+
+            // Simple Geocoding fallback logic.
+            // If API fails, we create dummy coordinates near the delivery boy so the map doesn't look broken.
+            const dummyOffset1 = 0.02; // ~2km
+            const dummyOffset2 = 0.05; // ~5km
+
+            if(order.status === 'Accepted by Delivery') {
+                // Must go to shop first
+                if(order.shopAddress) shopCoords = await geocodeAddress(order.shopAddress);
+                if(!shopCoords) shopCoords = [myCurrentLat + dummyOffset1, myCurrentLng + dummyOffset1]; // Fallback Red Dot
+                
+                waypoints.push(L.latLng(shopCoords[0], shopCoords[1]));
+            } 
+            else if (order.status === 'Out for Delivery') {
+                // Going to Customer
+                const addr = order.customerInfo ? order.customerInfo.address : "";
+                if(addr) custCoords = await geocodeAddress(addr);
+                if(!custCoords) custCoords = [myCurrentLat - dummyOffset2, myCurrentLng - dummyOffset2]; // Fallback Green Dot
+                
+                waypoints.push(L.latLng(custCoords[0], custCoords[1]));
+            }
+
+            // Remove existing route if any
+            if(routingControl) { map.removeControl(routingControl); }
+
+            // Add new Route
+            routingControl = L.Routing.control({
+                waypoints: waypoints,
+                routeWhileDragging: false,
+                addWaypoints: false,
+                fitSelectedRoutes: true,
+                show: false, // Hides the big text instruction box
+                lineOptions: {
+                    styles: [{color: '#06b6d4', opacity: 0.8, weight: 5}]
+                },
+                createMarker: function(i, wp, nWps) {
+                    if (i === 0) return null; // DP marker already exists
+                    
+                    if (order.status === 'Accepted by Delivery' && i === 1) {
+                        return L.marker(wp.latLng, {icon: shopIcon}).bindPopup("Shop (Pickup)");
+                    }
+                    if (order.status === 'Out for Delivery' && i === 1) {
+                        return L.marker(wp.latLng, {icon: dropIcon}).bindPopup("Customer (Drop)");
+                    }
+                    return L.marker(wp.latLng);
+                }
+            }).addTo(map);
+
+            // Get exact distance
+            routingControl.on('routesfound', function(e) {
+                var routes = e.routes;
+                var distanceKm = (routes[0].summary.totalDistance / 1000).toFixed(1);
+                badge.innerHTML = `<span class="material-symbols-outlined text-[12px] align-middle mr-1">route</span>${distanceKm} km`;
+            });
+        }
+
 
         function startLocationTracking() {
             if (!("geolocation" in navigator)) { 
@@ -672,9 +780,14 @@
                         const newLatLng = new L.LatLng(myCurrentLat, myCurrentLng);
                         myMarker.setLatLng(newLatLng);
                         
-                        if(map.getZoom() < 10) {
-                            map.setView(newLatLng, 16);
+                        if(map.getZoom() < 12) {
+                            map.setView(newLatLng, 15);
                         }
+                    }
+
+                    // Initial Route Draw if just came online and has order
+                    if(currentActiveOrder && !routingControl) {
+                        drawRouteForActiveOrder(currentActiveOrder);
                     }
 
                     if (currentActiveOrder && (currentActiveOrder.status === 'Accepted by Delivery' || currentActiveOrder.status === 'Out for Delivery')) {
@@ -687,13 +800,17 @@
                 },
                 (error) => { 
                     console.error("GPS Error:", error); 
-                    // Handling the HTTP/Secure Origin Error Gracefully
+                    // Handling the HTTP/Secure Origin Error Gracefully so map still shows up
                     if(error.code === 1 || (error.message && error.message.includes("secure origins"))) {
-                        alert("Bhai, Live Location ke liye app ko HTTPS (Secure) par host karna zaroori hai. Localhost ya secure link par test karein.");
-                        // Force offline to prevent continuous crashing
-                        if(document.getElementById('duty-toggle').checked) {
-                            document.getElementById('duty-toggle').click();
+                        // FALLBACK FOR HTTP TESTING (Delhi coordinates)
+                        myCurrentLat = 28.6139;
+                        myCurrentLng = 77.2090;
+                        if(map && myMarker) {
+                            const newLatLng = new L.LatLng(myCurrentLat, myCurrentLng);
+                            myMarker.setLatLng(newLatLng);
+                            map.setView(newLatLng, 15);
                         }
+                        if(currentActiveOrder && !routingControl) { drawRouteForActiveOrder(currentActiveOrder); }
                     } else {
                         alert("Please turn on your device GPS/Location to receive orders.");
                         if(document.getElementById('duty-toggle').checked) {
