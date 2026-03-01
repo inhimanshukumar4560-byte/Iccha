@@ -1531,7 +1531,7 @@
             window.openCategoryLayout = function(activeCategoryId = null) { renderAllCategoriesSidebar(activeCategoryId); transitionTo(allCategoriesPage); };
             window.renderAllCategoriesSidebar = function(activeId) {
                 const sidebar = document.getElementById('all-categories-sidebar'); const catEntries = Object.entries(globalCategoriesData); if(catEntries.length === 0) return; if(!activeId) activeId = catEntries[0][0]; 
-                sidebar.innerHTML = catEntries.map(([id, c]) => { const isActive = id === activeId; const activeClass = isActive ? 'border-l-4 border-luxury-gold bg-luxury-gold/10' : 'border-l-4 border-transparent text-gray-500 hover:bg-white/50'; const textClass = isActive ? 'text-luxury-gold' : 'text-gray-500'; const imgBorder = isActive ? 'border-luxury-gold shadow-[0_0_10px_rgba(212,175,55,0.2)]' : 'border-gray-200'; return `<div class="flex flex-col items-center justify-center py-4 px-1 cursor-pointer ${activeClass} transition-all border-b border-gray-100" onclick="renderAllCategoriesSidebar('${id}')"><div class="w-12 h-12 rounded-full overflow-hidden mb-2 border-2 ${imgBorder} bg-gray-50 p-0.5 transition-all duration-300"><img src="${c.imageUrl}" class="w-full h-full object-cover rounded-full" onerror="this.src='https://placehold.co/100x100/ffffff/D4AF37?text=NA'"/></div><span class="text-[9px] text-center font-bold tracking-wider uppercase leading-tight ${textClass} px-1 break-words w-full font-body">${c.name}</span></div>`; }).join('');
+                sidebar.innerHTML = catEntries.map(([id, c]) => { const isActive = id === activeId; const activeClass = isActive ? 'border-l-4 border-luxury-gold bg-luxury-gold/10' : 'border-l-4 border-transparent text-gray-500 hover:bg-white/50'; const textClass = isActive ? 'text-luxury-gold' : 'text-gray-500'; const imgBorder = isActive ? 'border-luxury-gold shadow-[0_0_10px_rgba(212,175,55,0.2)]' : 'border-transparent'; return `<div class="flex flex-col items-center justify-center py-4 px-1 cursor-pointer ${activeClass} transition-all border-b border-gray-100" onclick="renderAllCategoriesSidebar('${id}')"><div class="w-12 h-12 rounded-full overflow-hidden mb-2 border-2 ${imgBorder} bg-gray-50 p-0.5 transition-all duration-300"><img src="${c.imageUrl}" class="w-full h-full object-cover rounded-full" onerror="this.src='https://placehold.co/100x100/ffffff/D4AF37?text=NA'"/></div><span class="text-[9px] text-center font-bold tracking-wider uppercase leading-tight ${textClass} px-1 break-words w-full font-body">${c.name}</span></div>`; }).join('');
                 renderCategoryContent(activeId);
             };
             window.renderCategoryContent = function(categoryId) {
@@ -1887,7 +1887,7 @@
                     const order = await response.json();
                     
                     const options = {
-                        "key": "rzp_live_RJib5lN3jSUela",
+                        "key": "rzp_live_SLt76BnauOx2Cb",
                         "amount": order.amount,
                         "currency": "INR",
                         "name": "Iccha",
@@ -2142,7 +2142,7 @@
                     const order = await response.json();
 
                     const options = {
-                        "key": "rzp_live_RJib5lN3jSUela",
+                        "key": "rzp_live_SLt76BnauOx2Cb",
                         "amount": order.amount,
                         "currency": "INR",
                         "name": "Iccha Wallet",
