@@ -1725,15 +1725,64 @@
                 document.getElementById('cart-subtotal').textContent = `₹${subtotal.toLocaleString()}`; const finalStr = `₹${subtotal.toLocaleString()}`; document.getElementById('cart-final-total').textContent = finalStr; document.getElementById('cart-bottom-total').textContent = finalStr; document.getElementById('checkout-total').textContent = finalStr; document.getElementById('checkout-bottom-total').textContent = finalStr;
             }
 
-            function openAddressModal() {
-                const modal = document.getElementById('address-modal'); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
-                if(!leafletMap) { leafletMap = L.map('map').setView([20.5937, 78.9629], 5); L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(leafletMap); mapMarker = L.marker([20.5937, 78.9629], {draggable: true}).addTo(leafletMap); mapMarker.on('dragend', function(e) { fetchAddressFromCoords(mapMarker.getLatLng().lat, mapMarker.getLatLng().lng); }); }
-                setTimeout(() => { leafletMap.invalidateSize(); }, 300);
+            // --- [START] MODIFIED ADDRESS & MAP LOGIC ---
+
+            function triggerGPSLocation() {
+                if ("geolocation" in navigator) {
+                    document.getElementById('input-address').value = "Detecting your location...";
+                    navigator.geolocation.getCurrentPosition(position => {
+                        const lat = position.coords.latitude, lng = position.coords.longitude;
+                        leafletMap.setView([lat, lng], 16);
+                        if (mapMarker) {
+                            mapMarker.setLatLng([lat, lng]);
+                        }
+                        fetchAddressFromCoords(lat, lng);
+                    }, error => {
+                        alert("Location access denied. Please enable it in your browser settings or enter your address manually.");
+                        document.getElementById('input-address').value = ""; // Clear feedback
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    });
+                } else {
+                    alert("Geolocation is not supported by your browser. Please enter your address manually.");
+                }
             }
+
+            function openAddressModal() {
+                const modal = document.getElementById('address-modal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
+
+                if(!leafletMap) { 
+                    leafletMap = L.map('map').setView([20.5937, 78.9629], 5); 
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(leafletMap); 
+                    mapMarker = L.marker([20.5937, 78.9629], {draggable: true}).addTo(leafletMap); 
+                    mapMarker.on('dragend', function(e) { 
+                        fetchAddressFromCoords(mapMarker.getLatLng().lat, mapMarker.getLatLng().lng); 
+                    }); 
+                }
+
+                setTimeout(() => { 
+                    leafletMap.invalidateSize(); 
+                    // If no address is set, try to get GPS location automatically.
+                    if (!userAddressInfo.address || userAddressInfo.address.trim() === '') {
+                        triggerGPSLocation();
+                    }
+                }, 300);
+            }
+
             function closeAddressModal() { const modal = document.getElementById('address-modal'); modal.classList.add('opacity-0'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); }
-            function fetchAddressFromCoords(lat, lng) { document.getElementById('input-address').value = "Fetching address..."; fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`).then(res => res.json()).then(data => { if(data && data.display_name) document.getElementById('input-address').value = data.display_name; }).catch(err => { document.getElementById('input-address').value = "Unable to fetch automatically."; }); }
-            document.getElementById('get-gps-btn').addEventListener('click', () => { if ("geolocation" in navigator) { navigator.geolocation.getCurrentPosition(position => { const lat = position.coords.latitude, lng = position.coords.longitude; leafletMap.setView([lat, lng], 16); mapMarker.setLatLng([lat, lng]); fetchAddressFromCoords(lat, lng); }, error => { alert("Location access denied."); }); } });
-            document.getElementById('open-address-modal').addEventListener('click', openAddressModal); document.getElementById('close-address-modal').addEventListener('click', closeAddressModal);
+            function fetchAddressFromCoords(lat, lng) { document.getElementById('input-address').value = "Fetching address..."; fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`).then(res => res.json()).then(data => { if(data && data.display_name) document.getElementById('input-address').value = data.display_name; }).catch(err => { document.getElementById('input-address').value = "Unable to fetch automatically. Please enter manually."; }); }
+            
+            document.getElementById('get-gps-btn').addEventListener('click', triggerGPSLocation);
+            
+            // --- [END] MODIFIED ADDRESS & MAP LOGIC ---
+
+            document.getElementById('open-address-modal').addEventListener('click', openAddressModal); 
+            document.getElementById('close-address-modal').addEventListener('click', closeAddressModal);
             
             // Connect Profile Edit Button to Modal
             document.getElementById('profile-edit-btn')?.addEventListener('click', openAddressModal);
