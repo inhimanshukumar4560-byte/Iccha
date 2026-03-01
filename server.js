@@ -5,8 +5,33 @@ const path = require('path');
 
 // Express app setup
 const app = express();
-app.use(cors());
-app.use(express.json()); // Frontend se aane wale JSON data ko read karne ke liye
+
+// --- START: FINAL CORS CONFIGURATION ---
+// Whitelist: Sirf in websites ko allow karein
+const allowedOrigins = [
+  'https://shubhzone.shop', // Aapka live domain
+  'http://localhost:3000'   // Agar aap future mein computer par test karein
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Agar request in websites se aa rahi hai, toh allow karo
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      // Agar kisi aur website se request aa rahi hai, toh block karo
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  optionsSuccessStatus: 200 // For older browsers
+};
+
+// CORS ko enable karein
+app.use(cors(corsOptions));
+// --- END: FINAL CORS CONFIGURATION ---
+
+// JSON data read karne ke liye middleware
+app.use(express.json());
 
 // Aapki HTML, CSS, JS, images (Frontend) ko serve karne ke liye
 app.use(express.static(path.join(__dirname)));
@@ -36,7 +61,9 @@ app.post('/create-order', async (req, res) => {
         };
 
         // Razorpay ke server se secure order_id create karwana
+        console.log("Creating Razorpay order with amount:", options.amount);
         const order = await razorpay.orders.create(options);
+        console.log("Razorpay order created successfully:", order);
 
         // Frontend ko order details waapas bhejna
         res.status(200).json(order);
