@@ -2,6 +2,7 @@ const express = require('express');
 const Razorpay = require('razorpay');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config(); // Yeh line ensure karti hai ki Render ke variables load ho jayein
 
 // Express app setup
 const app = express();
@@ -10,6 +11,7 @@ const app = express();
 // Whitelist: Sirf in websites ko allow karein
 const allowedOrigins = [
   'https://shubhzone.shop', // Aapka live domain
+  'http://shubhzone.shop',  // Non-https version bhi add kar dein
   'http://localhost:3000'   // Agar aap future mein computer par test karein
 ];
 
@@ -47,10 +49,18 @@ app.post('/create-order', async (req, res) => {
         // Frontend (index.html) se amount aayega (Rupees mein)
         const { amount } = req.body;
 
-        // Razorpay ka setup (Render ke Environment Variables se automatically keys uthayega)
+        const key_id = process.env.RAZORPAY_KEY_ID;
+        const key_secret = process.env.RAZORPAY_KEY_SECRET;
+        
+        if (!key_id || !key_secret) {
+            console.error("Razorpay keys are not loaded from environment variables!");
+            return res.status(500).json({ error: "API keys are missing on the server." });
+        }
+
+        // Razorpay ka setup
         const razorpay = new Razorpay({
-            key_id: process.env.RAZORPAY_KEY_ID,
-            key_secret: process.env.RAZORPAY_KEY_SECRET
+            key_id: key_id,
+            key_secret: key_secret
         });
 
         // Order ki details
