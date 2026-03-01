@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Iccha Delivery Partner</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
+    
+    <!-- Leaflet JS for Maps (Live Tracking) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        :root { 
+            --primary: #06b6d4; /* Cyan */
+            --primary-dark: #0891b2;
+            --bg-dark: #0f172a; 
+            --card-dark: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Hide Scrollbar but keep functionality */
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary { background-color: var(--primary); color: white; font-weight: 600; transition: 0.2s; }
+        .btn-primary:active { transform: scale(0.98); background-color: var(--primary-dark); }
+        .btn-success { background-color: #10b981; color: white; font-weight: 600; transition: 0.2s; }
+        .btn-success:active { transform: scale(0.98); background-color: #059669; }
+        .btn-danger { background-color: #ef4444; color: white; font-weight: 600; transition: 0.2s; }
+        .btn-danger:active { transform: scale(0.98); background-color: #dc2626; }
+
+        input, select {
+            background-color: #334155;
+            border: 1px solid #475569;
+            color: white;
+            border-radius: 0.5rem;
+            padding: 0.875rem;
+            width: 100%;
+            font-size: 1rem;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.3);
+        }
+
+        /* Toggle Switch */
+        .toggle-checkbox:checked { right: 0; border-color: #10b981; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
+        .toggle-checkbox { right: 0; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
+        .toggle-label { width: 3rem; height: 1.5rem; background-color: #ef4444; border-radius: 9999px; transition: all 0.3s; }
+
+        #map { z-index: 10; border-radius: 1rem; }
+        
+        /* Slide up animation for new orders */
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
+        
+        /* Loader */
+        .loader { border: 3px solid #334155; border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="overflow-hidden h-screen w-screen flex flex-col relative selection:bg-cyan-500/30">
+
+    <!-- ========================================== -->
+    <!-- 1. ONBOARDING / KYC SCREEN                 -->
+    <!-- ========================================== -->
+    <div id="kyc-screen" class="fixed inset-0 z-[100] bg-slate-900 overflow-y-auto hidden">
+        <div class="p-6 pb-20 max-w-md mx-auto">
+            <div class="text-center mb-8 pt-4">
+                <span class="material-symbols-outlined text-cyan-400 text-6xl mb-2">two_wheeler</span>
+                <h1 class="text-2xl font-bold text-white tracking-wide">Delivery Partner KYC</h1>
+                <p class="text-sm text-gray-400 mt-2">Join Iccha as a delivery executive. Fill in your details for admin approval.</p>
+            </div>
+
+            <form id="kyc-form" class="space-y-5">
+                <div><label class="block text-sm text-gray-400 mb-1">Full Name</label><input type="text" id="dp-name" placeholder="John Doe" required></div>
+                <div><label class="block text-sm text-gray-400 mb-1">Mobile Number</label><input type="tel" id="dp-phone" placeholder="10-digit mobile number" maxlength="10" required></div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Vehicle Type</label>
+                        <select id="dp-vehicle-type" required>
+                            <option value="bike">Bike / Motorcycle</option>
+                            <option value="scooter">Scooter / Activa</option>
+                            <option value="van">Mini Van / Auto</option>
+                        </select>
+                    </div>
+                    <div><label class="block text-sm text-gray-400 mb-1">Vehicle Number</label><input type="text" id="dp-vehicle-no" placeholder="MH 01 AB 1234" class="uppercase" required></div>
+                </div>
+
+                <div><label class="block text-sm text-gray-400 mb-1">Driving License Number</label><input type="text" id="dp-dl-no" placeholder="DL-1420110012345" class="uppercase" required></div>
+                
+                <div class="p-4 bg-slate-800 rounded-xl border border-slate-700">
+                    <label class="block text-sm text-gray-400 mb-2">Upload Profile Photo (Selfie)</label>
+                    <input type="file" id="dp-photo" accept="image/*" class="text-sm bg-slate-700 p-2 border-none" required>
+                </div>
+
+                <div class="p-4 bg-slate-800 rounded-xl border border-slate-700">
+                    <label class="block text-sm text-gray-400 mb-2">Upload Driving License (Front)</label>
+                    <input type="file" id="dp-dl-photo" accept="image/*" class="text-sm bg-slate-700 p-2 border-none" required>
+                </div>
+
+                <button type="submit" class="w-full btn-primary py-4 rounded-xl text-lg flex justify-center items-center gap-2 mt-4 shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+                    <span>Submit Application</span><div id="kyc-loader" class="loader"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. PENDING APPROVAL SCREEN                 -->
+    <!-- ========================================== -->
+    <div id="pending-screen" class="fixed inset-0 z-[90] bg-slate-900 flex flex-col items-center justify-center p-6 text-center hidden">
+        <div class="w-32 h-32 rounded-full bg-slate-800 border-4 border-yellow-500 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(234,179,8,0.2)]">
+            <span class="material-symbols-outlined text-yellow-500 text-6xl">hourglass_empty</span>
+        </div>
+        <h2 class="text-2xl font-bold text-white mb-2">Under Verification</h2>
+        <p class="text-gray-400 text-sm max-w-xs leading-relaxed">Your application has been submitted successfully. Please wait while the Admin verifies your documents. You will be able to access the dashboard once approved.</p>
+        <button onclick="window.location.reload()" class="mt-8 px-6 py-3 bg-slate-800 text-white rounded-lg border border-slate-700 hover:bg-slate-700 transition">Refresh Status</button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. MAIN DASHBOARD SCREEN                   -->
+    <!-- ========================================== -->
+    <div id="main-dashboard" class="flex-1 flex flex-col h-full hidden bg-slate-900">
+        
+        <!-- Header Section -->
+        <header class="glass-card px-4 py-3 sticky top-0 z-50 rounded-b-2xl shadow-lg border-b-0">
+            <div class="flex justify-between items-center mb-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-slate-700 border border-cyan-500 overflow-hidden p-0.5">
+                        <img id="head-profile-img" src="https://placehold.co/100x100/1e293b/06b6d4?text=DP" class="w-full h-full rounded-full object-cover">
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-bold text-white leading-tight" id="head-name">Driver Name</h2>
+                        <p class="text-[10px] text-cyan-400 font-semibold" id="head-vehicle">Vehicle No</p>
+                    </div>
+                </div>
+                
+                <!-- Online/Offline Duty Toggle -->
+                <div class="flex flex-col items-end">
+                    <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                        <input type="checkbox" name="toggle" id="duty-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                        <label for="duty-toggle" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer"></label>
+                    </div>
+                    <span id="duty-status-text" class="text-[10px] font-bold text-red-500 uppercase mt-1 tracking-wider mr-2">Offline</span>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 gap-3 mt-2">
+                <div class="bg-slate-800 rounded-xl p-3 border border-slate-700 shadow-inner">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Today's Earnings</p>
+                    <p class="text-xl font-bold text-green-400">₹<span id="stat-earnings">0</span></p>
+                </div>
+                <div class="bg-slate-800 rounded-xl p-3 border border-slate-700 shadow-inner">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Deliveries Done</p>
+                    <p class="text-xl font-bold text-white"><span id="stat-deliveries">0</span></p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Scrollable Content Area -->
+        <main class="flex-1 overflow-y-auto p-4 pb-24 space-y-4 relative" id="main-content-area">
+            
+            <!-- Map Container (Hidden by default, shown when active delivery exists) -->
+            <div id="map-container" class="w-full h-64 bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-lg hidden relative">
+                <div id="map" class="w-full h-full"></div>
+                <!-- GPS Focus Button -->
+                <button id="focus-gps-btn" class="absolute bottom-4 right-4 z-[400] bg-white text-black p-2 rounded-full shadow-lg border border-gray-200 focus:outline-none active:scale-95">
+                    <span class="material-symbols-outlined text-cyan-600">my_location</span>
+                </button>
+            </div>
+
+            <!-- Active / Current Delivery Section -->
+            <div id="active-delivery-section" class="hidden animate-slide-up">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-sm text-cyan-400">navigation</span> Current Task</h3>
+                <div id="active-order-card" class="bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl p-4 border border-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.15)] relative overflow-hidden">
+                    <!-- Dynamic Content Injected Here via JS -->
+                </div>
+            </div>
+
+            <!-- New Incoming Requests Section -->
+            <div id="new-requests-section">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-sm text-yellow-500">notifications_active</span> New Requests</h3>
+                <div id="new-orders-list" class="space-y-3">
+                    <div class="text-center py-10 bg-slate-800/50 rounded-2xl border border-slate-800 border-dashed">
+                        <span class="material-symbols-outlined text-gray-600 text-4xl mb-2">moped</span>
+                        <p class="text-sm text-gray-500 font-medium">Waiting for new orders...</p>
+                        <p class="text-[10px] text-gray-600 mt-1">Make sure you are ONLINE.</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="glass-card fixed bottom-0 left-0 right-0 h-16 flex justify-around items-center rounded-t-2xl border-b-0 z-50">
+            <button class="flex flex-col items-center gap-1 text-cyan-400 transition-transform active:scale-95 w-16">
+                <span class="material-symbols-outlined fill-1">home</span>
+                <span class="text-[9px] font-bold tracking-wider uppercase">Home</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-transform active:scale-95 w-16">
+                <span class="material-symbols-outlined">receipt_long</span>
+                <span class="text-[9px] font-bold tracking-wider uppercase">History</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-transform active:scale-95 w-16">
+                <span class="material-symbols-outlined">account_balance_wallet</span>
+                <span class="text-[9px] font-bold tracking-wider uppercase">Wallet</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-transform active:scale-95 w-16">
+                <span class="material-symbols-outlined">person</span>
+                <span class="text-[9px] font-bold tracking-wider uppercase">Profile</span>
+            </button>
+        </nav>
+    </div>
+
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
+    <script>
+        // 1. Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAeqfZ0mT_o7vBndcSiLisHQ3qOaavWBtk",
+            authDomain: "nexara-c1ab0.firebaseapp.com",
+            databaseURL: "https://nexara-c1ab0-default-rtdb.firebaseio.com",
+            projectId: "nexara-c1ab0",
+            storageBucket: "nexara-c1ab0.firebasestorage.app",
+            messagingSenderId: "1021765831407",
+            appId: "1:1021765831407:web:2795c51be3621c1ca0291a"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // 2. Cloudinary Upload Logic for KYC docs
+        const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dtvrhjtt4/image/upload';
+        const UPLOAD_PRESET = 'Soul_Spark';
+
+        async function uploadImage(fileInput) {
+            if (!fileInput.files || fileInput.files.length === 0) return null;
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', UPLOAD_PRESET);
+            try {
+                const response = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
+                const data = await response.json();
+                return data.secure_url;
+            } catch (error) {
+                console.error("Upload Error:", error);
+                return null;
+            }
+        }
+
+        // 3. Global State Variables
+        let PARTNER_ID = localStorage.getItem('iccha_dp_id');
+        let PARTNER_DATA = null;
+        let isOnline = false;
+        let currentActiveOrder = null;
+        
+        // Map Variables
+        let map = null;
+        let myMarker = null;
+        let shopMarker = null;
+        let customerMarker = null;
+        let routingLine = null;
+        let watchPositionId = null;
+        let myCurrentLat = 0;
+        let myCurrentLng = 0;
+
+        // Initialize Partner ID
+        if (!PARTNER_ID) {
+            PARTNER_ID = db.ref('delivery_partners').push().key;
+            localStorage.setItem('iccha_dp_id', PARTNER_ID);
+        }
+
+        const myProfileRef = db.ref(`delivery_partners/${PARTNER_ID}`);
+        const ordersRef = db.ref('orders');
+
+        // ==========================================
+        // INITIALIZATION & SCREEN ROUTING
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            checkOnboardingStatus();
+            
+            // Toggle Logic
+            const toggle = document.getElementById('duty-toggle');
+            const statusText = document.getElementById('duty-status-text');
+            
+            toggle.addEventListener('change', (e) => {
+                isOnline = e.target.checked;
+                statusText.innerText = isOnline ? 'ONLINE' : 'OFFLINE';
+                statusText.className = `text-[10px] font-bold uppercase mt-1 tracking-wider mr-2 ${isOnline ? 'text-green-500' : 'text-red-500'}`;
+                
+                // Update DB
+                myProfileRef.update({ isOnline: isOnline });
+
+                if (isOnline) {
+                    startLocationTracking();
+                    fetchOrders(); // Fetch new requests
+                } else {
+                    stopLocationTracking();
+                    document.getElementById('new-orders-list').innerHTML = `
+                        <div class="text-center py-10 bg-slate-800/50 rounded-2xl border border-slate-800 border-dashed">
+                            <span class="material-symbols-outlined text-gray-600 text-4xl mb-2">cloud_off</span>
+                            <p class="text-sm text-gray-500 font-medium">You are Offline</p>
+                            <p class="text-[10px] text-gray-600 mt-1">Go online to receive delivery requests.</p>
+                        </div>`;
+                }
+            });
+        });
+
+        function checkOnboardingStatus() {
+            myProfileRef.on('value', snapshot => {
+                PARTNER_DATA = snapshot.val();
+                document.getElementById('kyc-screen').classList.add('hidden');
+                document.getElementById('pending-screen').classList.add('hidden');
+                document.getElementById('main-dashboard').classList.add('hidden');
+
+                if (!PARTNER_DATA) {
+                    document.getElementById('kyc-screen').classList.remove('hidden');
+                } else if (PARTNER_DATA.status === 'pending') {
+                    document.getElementById('pending-screen').classList.remove('hidden');
+                    document.getElementById('pending-screen').classList.add('flex');
+                } else if (PARTNER_DATA.status === 'approved') {
+                    document.getElementById('main-dashboard').classList.remove('hidden');
+                    document.getElementById('main-dashboard').classList.add('flex');
+                    setupDashboard();
+                } else if (PARTNER_DATA.status === 'rejected') {
+                    alert("Your KYC was rejected by Admin. Please contact support.");
+                }
+            });
+        }
+
+        // ==========================================
+        // KYC FORM SUBMISSION
+        // ==========================================
+        document.getElementById('kyc-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loader = document.getElementById('kyc-loader');
+            const btnSpan = e.target.querySelector('button span');
+            loader.style.display = 'block'; btnSpan.style.display = 'none';
+
+            const photoUrl = await uploadImage(document.getElementById('dp-photo'));
+            const dlUrl = await uploadImage(document.getElementById('dp-dl-photo'));
+
+            if (!photoUrl || !dlUrl) {
+                alert("Image upload failed. Check internet connection.");
+                loader.style.display = 'none'; btnSpan.style.display = 'block';
+                return;
+            }
+
+            const dpData = {
+                name: document.getElementById('dp-name').value.trim(),
+                phone: document.getElementById('dp-phone').value.trim(),
+                vehicleType: document.getElementById('dp-vehicle-type').value,
+                vehicleNo: document.getElementById('dp-vehicle-no').value.trim().toUpperCase(),
+                dlNumber: document.getElementById('dp-dl-no').value.trim().toUpperCase(),
+                photoUrl: photoUrl,
+                dlUrl: dlUrl,
+                status: 'pending', // Goes to Admin
+                isOnline: false,
+                earnings: 0,
+                totalDeliveries: 0,
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            await myProfileRef.set(dpData);
+            loader.style.display = 'none'; btnSpan.style.display = 'block';
+        });
+
+        // ==========================================
+        // DASHBOARD SETUP & LOGIC
+        // ==========================================
+        function setupDashboard() {
+            if (PARTNER_DATA.name) document.getElementById('head-name').innerText = PARTNER_DATA.name;
+            if (PARTNER_DATA.vehicleNo) document.getElementById('head-vehicle').innerText = PARTNER_DATA.vehicleNo;
+            if (PARTNER_DATA.photoUrl) document.getElementById('head-profile-img').src = PARTNER_DATA.photoUrl;
+            document.getElementById('stat-earnings').innerText = PARTNER_DATA.earnings || 0;
+            document.getElementById('stat-deliveries').innerText = PARTNER_DATA.totalDeliveries || 0;
+            
+            // Check if already online from previous session
+            if(PARTNER_DATA.isOnline) {
+                document.getElementById('duty-toggle').checked = true;
+                const e = new Event('change');
+                document.getElementById('duty-toggle').dispatchEvent(e);
+            }
+
+            fetchOrders(); // Initial fetch
+        }
+
+        function fetchOrders() {
+            ordersRef.on('value', snapshot => {
+                const data = snapshot.val();
+                if (!data) return;
+
+                let hasActiveOrder = false;
+                let newOrdersHtml = '';
+
+                Object.entries(data).forEach(([orderId, order]) => {
+                    // 1. Check if this order is actively assigned to me and not completed
+                    if (order.deliveryBoyId === PARTNER_ID && (order.status === 'Accepted by Delivery' || order.status === 'Out for Delivery')) {
+                        hasActiveOrder = true;
+                        currentActiveOrder = { id: orderId, ...order };
+                        renderActiveOrder(currentActiveOrder);
+                    }
+                    
+                    // 2. Check for NEW orders that need a delivery boy
+                    if (isOnline && !hasActiveOrder && order.status === 'Ready for Pickup' && (!order.deliveryBoyId || order.deliveryBoyId === PARTNER_ID)) {
+                        newOrdersHtml += generateNewOrderCard(orderId, order);
+                    }
+                });
+
+                // Toggle Views based on Active Order
+                if (hasActiveOrder) {
+                    document.getElementById('new-requests-section').classList.add('hidden');
+                    document.getElementById('active-delivery-section').classList.remove('hidden');
+                    document.getElementById('map-container').classList.remove('hidden');
+                    initMap(); // Ensure map is ready
+                } else {
+                    currentActiveOrder = null;
+                    document.getElementById('new-requests-section').classList.remove('hidden');
+                    document.getElementById('active-delivery-section').classList.add('hidden');
+                    document.getElementById('map-container').classList.add('hidden');
+                    
+                    const listEl = document.getElementById('new-orders-list');
+                    if (isOnline) {
+                        listEl.innerHTML = newOrdersHtml || `
+                            <div class="text-center py-10 bg-slate-800/50 rounded-2xl border border-slate-800 border-dashed">
+                                <span class="material-symbols-outlined text-gray-600 text-4xl mb-2">moped</span>
+                                <p class="text-sm text-gray-500 font-medium">Looking for nearby orders...</p>
+                                <div class="w-3/4 mx-auto h-1 bg-slate-700 mt-3 rounded-full overflow-hidden"><div class="h-full bg-cyan-500 w-1/3 animate-shimmer rounded-full" style="animation: shimmer 1.5s infinite linear; transform-origin: left;"></div></div>
+                            </div>`;
+                    }
+                }
+            });
+        }
+
+        function generateNewOrderCard(orderId, order) {
+            const earning = 40; 
+            const shopName = order.shopName || "Seller Shop";
+            const custAddress = order.customerInfo ? order.customerInfo.address : "Customer Address";
+
+            return `
+            <div class="bg-slate-800 rounded-2xl p-4 border border-slate-700 shadow-md">
+                <div class="flex justify-between items-start mb-3 border-b border-slate-700 pb-3">
+                    <div>
+                        <span class="bg-cyan-500/20 text-cyan-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">New Request</span>
+                        <p class="text-sm font-bold text-white mt-2">Order #${orderId.substring(1,7).toUpperCase()}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Est. Earning</p>
+                        <p class="text-2xl font-bold text-green-400">₹${earning}</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-3 mb-4 relative">
+                    <div class="absolute left-3 top-2 bottom-2 w-0.5 bg-slate-600"></div>
+                    
+                    <div class="flex gap-3 relative z-10">
+                        <div class="w-6 h-6 rounded-full bg-slate-700 border-2 border-cyan-400 flex items-center justify-center shrink-0 shadow-sm"><span class="material-symbols-outlined text-[12px] text-cyan-400">storefront</span></div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Pickup</p>
+                            <p class="text-xs font-medium text-white line-clamp-2">${shopName}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3 relative z-10">
+                        <div class="w-6 h-6 rounded-full bg-slate-700 border-2 border-red-400 flex items-center justify-center shrink-0 shadow-sm"><span class="material-symbols-outlined text-[12px] text-red-400">location_on</span></div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Dropoff</p>
+                            <p class="text-xs font-medium text-white line-clamp-2">${custAddress}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button onclick="acceptOrder('${orderId}')" class="flex-1 btn-primary py-3 rounded-xl shadow-[0_4px_15px_rgba(6,182,212,0.3)]">Accept</button>
+                </div>
+            </div>`;
+        }
+
+        // ==========================================
+        // ACTION: ACCEPT ORDER
+        // ==========================================
+        window.acceptOrder = function(orderId) {
+            ordersRef.child(orderId).update({
+                deliveryBoyId: PARTNER_ID,
+                deliveryBoyName: PARTNER_DATA.name,
+                deliveryBoyPhone: PARTNER_DATA.phone,
+                status: 'Accepted by Delivery',
+                acceptedAt: firebase.database.ServerValue.TIMESTAMP
+            });
+            alert("Order Accepted! Head to the shop for pickup.");
+        };
+
+        // ==========================================
+        // ACTIVE ORDER UI LOGIC
+        // ==========================================
+        function renderActiveOrder(order) {
+            const card = document.getElementById('active-order-card');
+            const state = order.status; 
+            
+            let html = '';
+            
+            if (state === 'Accepted by Delivery') {
+                const shopName = order.shopName || "Seller Shop";
+                const shopPhone = order.shopPhone || "N/A";
+                
+                html = `
+                <div class="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-3">
+                    <span class="bg-yellow-500/20 text-yellow-500 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">Go to Pickup</span>
+                    <span class="text-xs text-gray-400 font-mono">#${order.id.substring(1,7).toUpperCase()}</span>
+                </div>
+                
+                <div class="flex gap-4 items-center mb-5">
+                    <div class="w-12 h-12 rounded-full bg-cyan-900 border-2 border-cyan-400 flex flex-col items-center justify-center shadow-[0_0_10px_rgba(6,182,212,0.3)] shrink-0">
+                        <span class="material-symbols-outlined text-cyan-400">storefront</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white text-base leading-tight">${shopName}</h4>
+                        <p class="text-xs text-gray-400 mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">call</span> ${shopPhone}</p>
+                    </div>
+                    <a href="tel:${shopPhone}" class="ml-auto w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-green-400 border border-slate-600"><span class="material-symbols-outlined">phone</span></a>
+                </div>
+
+                <div class="p-3 bg-slate-900/50 rounded-xl border border-slate-700 mb-4">
+                    <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">Action Required</p>
+                    <p class="text-sm text-gray-300">Reach the shop, collect the package, and mark it as picked up.</p>
+                </div>
+
+                <button onclick="markPickedUp('${order.id}')" class="w-full py-4 btn-primary rounded-xl text-lg shadow-[0_4px_15px_rgba(6,182,212,0.3)] flex items-center justify-center gap-2">
+                    <span>Mark as Picked Up</span> <span class="material-symbols-outlined">check_circle</span>
+                </button>
+                `;
+            } 
+            else if (state === 'Out for Delivery') {
+                const custName = order.customerInfo ? order.customerInfo.name : "Customer";
+                const custPhone = order.customerInfo ? order.customerInfo.phone : "N/A";
+                const custAddress = order.customerInfo ? order.customerInfo.address : "Address not provided";
+                const amountToCollect = order.paymentMethod === 'COD' ? order.totalAmount : "PAID";
+
+                html = `
+                <div class="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-3">
+                    <span class="bg-green-500/20 text-green-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">Out for Delivery</span>
+                    <span class="text-xs text-gray-400 font-mono">#${order.id.substring(1,7).toUpperCase()}</span>
+                </div>
+                
+                <div class="flex gap-4 items-center mb-4">
+                    <div class="w-12 h-12 rounded-full bg-red-900 border-2 border-red-400 flex flex-col items-center justify-center shadow-[0_0_10px_rgba(239,68,68,0.3)] shrink-0">
+                        <span class="material-symbols-outlined text-red-400">person</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white text-base leading-tight">${custName}</h4>
+                        <p class="text-xs text-gray-400 mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">call</span> ${custPhone}</p>
+                    </div>
+                    <a href="tel:${custPhone}" class="ml-auto w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-green-400 border border-slate-600"><span class="material-symbols-outlined">phone</span></a>
+                </div>
+
+                <div class="p-3 bg-slate-900/50 rounded-xl border border-slate-700 mb-4 space-y-3">
+                    <div>
+                        <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">Delivery Address</p>
+                        <p class="text-xs text-white leading-relaxed">${custAddress}</p>
+                    </div>
+                    <div class="border-t border-slate-700 pt-2 flex justify-between items-center">
+                        <span class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Amount to Collect</span>
+                        <span class="text-lg font-bold ${amountToCollect === 'PAID' ? 'text-green-400' : 'text-yellow-400'}">${amountToCollect}</span>
+                    </div>
+                </div>
+
+                <button onclick="markDelivered('${order.id}', ${order.paymentMethod === 'COD'})" class="w-full py-4 btn-success rounded-xl text-lg shadow-[0_4px_15px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2">
+                    <span>Swipe to Deliver</span> <span class="material-symbols-outlined">how_to_reg</span>
+                </button>
+                `;
+            }
+            card.innerHTML = html;
+        }
+
+        window.markPickedUp = function(orderId) {
+            if(confirm("Confirm you have picked up the package from the shop?")) {
+                ordersRef.child(orderId).update({
+                    status: 'Out for Delivery',
+                    pickedUpAt: firebase.database.ServerValue.TIMESTAMP
+                });
+            }
+        };
+
+        window.markDelivered = function(orderId, isCOD) {
+            let msg = isCOD ? "Confirm cash collected and package delivered?" : "Confirm package delivered to customer?";
+            if(confirm(msg)) {
+                ordersRef.child(orderId).update({
+                    status: 'Delivered',
+                    deliveredAt: firebase.database.ServerValue.TIMESTAMP
+                });
+
+                const newEarnings = (PARTNER_DATA.earnings || 0) + 40;
+                const newTotal = (PARTNER_DATA.totalDeliveries || 0) + 1;
+                
+                myProfileRef.update({
+                    earnings: newEarnings,
+                    totalDeliveries: newTotal
+                });
+
+                alert("Delivery Successful! Great job.");
+            }
+        };
+
+        // ==========================================
+        // MAP & LIVE TRACKING (LEAFLET.JS) + Error Fix
+        // ==========================================
+        function initMap() {
+            if (map !== null) {
+                map.invalidateSize();
+                return;
+            }
+            
+            map = L.map('map', { zoomControl: false }).setView([20.5937, 78.9629], 5);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: ''
+            }).addTo(map);
+
+            const myIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#06b6d4; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 0 10px #06b6d4;'></div>", iconSize: [16, 16], iconAnchor: [8, 8] });
+            const dropIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#ef4444; width:20px; height:20px; border-radius:50%; border:2px solid white; box-shadow: 0 0 10px #ef4444;'></div>", iconSize: [20, 20], iconAnchor: [10, 10] });
+
+            myMarker = L.marker([0, 0], {icon: myIcon}).addTo(map);
+            customerMarker = L.marker([0, 0], {icon: dropIcon}).addTo(map); 
+            
+            document.getElementById('focus-gps-btn').addEventListener('click', () => {
+                if(myCurrentLat && myCurrentLng) {
+                    map.flyTo([myCurrentLat, myCurrentLng], 16, { animate: true, duration: 1 });
+                }
+            });
+        }
+
+        function startLocationTracking() {
+            if (!("geolocation" in navigator)) { 
+                alert("GPS not supported by your browser."); 
+                return; 
+            }
+
+            watchPositionId = navigator.geolocation.watchPosition(
+                (position) => {
+                    myCurrentLat = position.coords.latitude;
+                    myCurrentLng = position.coords.longitude;
+
+                    if(map && myMarker) {
+                        const newLatLng = new L.LatLng(myCurrentLat, myCurrentLng);
+                        myMarker.setLatLng(newLatLng);
+                        
+                        if(map.getZoom() < 10) {
+                            map.setView(newLatLng, 16);
+                        }
+                    }
+
+                    if (currentActiveOrder && (currentActiveOrder.status === 'Accepted by Delivery' || currentActiveOrder.status === 'Out for Delivery')) {
+                        ordersRef.child(currentActiveOrder.id).child('deliveryLocation').set({
+                            lat: myCurrentLat,
+                            lng: myCurrentLng,
+                            timestamp: firebase.database.ServerValue.TIMESTAMP
+                        });
+                    }
+                },
+                (error) => { 
+                    console.error("GPS Error:", error); 
+                    // Handling the HTTP/Secure Origin Error Gracefully
+                    if(error.code === 1 || (error.message && error.message.includes("secure origins"))) {
+                        alert("Bhai, Live Location ke liye app ko HTTPS (Secure) par host karna zaroori hai. Localhost ya secure link par test karein.");
+                        // Force offline to prevent continuous crashing
+                        if(document.getElementById('duty-toggle').checked) {
+                            document.getElementById('duty-toggle').click();
+                        }
+                    } else {
+                        alert("Please turn on your device GPS/Location to receive orders.");
+                        if(document.getElementById('duty-toggle').checked) {
+                            document.getElementById('duty-toggle').click();
+                        }
+                    }
+                },
+                { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
+            );
+        }
+
+        function stopLocationTracking() {
+            if(watchPositionId) {
+                navigator.geolocation.clearWatch(watchPositionId);
+                watchPositionId = null;
+            }
+        }
+
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes shimmer {
+                0% { transform: translateX(-150%); }
+                100% { transform: translateX(300%); }
+            }
+        `;
+        document.head.appendChild(style);
+
+    </script>
+</body>
+</html>
