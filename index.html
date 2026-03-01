@@ -354,7 +354,11 @@
     <div id="shop-page" class="page-container hidden relative h-auto min-h-screen w-full flex-col bg-shop-dark overflow-x-hidden opacity-0">
         <header class="sticky top-0 z-50 px-4 pt-6 pb-4 bg-white/95 border-b border-gray-100 backdrop-blur-md shadow-sm">
             <div class="flex items-center justify-between gap-4">
-                <button class="text-gray-900"><span class="material-symbols-outlined text-3xl">menu</span></button>
+                <!-- UPDATED: Replaced 3-line menu with Profile Picture -->
+                <button class="js-profile-nav-btn w-10 h-10 rounded-full border-2 border-luxury-gold overflow-hidden focus:outline-none hover:scale-105 transition-transform shadow-sm shrink-0">
+                    <img src="https://placehold.co/100x100/f1f5f9/D4AF37?text=Me" class="w-full h-full object-cover" id="header-profile-img" alt="Profile">
+                </button>
+
                 <div class="flex-1">
                     <div id="shop-search-trigger" class="glass flex items-center h-11 px-4 rounded-[20px] border border-gray-200 bg-gray-50 cursor-text hover:border-luxury-gold transition-colors">
                         <span class="material-symbols-outlined text-gray-500 mr-3 text-xl">search</span>
@@ -422,7 +426,8 @@
             <a href="#" class="js-categories-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">category</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Categories</span></a>
             <a href="#" class="js-offers-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">local_offer</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Offers</span></a>
             <a href="#" class="js-wishlist-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">favorite</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Wishlist</span></a>
-            <a href="#" class="js-profile-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">person</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Profile</span></a>
+            <!-- UPDATED: Profile replaced by Store Nav Button -->
+            <a href="#" class="js-stores-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">storefront</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Stores</span></a>
         </nav>
         <div class="fixed top-0 right-0 w-64 h-64 bg-luxury-gold/5 rounded-full blur-[100px] pointer-events-none"></div>
         <div class="fixed bottom-0 left-0 w-64 h-64 bg-luxury-gold/5 rounded-full blur-[100px] pointer-events-none"></div>
@@ -623,7 +628,7 @@
         </div>
     </div>
     
-    <!-- Filter Modal (Meesho Style with Luxury Theme) -->
+    <!-- Filter Modal -->
     <div id="filter-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden flex-col items-center justify-end md:justify-center p-0 md:p-4 transition-opacity duration-300 opacity-0 font-body">
         <div class="bg-white w-full h-[85vh] md:max-w-md md:h-[600px] rounded-t-[20px] md:rounded-[20px] flex flex-col overflow-hidden shadow-2xl border border-gray-200">
             <!-- Header -->
@@ -631,21 +636,17 @@
                 <h2 class="text-sm font-bold tracking-widest uppercase luxury-text text-gray-900">Filters</h2>
                 <button id="close-filter-btn" class="text-gray-400 hover:text-luxury-gold transition-colors"><span class="material-symbols-outlined">close</span></button>
             </div>
-            <!-- Body Layout (Side-by-Side) -->
+            <!-- Body Layout -->
             <div class="flex flex-1 overflow-hidden">
-                <!-- Sidebar -->
                 <div class="w-[35%] bg-gray-50 border-r border-gray-100 overflow-y-auto custom-scroll" id="filter-sidebar">
                     <p class="p-4 text-xs text-gray-400">Loading...</p>
                 </div>
-                <!-- Right Content -->
                 <div class="w-[65%] bg-white p-4 overflow-y-auto hide-scrollbar flex flex-col gap-4">
                     <h3 class="font-bold text-gray-800 text-[15px] luxury-text" id="filter-content-title">Select Filter</h3>
-                    <!-- Search -->
                     <div class="flex items-center bg-gray-50 border border-gray-200 rounded-[10px] px-3 py-2 focus-within:border-luxury-gold focus-within:ring-1 focus-within:ring-luxury-gold transition-all">
                         <span class="material-symbols-outlined text-gray-400 text-sm mr-2">search</span>
                         <input type="text" class="bg-transparent border-none p-0 w-full text-sm text-gray-900 focus:ring-0 placeholder:text-gray-400" placeholder="Search..."/>
                     </div>
-                    <!-- Checkboxes container -->
                     <div class="flex flex-col gap-4 mt-2" id="filter-options-container">
                         <!-- Dynamic checkboxes will inject here -->
                     </div>
@@ -660,11 +661,10 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- PAGE 6: NEW OFFERS PAGE (COMPACTED & REBUILT)  -->
+    <!-- PAGE 6: OFFERS PAGE                            -->
     <!-- ============================================== -->
     <div id="offers-page" class="page-container hidden relative h-auto min-h-screen w-full flex-col bg-iccha-background-light text-gray-900 opacity-0 antialiased font-body">
         
-        <!-- NEW HEADER: Video Section moved to the top -->
         <header class="sticky top-0 z-50 w-full shadow-md border-b-2 border-gold-light/30 bg-black overflow-hidden relative">
             <div class="relative w-full aspect-[16/8] sm:aspect-video rounded-b-2xl overflow-hidden bg-black animate-slide-down">
                 <div class="swiper offers-video-swiper w-full h-full">
@@ -675,7 +675,6 @@
                     </div>
                     <div class="swiper-pagination"></div>
                 </div>
-                <!-- Cart Button floating on Video -->
                 <button class="absolute top-3 right-3 p-2 rounded-full bg-black/40 hover:bg-black/60 transition-colors text-white z-20 js-cart-icon backdrop-blur-sm">
                     <span class="material-symbols-outlined text-2xl">shopping_bag</span>
                     <span class="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
@@ -687,15 +686,10 @@
         </header>
 
         <main class="flex-1 overflow-y-auto no-scrollbar pb-32">
-            <!-- 1. Top Static Promo Banner (Compact - Moved Below Video) -->
             <section class="px-3 pt-4 animate-slide-up" style="animation-delay: 0.1s;">
                 <div id="offer-promo-banner" class="relative w-full h-28 sm:h-36 rounded-2xl shadow-lg overflow-hidden bg-cover bg-center border-[2px] border-luxury-gold/50 flex items-center justify-between p-3 animate-pulse-glow">
                     <div class="absolute inset-0 bg-black/40 z-0 pointer-events-none"></div>
-                    
-                    <!-- Character Sticker -->
                     <img id="offer-character-sticker" src="https://placehold.co/200x200/000000/000000?text=..." class="absolute left-1 bottom-0 h-[120%] sm:h-[130%] w-auto drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)] z-10 pointer-events-none object-contain object-bottom" alt="Iccha Offers Character"/>
-
-                    <!-- Promo Text -->
                     <div class="relative z-20 text-white text-right w-full flex flex-col justify-center items-end pr-2">
                         <p class="font-script text-3xl sm:text-4xl text-gold-light leading-none drop-shadow-md">Surprise!</p>
                         <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest mt-1.5 drop-shadow-md text-gray-100">Your special discount awaits!</p>
@@ -703,7 +697,6 @@
                 </div>
             </section>
 
-            <!-- 2. Categories Section (Compact) -->
             <section class="py-4 animate-slide-up" style="animation-delay: 0.2s;">
                 <div class="flex items-center justify-between px-3 mb-2">
                     <h3 class="text-base font-bold luxury-text text-gray-800">Shop by Category</h3>
@@ -711,12 +704,9 @@
                 <div id="offers-categories-container" class="flex overflow-x-auto hide-scrollbar gap-2 px-3 pb-1">
                     <div class="flex flex-col items-center gap-1.5 animate-pulse"><div class="w-14 h-14 rounded-full bg-gray-200"></div><div class="h-2 w-10 bg-gray-200 rounded"></div></div>
                     <div class="flex flex-col items-center gap-1.5 animate-pulse"><div class="w-14 h-14 rounded-full bg-gray-200"></div><div class="h-2 w-10 bg-gray-200 rounded"></div></div>
-                    <div class="flex flex-col items-center gap-1.5 animate-pulse"><div class="w-14 h-14 rounded-full bg-gray-200"></div><div class="h-2 w-10 bg-gray-200 rounded"></div></div>
-                    <div class="flex flex-col items-center gap-1.5 animate-pulse"><div class="w-14 h-14 rounded-full bg-gray-200"></div><div class="h-2 w-10 bg-gray-200 rounded"></div></div>
                 </div>
             </section>
 
-            <!-- 3. Product Grid (Compact) -->
             <section class="px-3 animate-slide-up" style="animation-delay: 0.3s;">
                 <div id="offers-product-grid" class="grid grid-cols-2 gap-3">
                     <div class="bg-gray-200 rounded-xl h-60 animate-pulse"></div>
@@ -726,13 +716,12 @@
              <div class="h-6"></div>
         </main>
 
-        <!-- Bottom Nav with Active State for Offers -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-gray-200 px-6 pb-6 pt-3 flex justify-between items-center shadow-[0_-5px_20px_rgba(0,0,0,0.05)] font-body">
             <a href="#" class="js-home-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">home</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Home</span></a>
             <a href="#" class="js-categories-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">category</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Categories</span></a>
             <a href="#" class="js-offers-nav-btn flex flex-col items-center gap-1 group"><span class="material-symbols-outlined text-luxury-gold text-2xl drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]">local_offer</span><span class="text-[9px] uppercase text-luxury-gold font-bold">Offers</span></a>
             <a href="#" class="js-wishlist-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">favorite</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Wishlist</span></a>
-            <a href="#" class="js-profile-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">person</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Profile</span></a>
+            <a href="#" class="js-stores-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">storefront</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Stores</span></a>
         </nav>
     </div>
     
@@ -761,7 +750,7 @@
             <a href="#" class="js-categories-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">category</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Categories</span></a>
             <a href="#" class="js-offers-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">local_offer</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Offers</span></a>
             <a href="#" class="js-wishlist-nav-btn flex flex-col items-center gap-1 group"><span class="material-symbols-outlined text-luxury-gold text-2xl drop-shadow-[0_0_5px_rgba(212,175,55,0.4)]">favorite</span><span class="text-[9px] uppercase text-luxury-gold font-bold">Wishlist</span></a>
-            <a href="#" class="js-profile-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">person</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Profile</span></a>
+            <a href="#" class="js-stores-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">storefront</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Stores</span></a>
         </nav>
 
         <div class="fixed top-0 right-0 w-64 h-64 bg-luxury-gold/5 rounded-full blur-[100px] pointer-events-none -z-10"></div>
@@ -769,7 +758,7 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- PAGE 8: MEESHO STYLE ALL CATEGORIES PAGE       -->
+    <!-- PAGE 8: ALL CATEGORIES PAGE                    -->
     <!-- ============================================== -->
     <div id="all-categories-page" class="page-container hidden relative h-screen w-full flex-col bg-white overflow-hidden opacity-0 antialiased font-body">
         <header class="sticky top-0 z-50 px-4 py-3 bg-white border-b border-gray-200 flex justify-between items-center h-16 shrink-0 shadow-sm">
@@ -800,10 +789,8 @@
             <a href="#" class="js-categories-nav-btn flex flex-col items-center gap-1 group"><span class="material-symbols-outlined text-luxury-gold text-2xl drop-shadow-[0_0_5px_rgba(212,175,55,0.4)]">category</span><span class="text-[9px] uppercase text-luxury-gold font-bold">Categories</span></a>
             <a href="#" class="js-offers-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">local_offer</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Offers</span></a>
             <a href="#" class="js-wishlist-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">favorite</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Wishlist</span></a>
-            <a href="#" class="js-profile-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">person</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Profile</span></a>
+            <a href="#" class="js-stores-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">storefront</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Stores</span></a>
         </nav>
-
-        <div class="fixed top-0 left-0 w-32 h-32 bg-luxury-gold/5 rounded-full blur-[100px] pointer-events-none"></div>
     </div>
 
     <!-- ======================= -->
@@ -862,12 +849,12 @@
             <a href="#" class="js-categories-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">category</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Categories</span></a>
             <a href="#" class="js-offers-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">local_offer</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Offers</span></a>
             <a href="#" class="js-wishlist-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">favorite</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Wishlist</span></a>
-            <a href="#" class="js-profile-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">person</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Profile</span></a>
+            <a href="#" class="js-stores-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">storefront</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Stores</span></a>
         </nav>
     </div>
 
     <!-- ======================= -->
-    <!-- PAGE 10: SUBCATEGORY VIEW PAGE -->
+    <!-- PAGE 10: SUBCATEGORY    -->
     <!-- ======================= -->
     <div id="subcategory-page" class="page-container hidden relative h-screen w-full flex-col bg-white overflow-hidden opacity-0 antialiased font-body z-[55]">
         <header class="sticky top-0 z-50 px-4 py-3 bg-white border-b border-gray-200 flex justify-between items-center h-16 shrink-0 shadow-sm">
@@ -890,19 +877,18 @@
             <a href="#" class="js-categories-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">category</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Categories</span></a>
             <a href="#" class="js-offers-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">local_offer</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Offers</span></a>
             <a href="#" class="js-wishlist-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">favorite</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Wishlist</span></a>
-            <a href="#" class="js-profile-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">person</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Profile</span></a>
+            <a href="#" class="js-stores-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">storefront</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Stores</span></a>
         </nav>
     </div>
 
     <!-- ======================= -->
-    <!-- PAGE 11: FULL PROFILE PAGE -->
+    <!-- PAGE 11: FULL PROFILE   -->
     <!-- ======================= -->
     <div id="profile-page" class="page-container hidden relative h-auto min-h-screen w-full flex-col bg-shop-light text-gray-900 opacity-0 pb-24 font-body">
         <header class="sticky top-0 z-50 px-4 py-5 bg-gradient-to-r from-iccha-primary to-[#024a26] shadow-md flex items-center justify-between text-white">
+            <button id="back-from-profile-btn" class="p-2 rounded-full hover:bg-white/20 transition-colors -ml-2"><span class="material-symbols-outlined">arrow_back</span></button>
             <h1 class="text-xl font-bold uppercase tracking-widest luxury-text">My Profile</h1>
-            <button class="relative p-2 rounded-full hover:bg-white/20 transition-colors">
-                <span class="material-symbols-outlined">settings</span>
-            </button>
+            <div class="size-8"></div>
         </header>
 
         <main class="flex-1 px-4 py-6 space-y-5 overflow-y-auto hide-scrollbar">
@@ -969,6 +955,35 @@
                 </div>
             </div>
 
+            <!-- NEW: Partner Portals -->
+            <div class="bg-white rounded-[20px] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 overflow-hidden">
+                <div class="px-5 py-3 border-b border-gray-50 bg-gray-50/50">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-luxury-gold">handshake</span> Partner Portals</h3>
+                </div>
+                <div class="flex flex-col">
+                    <a href="delivery.html" class="flex items-center justify-between p-4 border-b border-gray-50 hover:bg-luxury-gold/5 transition-colors text-left group">
+                        <div class="flex items-center gap-3">
+                            <div class="size-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 group-hover:bg-cyan-500/10 group-hover:text-cyan-500 transition-colors"><span class="material-symbols-outlined text-lg">two_wheeler</span></div>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-gray-800">Delivery Partner Panel</span>
+                                <span class="text-[9px] text-gray-400">Join as a rider & earn money</span>
+                            </div>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-300 group-hover:text-cyan-500 transition-colors">chevron_right</span>
+                    </a>
+                    <a href="store.html" class="flex items-center justify-between p-4 hover:bg-luxury-gold/5 transition-colors text-left group">
+                        <div class="flex items-center gap-3">
+                            <div class="size-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 group-hover:bg-amber-500/10 group-hover:text-amber-500 transition-colors"><span class="material-symbols-outlined text-lg">storefront</span></div>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-gray-800">Seller Store Panel</span>
+                                <span class="text-[9px] text-gray-400">Open your store on Iccha</span>
+                            </div>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-300 group-hover:text-amber-500 transition-colors">chevron_right</span>
+                    </a>
+                </div>
+            </div>
+
             <!-- Settings & More -->
             <div class="bg-white rounded-[20px] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 overflow-hidden">
                 <div class="px-5 py-3 border-b border-gray-50 bg-gray-50/50">
@@ -1003,18 +1018,59 @@
             </button>
             <div class="h-6"></div>
         </main>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- NEW PAGE 12: STORES LIST PAGE (APPROVED STORES)-->
+    <!-- ============================================== -->
+    <div id="stores-list-page" class="page-container hidden relative h-auto min-h-screen w-full flex-col bg-shop-light opacity-0 pb-24 font-body">
+        <header class="sticky top-0 z-50 px-4 py-4 bg-white shadow-sm flex items-center justify-center border-b border-gray-100">
+            <h1 class="text-lg font-bold text-gray-900 tracking-widest uppercase luxury-text">Official Stores</h1>
+        </header>
+
+        <main class="flex-1 p-4 overflow-y-auto">
+            <div id="stores-list-container" class="space-y-4">
+                <p class="text-center py-10 text-gray-400 font-bold uppercase tracking-widest text-xs">Loading Stores...</p>
+            </div>
+        </main>
         
-        <!-- Bottom Nav with Active State for Profile -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-gray-200 px-6 pb-6 pt-3 flex justify-between items-center shadow-[0_-5px_20px_rgba(0,0,0,0.05)] font-body">
             <a href="#" class="js-home-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">home</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Home</span></a>
             <a href="#" class="js-categories-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">category</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Categories</span></a>
             <a href="#" class="js-offers-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">local_offer</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Offers</span></a>
             <a href="#" class="js-wishlist-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">favorite</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Wishlist</span></a>
-            <a href="#" class="js-profile-nav-btn flex flex-col items-center gap-1 group"><span class="material-symbols-outlined text-luxury-gold text-2xl drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]">person</span><span class="text-[9px] uppercase text-luxury-gold font-bold">Profile</span></a>
+            <a href="#" class="js-stores-nav-btn flex flex-col items-center gap-1 group"><span class="material-symbols-outlined text-luxury-gold text-2xl drop-shadow-[0_0_5px_rgba(212,175,55,0.4)]">storefront</span><span class="text-[9px] uppercase text-luxury-gold font-bold">Stores</span></a>
         </nav>
     </div>
 
-    <!-- Track Order Modal -->
+    <!-- ============================================== -->
+    <!-- NEW PAGE 13: SINGLE STORE VIEW PAGE            -->
+    <!-- ============================================== -->
+    <div id="single-store-page" class="page-container hidden relative h-auto min-h-screen w-full flex-col bg-white opacity-0 font-body">
+        <header class="sticky top-0 z-50 px-4 py-3 bg-white border-b border-gray-100 flex items-center justify-between shadow-sm">
+            <button id="back-from-single-store-btn" class="p-2 rounded-full hover:bg-gray-100 transition -ml-2 text-gray-900">
+                <span class="material-symbols-outlined text-2xl">arrow_back</span>
+            </button>
+            <h1 class="text-lg font-bold text-gray-900 tracking-widest uppercase luxury-text flex-1 text-center truncate px-2" id="single-store-title">Store Name</h1>
+            <div class="size-8"></div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto">
+            <div class="w-full bg-gray-50 border-b border-gray-100 py-3 sticky top-0 z-40">
+                <div id="single-store-categories" class="flex overflow-x-auto hide-scrollbar gap-2 px-4">
+                    <!-- Dynamic categories injected here -->
+                </div>
+            </div>
+            
+            <div class="p-4 pb-10">
+                <div id="single-store-products-grid" class="grid grid-cols-3 gap-2 w-full">
+                    <!-- Dynamic products 1:1 ratio injected here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals (Track Order, History, Return - No Changes) -->
     <div id="track-order-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden flex-col items-center justify-end md:justify-center p-0 md:p-4 transition-opacity duration-300 opacity-0 font-body">
         <div class="bg-white w-full max-w-md rounded-t-[30px] md:rounded-[30px] border border-gray-200 shadow-2xl overflow-hidden flex flex-col h-[80vh]">
             <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
@@ -1036,7 +1092,6 @@
         </div>
     </div>
 
-    <!-- Order History Modal -->
     <div id="order-history-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden flex-col items-center justify-end md:justify-center p-0 md:p-4 transition-opacity duration-300 opacity-0 font-body">
         <div class="bg-white w-full max-w-md rounded-t-[30px] md:rounded-[30px] border border-gray-200 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
@@ -1044,7 +1099,6 @@
                 <button id="close-history-modal" class="text-gray-400 hover:text-gray-900"><span class="material-symbols-outlined">close</span></button>
             </div>
             <div class="p-4 overflow-y-auto space-y-4 bg-white custom-scroll">
-                <!-- Dummy Items -->
                 <div class="bg-gray-50 p-4 rounded-[15px] border border-gray-200 shadow-sm flex gap-4">
                     <div class="size-16 bg-white border border-gray-200 rounded-lg shrink-0 flex items-center justify-center overflow-hidden"><img src="https://placehold.co/100x100/ffffff/D4AF37?text=Watch" class="w-full h-full object-cover"></div>
                     <div class="flex-1">
@@ -1053,19 +1107,10 @@
                         <p class="text-sm font-bold text-luxury-gold mt-1">₹4,500</p>
                     </div>
                 </div>
-                <div class="bg-gray-50 p-4 rounded-[15px] border border-gray-200 shadow-sm flex gap-4">
-                    <div class="size-16 bg-white border border-gray-200 rounded-lg shrink-0 flex items-center justify-center overflow-hidden"><img src="https://placehold.co/100x100/ffffff/D4AF37?text=Shoes" class="w-full h-full object-cover"></div>
-                    <div class="flex-1">
-                        <p class="font-bold text-sm text-gray-900 line-clamp-1">Premium Leather Shoes</p>
-                        <p class="text-[11px] text-gray-500 font-bold">Cancelled on 05 Oct</p>
-                        <p class="text-sm font-bold text-luxury-gold mt-1">₹2,100</p>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Return/Refund Modal -->
     <div id="return-refund-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden flex-col items-center justify-end md:justify-center p-0 md:p-4 transition-opacity duration-300 opacity-0 font-body">
         <div class="bg-white w-full max-w-md rounded-t-[30px] md:rounded-[30px] border border-gray-200 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
             <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
@@ -1115,6 +1160,10 @@
             const searchPage = document.getElementById('search-page');
             const subcategoryPage = document.getElementById('subcategory-page');
             const profilePage = document.getElementById('profile-page'); 
+            
+            // NEW PAGES
+            const storesListPage = document.getElementById('stores-list-page');
+            const singleStorePage = document.getElementById('single-store-page');
 
             // Containers
             const videoBannerWrapper = document.getElementById('video-banner-wrapper');
@@ -1129,6 +1178,8 @@
             const addToWishlistBtn = document.getElementById('add-to-wishlist-btn');
             const viewAllCategoriesBtn = document.getElementById('view-all-categories-btn'); 
             const backFromSubcategoryBtn = document.getElementById('back-from-subcategory-btn');
+            const backFromProfileBtn = document.getElementById('back-from-profile-btn');
+            const backFromSingleStoreBtn = document.getElementById('back-from-single-store-btn');
             
             // Search Page elements
             const shopSearchTrigger = document.getElementById('shop-search-trigger');
@@ -1153,25 +1204,22 @@
             let offersVideoSwiper; 
             let activeCountdownIntervals = []; 
             
-            // Global Data State & Persistent Local Storage Data
+            // Global Data
             let currentProduct = null;
             let globalCart = {}; 
             let globalCategoriesData = {}; 
             let globalProductsData = {};   
             let globalFiltersData = {};
+            let globalSellersData = {}; // Stores
             
-            // FETCHING STORED DATA INSTEAD OF EMPTY VARIABLES
             let userAddressInfo = JSON.parse(localStorage.getItem('iccha_user_info')) || { name: '', phone: '', address: '', dob: '' };
-            
             let leafletMap = null;
             let mapMarker = null;
-            
             let currentShopCategory = 'all';
-            let activeFilterSelections = {}; // Store selected dynamic filters: { "Color": ["Red", "Blue"] }
+            let activeFilterSelections = {}; 
             let currentFilterTab = null;
-
-            // Payment Method Selection Logic
             let selectedPaymentMethod = 'upi';
+
             document.querySelectorAll('.payment-method-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     document.querySelectorAll('.payment-method-btn').forEach(b => {
@@ -1191,7 +1239,6 @@
                 });
             });
 
-            // Updating UI on initial load if data exists
             if (userAddressInfo && userAddressInfo.phone) {
                 document.getElementById('disp-name').textContent = userAddressInfo.name;
                 document.getElementById('disp-phone').textContent = "+91 " + userAddressInfo.phone;
@@ -1215,147 +1262,59 @@
             const wishlistRef = database.ref('wishlist');
             const mainOfferRef = database.ref('offers/featured');
             const filtersRef = database.ref('filters');
+            const sellersRef = database.ref('sellers'); // STORES DB REF
             
             // ==========================================
-            // FILTER MODAL EVENT LISTENERS & LOGIC
+            // FILTER MODAL LOGIC
             // ==========================================
-            if(openFilterBtn) {
-                openFilterBtn.addEventListener('click', () => {
-                    filterModal.classList.remove('hidden');
-                    filterModal.classList.add('flex');
-                    setTimeout(() => filterModal.classList.remove('opacity-0'), 10);
-                });
-            }
-
-            const closeFilterFunction = () => {
-                filterModal.classList.add('opacity-0');
-                setTimeout(() => { 
-                    filterModal.classList.add('hidden'); 
-                    filterModal.classList.remove('flex'); 
-                }, 300);
-            };
-
+            if(openFilterBtn) { openFilterBtn.addEventListener('click', () => { filterModal.classList.remove('hidden'); filterModal.classList.add('flex'); setTimeout(() => filterModal.classList.remove('opacity-0'), 10); }); }
+            const closeFilterFunction = () => { filterModal.classList.add('opacity-0'); setTimeout(() => { filterModal.classList.add('hidden'); filterModal.classList.remove('flex'); }, 300); };
             if(closeFilterBtn) closeFilterBtn.addEventListener('click', closeFilterFunction);
-            if(applyFilterBtn) applyFilterBtn.addEventListener('click', () => {
-                closeFilterFunction();
-                renderProducts(globalProductsData); 
-                window.scrollTo({top: document.getElementById('featured-products-section').offsetTop - 100, behavior: 'smooth'});
-            });
-            if(clearAllFilterBtn) clearAllFilterBtn.addEventListener('click', () => {
-                activeFilterSelections = {};
-                renderFilterOptions(); // uncheck boxes
-            });
+            if(applyFilterBtn) applyFilterBtn.addEventListener('click', () => { closeFilterFunction(); renderProducts(globalProductsData); window.scrollTo({top: document.getElementById('featured-products-section').offsetTop - 100, behavior: 'smooth'}); });
+            if(clearAllFilterBtn) clearAllFilterBtn.addEventListener('click', () => { activeFilterSelections = {}; renderFilterOptions(); });
 
-            filtersRef.on('value', s => {
-                globalFiltersData = s.val() || {};
-                renderFilterSidebar();
-            });
+            filtersRef.on('value', s => { globalFiltersData = s.val() || {}; renderFilterSidebar(); });
 
             function renderFilterSidebar() {
                 const sidebar = document.getElementById('filter-sidebar');
                 if(!sidebar) return;
-                
-                if(Object.keys(globalFiltersData).length === 0) {
-                    sidebar.innerHTML = '<div class="p-4 text-gray-500 text-xs">No filters</div>';
-                    document.getElementById('filter-options-container').innerHTML = '';
-                    return;
-                }
-
-                let html = '';
-                let isFirst = true;
-                
+                if(Object.keys(globalFiltersData).length === 0) { sidebar.innerHTML = '<div class="p-4 text-gray-500 text-xs">No filters</div>'; document.getElementById('filter-options-container').innerHTML = ''; return; }
+                let html = ''; let isFirst = true;
                 Object.entries(globalFiltersData).forEach(([mainId, mainData]) => {
                     if(isFirst && !currentFilterTab) currentFilterTab = mainId;
-                    
                     const isActive = currentFilterTab === mainId;
-                    const baseClass = isActive 
-                        ? 'border-l-4 border-luxury-gold text-luxury-gold font-bold bg-white' 
-                        : 'border-l-4 border-transparent text-gray-600 hover:bg-gray-100';
-                    
+                    const baseClass = isActive ? 'border-l-4 border-luxury-gold text-luxury-gold font-bold bg-white' : 'border-l-4 border-transparent text-gray-600 hover:bg-gray-100';
                     html += `<button class="w-full text-left p-4 text-[13px] filter-tab-btn transition-colors ${baseClass}" data-main-id="${mainId}">${mainData.name}</button>`;
                     isFirst = false;
                 });
-                
                 sidebar.innerHTML = html;
-                
-                document.querySelectorAll('.filter-tab-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        currentFilterTab = e.target.dataset.mainId;
-                        renderFilterSidebar(); 
-                    });
-                });
-
+                document.querySelectorAll('.filter-tab-btn').forEach(btn => { btn.addEventListener('click', (e) => { currentFilterTab = e.target.dataset.mainId; renderFilterSidebar(); }); });
                 renderFilterOptions();
             }
 
             function renderFilterOptions() {
-                const container = document.getElementById('filter-options-container');
-                const title = document.getElementById('filter-content-title');
-                
-                if(!currentFilterTab || !globalFiltersData[currentFilterTab]) {
-                    container.innerHTML = '';
-                    title.textContent = '';
-                    return;
-                }
-
-                const mainData = globalFiltersData[currentFilterTab];
-                title.textContent = mainData.name;
-                
-                if(!mainData.subFilters) {
-                    container.innerHTML = '<p class="text-xs text-gray-400">No options available</p>';
-                    return;
-                }
-
+                const container = document.getElementById('filter-options-container'); const title = document.getElementById('filter-content-title');
+                if(!currentFilterTab || !globalFiltersData[currentFilterTab]) { container.innerHTML = ''; title.textContent = ''; return; }
+                const mainData = globalFiltersData[currentFilterTab]; title.textContent = mainData.name;
+                if(!mainData.subFilters) { container.innerHTML = '<p class="text-xs text-gray-400">No options available</p>'; return; }
                 let html = '';
                 Object.entries(mainData.subFilters).forEach(([subId, subData]) => {
                     const isChecked = activeFilterSelections[mainData.name] && activeFilterSelections[mainData.name].includes(subData.name);
-                    html += `
-                    <label class="flex items-center gap-3 cursor-pointer group">
-                        <input type="checkbox" class="filter-checkbox rounded border-gray-300 text-luxury-gold focus:ring-luxury-gold dynamic-filter-cb" data-main="${mainData.name}" data-sub="${subData.name}" ${isChecked ? 'checked' : ''}/>
-                        <span class="text-[13px] text-gray-700 group-hover:text-black">${subData.name}</span>
-                    </label>`;
+                    html += `<label class="flex items-center gap-3 cursor-pointer group"><input type="checkbox" class="filter-checkbox rounded border-gray-300 text-luxury-gold focus:ring-luxury-gold dynamic-filter-cb" data-main="${mainData.name}" data-sub="${subData.name}" ${isChecked ? 'checked' : ''}/><span class="text-[13px] text-gray-700 group-hover:text-black">${subData.name}</span></label>`;
                 });
                 container.innerHTML = html;
-
-                document.querySelectorAll('.dynamic-filter-cb').forEach(cb => {
-                    cb.addEventListener('change', (e) => {
-                        const main = e.target.dataset.main;
-                        const sub = e.target.dataset.sub;
-                        if(e.target.checked) {
-                            if(!activeFilterSelections[main]) activeFilterSelections[main] = [];
-                            if(!activeFilterSelections[main].includes(sub)) activeFilterSelections[main].push(sub);
-                        } else {
-                            if(activeFilterSelections[main]) {
-                                activeFilterSelections[main] = activeFilterSelections[main].filter(v => v !== sub);
-                                if(activeFilterSelections[main].length === 0) delete activeFilterSelections[main];
-                            }
-                        }
-                    });
-                });
+                document.querySelectorAll('.dynamic-filter-cb').forEach(cb => { cb.addEventListener('change', (e) => { const main = e.target.dataset.main; const sub = e.target.dataset.sub; if(e.target.checked) { if(!activeFilterSelections[main]) activeFilterSelections[main] = []; if(!activeFilterSelections[main].includes(sub)) activeFilterSelections[main].push(sub); } else { if(activeFilterSelections[main]) { activeFilterSelections[main] = activeFilterSelections[main].filter(v => v !== sub); if(activeFilterSelections[main].length === 0) delete activeFilterSelections[main]; } } }); });
             }
 
-            // ==========================================
-            // VIDEO BANNER LOGIC (Reads from Home Settings)
-            // ==========================================
             database.ref('settings/home').on('value', (snapshot) => {
-                const data = snapshot.val();
-                let videos = [];
-                if (data) { if (data.videos) videos = Object.values(data.videos).filter(Boolean); }
-                
+                const data = snapshot.val(); let videos = [];
+                if (data && data.videos) videos = Object.values(data.videos).filter(Boolean);
                 if(videos.length > 0 && videoBannerWrapper) {
                     const isMultiple = videos.length > 1;
                     videoBannerWrapper.innerHTML = videos.map(url => `<div class="swiper-slide w-full h-full bg-black flex items-center justify-center"><video src="${url}" muted playsinline ${isMultiple ? '' : 'loop'} class="w-full h-full object-cover hero-video"></video></div>`).join('');
                     if (videoSwiper) videoSwiper.destroy(true, true);
                     videoSwiper = new Swiper('.video-swiper', { loop: isMultiple, allowTouchMove: true, pagination: { el: '.swiper-pagination', clickable: true }, on: { init: function () { playCurrentVideo(this); }, slideChangeTransitionEnd: function () { playCurrentVideo(this); } } });
-                    function playCurrentVideo(swiper) {
-                        document.querySelectorAll('.hero-video').forEach(vid => { vid.pause(); vid.currentTime = 0; vid.onended = null; });
-                        const activeSlide = swiper.slides[swiper.activeIndex]; if(!activeSlide) return;
-                        const activeVideo = activeSlide.querySelector('.hero-video');
-                        if (activeVideo) {
-                            activeVideo.play().catch(e=>console.log("Auto-play blocked", e));
-                            if(isMultiple) { activeVideo.onended = () => { swiper.slideNext(); }; }
-                        }
-                    }
+                    function playCurrentVideo(swiper) { document.querySelectorAll('.hero-video').forEach(vid => { vid.pause(); vid.currentTime = 0; vid.onended = null; }); const activeSlide = swiper.slides[swiper.activeIndex]; if(!activeSlide) return; const activeVideo = activeSlide.querySelector('.hero-video'); if (activeVideo) { activeVideo.play().catch(e=>console.log("Auto-play blocked", e)); if(isMultiple) { activeVideo.onended = () => { swiper.slideNext(); }; } } }
                 } else if(videoBannerWrapper) {
                     videoBannerWrapper.innerHTML = `<div class="swiper-slide w-full h-full bg-gray-100 flex flex-col items-center justify-center border border-gray-200"><span class="material-symbols-outlined text-gray-300 text-5xl mb-2">video_library</span><span class="text-gray-400 text-xs font-bold uppercase tracking-widest">No Media Displayed</span></div>`;
                 }
@@ -1373,32 +1332,22 @@
                 'search-page': { add: ['bg-shop-dark'], remove: ['overflow-hidden', 'bg-iccha-background-light'] }, 
                 'subcategory-page': { add: ['bg-shop-dark'], remove: ['overflow-hidden', 'bg-iccha-background-light'] },
                 'profile-page': { add: ['bg-shop-light'], remove: ['overflow-hidden', 'bg-iccha-background-light'] },
+                'stores-list-page': { add: ['bg-shop-light'], remove: ['overflow-hidden', 'bg-iccha-background-light'] },
+                'single-store-page': { add: ['bg-white'], remove: ['overflow-hidden', 'bg-iccha-background-light'] },
             };
             
             function managePageSpecificLogic(activePageId) {
-                if (activePageId !== 'offers-page') {
-                    activeCountdownIntervals.forEach(interval => clearInterval(interval));
-                    activeCountdownIntervals = [];
-                }
+                if (activePageId !== 'offers-page') { activeCountdownIntervals.forEach(interval => clearInterval(interval)); activeCountdownIntervals = []; }
                 const wishVid = document.getElementById('empty-wishlist-video');
-                if (wishVid) {
-                    const hasItems = Object.keys(currentWishlist).length > 0;
-                    if(activePageId === 'wishlist-page' && !hasItems) {
-                        wishVid.currentTime = 0;
-                        wishVid.play().catch(e=>console.log("Video play blocked"));
-                    } else {
-                        wishVid.pause();
-                    }
-                }
+                if (wishVid) { const hasItems = Object.keys(currentWishlist).length > 0; if(activePageId === 'wishlist-page' && !hasItems) { wishVid.currentTime = 0; wishVid.play().catch(e=>console.log("Video play blocked")); } else { wishVid.pause(); } }
             }
 
             function transitionTo(targetPage) {
                 const currentPage = document.querySelector('.page-container:not(.hidden)');
                 if (currentPage === targetPage) return;
-
                 managePageSpecificLogic(null); 
                 
-                const nonHistoryPages = ['cart-page', 'checkout-page', 'wishlist-page', 'profile-page'];
+                const nonHistoryPages = ['cart-page', 'checkout-page', 'wishlist-page', 'profile-page', 'stores-list-page', 'single-store-page'];
                 if (currentPage && !nonHistoryPages.includes(currentPage.id)) lastPage = currentPage;
                 if (currentPage) currentPage.style.opacity = '0';
 
@@ -1407,42 +1356,17 @@
                     targetPage.classList.remove('hidden'); targetPage.classList.add('flex');
                     
                     const config = pageConfigs[targetPage.id];
-                    if (config) { 
-                        Object.values(pageConfigs).forEach(c => mainBody.classList.remove(...(c.add || [])));
-                        mainBody.classList.add(...(config.add || []));
-                    }
+                    if (config) { Object.values(pageConfigs).forEach(c => mainBody.classList.remove(...(c.add || []))); mainBody.classList.add(...(config.add || [])); }
                     
                     void targetPage.offsetWidth; 
                     targetPage.style.opacity = '1';
                     
-                    if(targetPage.id !== 'all-categories-page' && targetPage.id !== 'search-page' && targetPage.id !== 'subcategory-page') window.scrollTo(0, 0);
+                    if(!['all-categories-page', 'search-page', 'subcategory-page', 'stores-list-page', 'single-store-page'].includes(targetPage.id)) window.scrollTo(0, 0);
                     
                     managePageSpecificLogic(targetPage.id);
-                    
-                    if (targetPage.id === 'offers-page') {
-                        mainOfferRef.once('value').then(s => renderOffersPage(s.val()));
-                    }
-
-                    // RESUME VIDEO PLAYBACK ON RETURNING TO PAGE
-                    if (targetPage.id === 'shop-page' && videoSwiper) {
-                        setTimeout(() => {
-                            const activeSlide = videoSwiper.slides[videoSwiper.activeIndex];
-                            if(activeSlide) {
-                                const vid = activeSlide.querySelector('.hero-video');
-                                if(vid) vid.play().catch(e=>console.log("Auto-play blocked on return", e));
-                            }
-                        }, 500);
-                    }
-                    if (targetPage.id === 'offers-page' && offersVideoSwiper) {
-                        setTimeout(() => {
-                            const activeSlide = offersVideoSwiper.slides[offersVideoSwiper.activeIndex];
-                            if(activeSlide) {
-                                const vid = activeSlide.querySelector('.offers-hero-video');
-                                if(vid) vid.play().catch(e=>console.log("Auto-play blocked on return", e));
-                            }
-                        }, 500);
-                    }
-
+                    if (targetPage.id === 'offers-page') { mainOfferRef.once('value').then(s => renderOffersPage(s.val())); }
+                    if (targetPage.id === 'shop-page' && videoSwiper) { setTimeout(() => { const activeSlide = videoSwiper.slides[videoSwiper.activeIndex]; if(activeSlide) { const vid = activeSlide.querySelector('.hero-video'); if(vid) vid.play().catch(e=>console.log("Auto-play blocked on return", e)); } }, 500); }
+                    if (targetPage.id === 'offers-page' && offersVideoSwiper) { setTimeout(() => { const activeSlide = offersVideoSwiper.slides[offersVideoSwiper.activeIndex]; if(activeSlide) { const vid = activeSlide.querySelector('.offers-hero-video'); if(vid) vid.play().catch(e=>console.log("Auto-play blocked on return", e)); } }, 500); }
                 }, 500);
             }
 
@@ -1452,15 +1376,13 @@
                 return Object.values(imagesObj).filter(img => img && typeof img === 'string' && img.trim() !== "");
             }
             
+            // Search Logic
             let recentSearches = JSON.parse(localStorage.getItem('iccha_recent_searches') || '[]');
             function renderRecentSearches() {
                 const container = document.getElementById('recent-searches-container'); if(!container) return;
                 if(recentSearches.length > 0) { container.innerHTML = recentSearches.map(term => `<span class="px-4 py-1.5 bg-gray-50 border border-gray-200 text-gray-700 text-xs rounded-full flex items-center gap-1 cursor-pointer hover:border-luxury-gold hover:text-luxury-gold transition" onclick="setSearchInput('${term}')"><span class="material-symbols-outlined text-[14px] text-gray-400">history</span> ${term}</span>`).join(''); } else { container.innerHTML = '<span class="text-xs text-gray-400 font-body">No recent searches</span>'; }
             }
-            function addRecentSearch(term) {
-                if(!term || term.trim() === '') return;
-                recentSearches = recentSearches.filter(t => t.toLowerCase() !== term.toLowerCase()); recentSearches.unshift(term); if(recentSearches.length > 8) recentSearches.pop(); localStorage.setItem('iccha_recent_searches', JSON.stringify(recentSearches)); renderRecentSearches();
-            }
+            function addRecentSearch(term) { if(!term || term.trim() === '') return; recentSearches = recentSearches.filter(t => t.toLowerCase() !== term.toLowerCase()); recentSearches.unshift(term); if(recentSearches.length > 8) recentSearches.pop(); localStorage.setItem('iccha_recent_searches', JSON.stringify(recentSearches)); renderRecentSearches(); }
             if(document.getElementById('clear-recent-btn')) { document.getElementById('clear-recent-btn').addEventListener('click', () => { recentSearches = []; localStorage.removeItem('iccha_recent_searches'); renderRecentSearches(); }); }
             window.setSearchInput = function(term) { const input = document.getElementById('main-search-input'); if(input) { input.value = term; input.dispatchEvent(new Event('input')); } };
 
@@ -1481,51 +1403,21 @@
             
             // Category Filtering Logic
             window.filterShopByCategory = function(catId) {
-                currentShopCategory = catId;
-                renderCategories(globalCategoriesData); 
-                renderProducts(globalProductsData);
-                if(document.querySelector('.page-container:not(.hidden)').id !== 'shop-page') {
-                    transitionTo(shopPage);
-                }
+                currentShopCategory = catId; renderCategories(globalCategoriesData); renderProducts(globalProductsData);
+                if(document.querySelector('.page-container:not(.hidden)').id !== 'shop-page') { transitionTo(shopPage); }
                 window.scrollTo({top: document.getElementById('featured-products-section').offsetTop - 100, behavior: 'smooth'});
             };
 
             function renderCategories(data) {
                 globalCategoriesData = data || {}; const cats = Object.entries(globalCategoriesData); 
-                
-                const allHtml = `
-                <div class="flex flex-col items-center flex-shrink-0 cursor-pointer w-[60px] group" onclick="filterShopByCategory('all')">
-                    <div class="w-14 h-14 rounded-full border ${currentShopCategory === 'all' ? 'border-luxury-gold shadow-md' : 'border-gray-200'} bg-white flex items-center justify-center overflow-hidden transition-all group-hover:border-luxury-gold group-hover:shadow-md p-[2px]">
-                        <div class="w-full h-full bg-luxury-gold/10 rounded-full flex items-center justify-center text-luxury-gold">
-                            <span class="material-symbols-outlined">grid_view</span>
-                        </div>
-                    </div>
-                    <p class="text-[9px] uppercase ${currentShopCategory === 'all' ? 'text-luxury-gold' : 'text-gray-700'} font-bold group-hover:text-luxury-gold transition mt-1.5 text-center leading-[1.1] font-body">All</p>
-                </div>`;
+                const allHtml = `<div class="flex flex-col items-center flex-shrink-0 cursor-pointer w-[60px] group" onclick="filterShopByCategory('all')"><div class="w-14 h-14 rounded-full border ${currentShopCategory === 'all' ? 'border-luxury-gold shadow-md' : 'border-gray-200'} bg-white flex items-center justify-center overflow-hidden transition-all group-hover:border-luxury-gold group-hover:shadow-md p-[2px]"><div class="w-full h-full bg-luxury-gold/10 rounded-full flex items-center justify-center text-luxury-gold"><span class="material-symbols-outlined">grid_view</span></div></div><p class="text-[9px] uppercase ${currentShopCategory === 'all' ? 'text-luxury-gold' : 'text-gray-700'} font-bold group-hover:text-luxury-gold transition mt-1.5 text-center leading-[1.1] font-body">All</p></div>`;
 
-                if (data && categoriesContainer) { 
-                    categoriesContainer.innerHTML = allHtml + cats.map(([id, c]) => `
-                    <div class="flex flex-col items-center flex-shrink-0 cursor-pointer w-[60px] group" onclick="filterShopByCategory('${id}')">
-                        <div class="w-14 h-14 rounded-full border ${currentShopCategory === id ? 'border-luxury-gold shadow-md' : 'border-gray-200'} bg-white flex items-center justify-center overflow-hidden shadow-sm transition-all group-hover:border-luxury-gold group-hover:shadow-md p-[2px]">
-                            <img class="w-full h-full object-cover rounded-full group-hover:scale-110 transition duration-300" src="${c.imageUrl}" alt="${c.name}" onerror="this.src='https://placehold.co/100x100/ffffff/D4AF37?text=NA'"/>
-                        </div>
-                        <p class="text-[9px] uppercase ${currentShopCategory === id ? 'text-luxury-gold' : 'text-gray-700'} font-bold group-hover:text-luxury-gold transition mt-1.5 text-center leading-[1.1] line-clamp-2 font-body">${c.name}</p>
-                    </div>`).join(''); 
-                }
+                if (data && categoriesContainer) { categoriesContainer.innerHTML = allHtml + cats.map(([id, c]) => `<div class="flex flex-col items-center flex-shrink-0 cursor-pointer w-[60px] group" onclick="filterShopByCategory('${id}')"><div class="w-14 h-14 rounded-full border ${currentShopCategory === id ? 'border-luxury-gold shadow-md' : 'border-gray-200'} bg-white flex items-center justify-center overflow-hidden shadow-sm transition-all group-hover:border-luxury-gold group-hover:shadow-md p-[2px]"><img class="w-full h-full object-cover rounded-full group-hover:scale-110 transition duration-300" src="${c.imageUrl}" alt="${c.name}" onerror="this.src='https://placehold.co/100x100/ffffff/D4AF37?text=NA'"/></div><p class="text-[9px] uppercase ${currentShopCategory === id ? 'text-luxury-gold' : 'text-gray-700'} font-bold group-hover:text-luxury-gold transition mt-1.5 text-center leading-[1.1] line-clamp-2 font-body">${c.name}</p></div>`).join(''); }
                 const searchQuickCatsContainer = document.getElementById('search-quick-categories');
                 if (data && searchQuickCatsContainer) { const topCats = Object.entries(globalCategoriesData).slice(0, 4); if(topCats.length > 0) { searchQuickCatsContainer.innerHTML = topCats.map(([id, c]) => `<div class="flex flex-col items-center gap-1 cursor-pointer hover:scale-105 transition" onclick="filterShopByCategory('${id}')"><div class="size-12 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center text-luxury-gold shadow-sm overflow-hidden p-[2px]"><img src="${c.imageUrl}" class="w-full h-full object-cover rounded-full" onerror="this.src='https://placehold.co/100x100/ffffff/D4AF37?text=NA'"/></div><span class="text-[10px] font-bold text-gray-600 uppercase tracking-widest truncate w-full text-center">${c.name}</span></div>`).join(''); } }
                 
-                // OFFERS CATEGORIES (Compact)
                 const offersCatsContainer = document.getElementById('offers-categories-container');
-                if (data && offersCatsContainer) { 
-                    offersCatsContainer.innerHTML = cats.map(([id, c]) => `
-                    <div class="flex flex-col items-center flex-shrink-0 cursor-pointer group gap-1.5" onclick="filterShopByCategory('${id}')">
-                        <div class="w-14 h-14 rounded-full border-2 border-luxury-gold/20 bg-white flex items-center justify-center overflow-hidden shadow-sm transition-all group-hover:border-luxury-gold p-[2px]">
-                            <img class="w-full h-full object-cover rounded-full" src="${c.imageUrl}" alt="${c.name}"/>
-                        </div>
-                        <p class="text-[9px] uppercase text-gray-700 font-bold group-hover:text-luxury-gold transition text-center line-clamp-1 w-16">${c.name}</p>
-                    </div>`).join(''); 
-                }
+                if (data && offersCatsContainer) { offersCatsContainer.innerHTML = cats.map(([id, c]) => `<div class="flex flex-col items-center flex-shrink-0 cursor-pointer group gap-1.5" onclick="filterShopByCategory('${id}')"><div class="w-14 h-14 rounded-full border-2 border-luxury-gold/20 bg-white flex items-center justify-center overflow-hidden shadow-sm transition-all group-hover:border-luxury-gold p-[2px]"><img class="w-full h-full object-cover rounded-full" src="${c.imageUrl}" alt="${c.name}"/></div><p class="text-[9px] uppercase text-gray-700 font-bold group-hover:text-luxury-gold transition text-center line-clamp-1 w-16">${c.name}</p></div>`).join(''); }
             }
 
             window.openCategoryLayout = function(activeCategoryId = null) { renderAllCategoriesSidebar(activeCategoryId); transitionTo(allCategoriesPage); };
@@ -1535,42 +1427,16 @@
                 renderCategoryContent(activeId);
             };
             window.renderCategoryContent = function(categoryId) {
-                const rightContent = document.getElementById('all-categories-grid');
-                const catName = globalCategoriesData[categoryId]?.name || 'All Products';
-                document.getElementById('active-category-title').textContent = `All Popular in ${catName}`;
-
+                const rightContent = document.getElementById('all-categories-grid'); const catName = globalCategoriesData[categoryId]?.name || 'All Products'; document.getElementById('active-category-title').textContent = `All Popular in ${catName}`;
                 const relatedProducts = Object.entries(globalProductsData).filter(([pid, p]) => (p.category === categoryId) || (p.categoryId === categoryId) || (p.category && p.category.toLowerCase() === catName.toLowerCase()));
 
                 if(relatedProducts.length > 0) {
                     const groups = {};
-                    relatedProducts.forEach(([pid, p]) => {
-                        const sub = p.subcategory || 'General';
-                        if(!groups[sub]) groups[sub] = [];
-                        groups[sub].push([pid, p]);
-                    });
-
+                    relatedProducts.forEach(([pid, p]) => { const sub = p.subcategory || 'General'; if(!groups[sub]) groups[sub] = []; groups[sub].push([pid, p]); });
                     let html = '';
                     for(const [subcat, prods] of Object.entries(groups)) {
                         const displayProds = prods.slice(0, 16);
-                        
-                        html += `
-                        <div class="flex flex-col mb-6">
-                            <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider border-l-2 border-luxury-gold pl-2">${subcat}</h3>
-                                <button onclick="openSubcategoryView('${categoryId}', '${subcat}')" class="flex items-center gap-1 bg-white/40 backdrop-blur-md border border-luxury-gold/50 text-luxury-gold px-3 py-1 rounded-full text-[10px] font-bold shadow-[0_4px_10px_rgba(212,175,55,0.15)] hover:bg-luxury-gold hover:text-white transition-all">More <span class="material-symbols-outlined text-[12px]">chevron_right</span></button>
-                            </div>
-                            <div class="grid grid-cols-4 gap-x-2 gap-y-4 w-full">
-                                ${displayProds.map(([pid, p]) => {
-                                    const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/150x150/ffffff/D4AF37?text=NA';
-                                    return `<div class="flex flex-col items-center cursor-pointer group" onclick="window.directToProduct('${pid}')">
-                                        <div class="w-full aspect-square rounded-[15px] overflow-hidden border border-gray-200 group-hover:border-luxury-gold transition-colors shadow-sm bg-white p-[2px]">
-                                            <img src="${img}" class="w-full h-full rounded-[12px] object-cover group-hover:scale-110 transition-transform duration-500" />
-                                        </div>
-                                        <span class="text-[9px] text-gray-700 text-center mt-1.5 font-semibold group-hover:text-black line-clamp-2 leading-tight px-0.5 font-body">${p.name}</span>
-                                    </div>`;
-                                }).join('')}
-                            </div>
-                        </div>`;
+                        html += `<div class="flex flex-col mb-6"><div class="flex items-center justify-between mb-3"><h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider border-l-2 border-luxury-gold pl-2">${subcat}</h3><button onclick="openSubcategoryView('${categoryId}', '${subcat}')" class="flex items-center gap-1 bg-white/40 backdrop-blur-md border border-luxury-gold/50 text-luxury-gold px-3 py-1 rounded-full text-[10px] font-bold shadow-[0_4px_10px_rgba(212,175,55,0.15)] hover:bg-luxury-gold hover:text-white transition-all">More <span class="material-symbols-outlined text-[12px]">chevron_right</span></button></div><div class="grid grid-cols-4 gap-x-2 gap-y-4 w-full">${displayProds.map(([pid, p]) => { const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/150x150/ffffff/D4AF37?text=NA'; return `<div class="flex flex-col items-center cursor-pointer group" onclick="window.directToProduct('${pid}')"><div class="w-full aspect-square rounded-[15px] overflow-hidden border border-gray-200 group-hover:border-luxury-gold transition-colors shadow-sm bg-white p-[2px]"><img src="${img}" class="w-full h-full rounded-[12px] object-cover group-hover:scale-110 transition-transform duration-500" /></div><span class="text-[9px] text-gray-700 text-center mt-1.5 font-semibold group-hover:text-black line-clamp-2 leading-tight px-0.5 font-body">${p.name}</span></div>`; }).join('')}</div></div>`;
                     }
                     rightContent.innerHTML = html;
                 } else {
@@ -1579,54 +1445,103 @@
             };
 
             window.openSubcategoryView = function(categoryId, targetSubcategory) {
-                const catName = globalCategoriesData[categoryId]?.name || 'Category';
-                document.getElementById('subcategory-page-title').textContent = catName;
-                
+                const catName = globalCategoriesData[categoryId]?.name || 'Category'; document.getElementById('subcategory-page-title').textContent = catName;
                 const contentArea = document.getElementById('subcategory-page-content');
                 const relatedProducts = Object.entries(globalProductsData).filter(([pid, p]) => (p.category === categoryId) || (p.categoryId === categoryId) || (p.category && p.category.toLowerCase() === catName.toLowerCase()));
-                
-                const groups = {};
-                relatedProducts.forEach(([pid, p]) => {
-                    const sub = p.subcategory || 'General';
-                    if(!groups[sub]) groups[sub] = [];
-                    groups[sub].push([pid, p]);
-                });
-
-                const orderedSubcats = [targetSubcategory];
-                for(const sub of Object.keys(groups)) {
-                    if(sub !== targetSubcategory) orderedSubcats.push(sub);
-                }
-
+                const groups = {}; relatedProducts.forEach(([pid, p]) => { const sub = p.subcategory || 'General'; if(!groups[sub]) groups[sub] = []; groups[sub].push([pid, p]); });
+                const orderedSubcats = [targetSubcategory]; for(const sub of Object.keys(groups)) { if(sub !== targetSubcategory) orderedSubcats.push(sub); }
                 let html = '';
                 orderedSubcats.forEach(subcat => {
-                    if(!groups[subcat]) return;
-                    const prods = groups[subcat];
-                    
-                    html += `
-                    <div class="flex flex-col mb-8">
-                        <div class="flex items-center justify-between mb-4 bg-gray-50 p-3 rounded-[15px] border border-gray-200">
-                            <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider">${subcat}</h3>
-                            <span class="text-[10px] font-bold text-gray-500 bg-white px-2 py-1 rounded-full shadow-sm">${prods.length} Items</span>
-                        </div>
-                        <div class="grid grid-cols-4 gap-x-2 gap-y-5 w-full">
-                            ${prods.map(([pid, p]) => {
-                                const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/150x150/ffffff/D4AF37?text=NA';
-                                return `<div class="flex flex-col items-center cursor-pointer group" onclick="window.directToProduct('${pid}')">
-                                    <div class="w-full aspect-square rounded-[15px] overflow-hidden border border-gray-200 group-hover:border-luxury-gold transition-colors shadow-sm bg-white p-[2px]">
-                                        <img src="${img}" class="w-full h-full rounded-[12px] object-cover group-hover:scale-110 transition-transform duration-500" />
-                                    </div>
-                                    <span class="text-[9px] text-gray-700 text-center mt-1.5 font-semibold group-hover:text-black line-clamp-2 leading-tight px-0.5 font-body">${p.name}</span>
-                                </div>`;
-                            }).join('')}
-                        </div>
-                    </div>`;
+                    if(!groups[subcat]) return; const prods = groups[subcat];
+                    html += `<div class="flex flex-col mb-8"><div class="flex items-center justify-between mb-4 bg-gray-50 p-3 rounded-[15px] border border-gray-200"><h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider">${subcat}</h3><span class="text-[10px] font-bold text-gray-500 bg-white px-2 py-1 rounded-full shadow-sm">${prods.length} Items</span></div><div class="grid grid-cols-4 gap-x-2 gap-y-5 w-full">${prods.map(([pid, p]) => { const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/150x150/ffffff/D4AF37?text=NA'; return `<div class="flex flex-col items-center cursor-pointer group" onclick="window.directToProduct('${pid}')"><div class="w-full aspect-square rounded-[15px] overflow-hidden border border-gray-200 group-hover:border-luxury-gold transition-colors shadow-sm bg-white p-[2px]"><img src="${img}" class="w-full h-full rounded-[12px] object-cover group-hover:scale-110 transition-transform duration-500" /></div><span class="text-[9px] text-gray-700 text-center mt-1.5 font-semibold group-hover:text-black line-clamp-2 leading-tight px-0.5 font-body">${p.name}</span></div>`; }).join('')}</div></div>`;
                 });
-
-                contentArea.innerHTML = html;
-                transitionTo(subcategoryPage);
+                contentArea.innerHTML = html; transitionTo(subcategoryPage);
             };
 
-            if(backFromSubcategoryBtn) backFromSubcategoryBtn.addEventListener('click', () => { transitionTo(allCategoriesPage); });
+            // NEW: SELLERS LOGIC FOR STORES TAB
+            sellersRef.on('value', snap => {
+                globalSellersData = snap.val() || {};
+                renderStoresList();
+            });
+
+            function renderStoresList() {
+                const container = document.getElementById('stores-list-container');
+                if(!container) return;
+                
+                let html = '';
+                Object.entries(globalSellersData).forEach(([sellerId, seller]) => {
+                    if(seller.profile && seller.profile.status === 'approved') {
+                        const logo = seller.profile.logoUrl || 'https://placehold.co/600x337/f1f5f9/D4AF37?text=Store';
+                        html += `
+                        <div class="bg-white rounded-[20px] shadow-sm border border-gray-100 overflow-hidden cursor-pointer group mb-5 hover:border-luxury-gold transition-colors" onclick="openSingleStore('${sellerId}')">
+                            <div class="w-full aspect-[16/9] relative overflow-hidden bg-gray-50">
+                                <img src="${logo}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-4 left-4 text-white">
+                                    <h3 class="text-xl font-bold luxury-text tracking-widest drop-shadow-md">${seller.profile.storeName}</h3>
+                                    <p class="text-[10px] uppercase tracking-widest text-luxury-gold font-bold mt-1 bg-white/20 px-2 py-0.5 rounded backdrop-blur-md inline-block">Official Partner</p>
+                                </div>
+                            </div>
+                        </div>`;
+                    }
+                });
+                
+                container.innerHTML = html || '<div class="text-center py-20 text-gray-400 font-bold uppercase tracking-widest text-xs">No Stores Available</div>';
+            }
+
+            window.openSingleStore = function(sellerId) {
+                const seller = globalSellersData[sellerId];
+                if(!seller) return;
+                
+                document.getElementById('single-store-title').textContent = seller.profile.storeName;
+                
+                const catContainer = document.getElementById('single-store-categories');
+                let catHtml = `<button class="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-luxury-gold text-white shadow-sm" onclick="filterSingleStore('${sellerId}', 'all')">All Products</button>`;
+                
+                if(seller.categories) {
+                    Object.entries(seller.categories).forEach(([catId, cat]) => {
+                        if(cat.status === 'approved') {
+                            catHtml += `<button class="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-white text-gray-600 border border-gray-200 hover:border-luxury-gold transition" onclick="filterSingleStore('${sellerId}', '${cat.name}')">${cat.name}</button>`;
+                        }
+                    });
+                }
+                catContainer.innerHTML = catHtml;
+                
+                filterSingleStore(sellerId, 'all');
+                transitionTo(singleStorePage);
+            };
+
+            window.filterSingleStore = function(sellerId, categoryName) {
+                const grid = document.getElementById('single-store-products-grid');
+                let storeProducts = Object.entries(globalProductsData).filter(([pid, p]) => p.sellerId === sellerId);
+                
+                if(categoryName !== 'all') {
+                    storeProducts = storeProducts.filter(([pid, p]) => p.category === categoryName);
+                }
+                
+                if(storeProducts.length > 0) {
+                    grid.innerHTML = storeProducts.map(([id, p]) => {
+                        const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/200x200/ffffff/D4AF37?text=NA';
+                        const discount = Math.round(((p.realPrice - p.nexaraPrice) / p.realPrice) * 100); 
+                        return `
+                        <div class="flex flex-col product-card-link cursor-pointer group w-full mb-3" onclick="window.directToProduct('${id}')">
+                            <div class="w-full aspect-square rounded-[15px] overflow-hidden bg-gray-50 border border-gray-100 shadow-sm relative p-1 group-hover:border-luxury-gold transition-colors">
+                                <img src="${img}" class="w-full h-full object-cover rounded-[12px] group-hover:scale-110 transition-transform duration-300">
+                                ${discount > 0 ? `<div class="absolute top-1.5 left-1.5 bg-luxury-gold text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow-sm">${discount}% OFF</div>` : ''}
+                            </div>
+                            <div class="mt-1.5 px-0.5 flex flex-col items-center text-center">
+                                <h4 class="text-[9px] font-bold text-gray-800 line-clamp-1 uppercase tracking-wide leading-tight">${p.name}</h4>
+                                <div class="flex items-center gap-1.5 mt-0.5">
+                                    <span class="text-[10px] font-bold text-luxury-gold">₹${p.nexaraPrice.toLocaleString()}</span>
+                                    ${discount > 0 ? `<span class="text-[8px] text-gray-400 line-through">₹${p.realPrice.toLocaleString()}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                } else {
+                    grid.innerHTML = `<div class="col-span-3 text-center py-16 text-gray-400 text-xs font-bold uppercase tracking-widest">No Products in this Category</div>`;
+                }
+            };
 
             window.directToProduct = function(pid) { populateProductPage(pid); };
 
@@ -1642,18 +1557,13 @@
                     if (Object.keys(activeFilterSelections).length > 0) {
                         homeProducts = homeProducts.filter(([id, p]) => {
                             if(!p.dynamicFilters) return false; 
-                            
                             let passesAll = true;
                             for(const mainKey in activeFilterSelections) {
                                 const selectedSubs = activeFilterSelections[mainKey];
                                 if(selectedSubs.length === 0) continue;
-                                
                                 const productSubs = p.dynamicFilters[mainKey] || [];
                                 const hasMatch = selectedSubs.some(sub => productSubs.includes(sub));
-                                if(!hasMatch) {
-                                    passesAll = false;
-                                    break;
-                                }
+                                if(!hasMatch) { passesAll = false; break; }
                             }
                             return passesAll;
                         });
@@ -1751,17 +1661,7 @@
                 const isActiveOffer = productToCart.offerPrice && productToCart.offerEndTime && new Date(productToCart.offerEndTime) > new Date();
                 const activePrice = isActiveOffer ? productToCart.offerPrice : productToCart.nexaraPrice;
                 
-                if(globalCart[id]) { 
-                    globalCart[id].qty++; 
-                    globalCart[id].price = activePrice; 
-                } else { 
-                    globalCart[id] = { 
-                        name: productToCart.name, 
-                        price: activePrice, 
-                        img: imageArray.length > 0 ? imageArray[0] : 'https://placehold.co/200x200/ffffff/D4AF37?text=NA', 
-                        qty: 1 
-                    }; 
-                } 
+                if(globalCart[id]) { globalCart[id].qty++; globalCart[id].price = activePrice; } else { globalCart[id] = { name: productToCart.name, price: activePrice, img: imageArray.length > 0 ? imageArray[0] : 'https://placehold.co/200x200/ffffff/D4AF37?text=NA', qty: 1 }; } 
                 renderCart(); 
             }
             function renderCart() {
@@ -1772,259 +1672,117 @@
                 document.getElementById('cart-subtotal').textContent = `₹${subtotal.toLocaleString()}`; const finalStr = `₹${subtotal.toLocaleString()}`; document.getElementById('cart-final-total').textContent = finalStr; document.getElementById('cart-bottom-total').textContent = finalStr; document.getElementById('checkout-total').textContent = finalStr; document.getElementById('checkout-bottom-total').textContent = finalStr;
             }
 
-            // --- [START] MODIFIED ADDRESS & MAP LOGIC ---
-
             function triggerGPSLocation() {
                 if ("geolocation" in navigator) {
                     document.getElementById('input-address').value = "Detecting your location...";
                     navigator.geolocation.getCurrentPosition(position => {
                         const lat = position.coords.latitude, lng = position.coords.longitude;
                         leafletMap.setView([lat, lng], 16);
-                        if (mapMarker) {
-                            mapMarker.setLatLng([lat, lng]);
-                        }
+                        if (mapMarker) { mapMarker.setLatLng([lat, lng]); }
                         fetchAddressFromCoords(lat, lng);
                     }, error => {
                         alert("Location access denied. Please enable it in your browser settings or enter your address manually.");
-                        document.getElementById('input-address').value = ""; // Clear feedback
-                    }, {
-                        enableHighAccuracy: true,
-                        timeout: 10000,
-                        maximumAge: 0
-                    });
-                } else {
-                    alert("Geolocation is not supported by your browser. Please enter your address manually.");
-                }
+                        document.getElementById('input-address').value = ""; 
+                    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+                } else { alert("Geolocation is not supported by your browser. Please enter your address manually."); }
             }
 
             function openAddressModal() {
                 const modal = document.getElementById('address-modal');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
+                modal.classList.remove('hidden'); modal.classList.add('flex');
                 setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
-
-                if(!leafletMap) { 
-                    leafletMap = L.map('map').setView([20.5937, 78.9629], 5); 
-                    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(leafletMap); 
-                    mapMarker = L.marker([20.5937, 78.9629], {draggable: true}).addTo(leafletMap); 
-                    mapMarker.on('dragend', function(e) { 
-                        fetchAddressFromCoords(mapMarker.getLatLng().lat, mapMarker.getLatLng().lng); 
-                    }); 
-                }
-
-                setTimeout(() => { 
-                    leafletMap.invalidateSize(); 
-                    // If no address is set, try to get GPS location automatically.
-                    if (!userAddressInfo.address || userAddressInfo.address.trim() === '') {
-                        triggerGPSLocation();
-                    }
-                }, 300);
+                if(!leafletMap) { leafletMap = L.map('map').setView([20.5937, 78.9629], 5); L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(leafletMap); mapMarker = L.marker([20.5937, 78.9629], {draggable: true}).addTo(leafletMap); mapMarker.on('dragend', function(e) { fetchAddressFromCoords(mapMarker.getLatLng().lat, mapMarker.getLatLng().lng); }); }
+                setTimeout(() => { leafletMap.invalidateSize(); if (!userAddressInfo.address || userAddressInfo.address.trim() === '') { triggerGPSLocation(); } }, 300);
             }
 
             function closeAddressModal() { const modal = document.getElementById('address-modal'); modal.classList.add('opacity-0'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); }
             function fetchAddressFromCoords(lat, lng) { document.getElementById('input-address').value = "Fetching address..."; fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`).then(res => res.json()).then(data => { if(data && data.display_name) document.getElementById('input-address').value = data.display_name; }).catch(err => { document.getElementById('input-address').value = "Unable to fetch automatically. Please enter manually."; }); }
             
             document.getElementById('get-gps-btn').addEventListener('click', triggerGPSLocation);
-            
-            // --- [END] MODIFIED ADDRESS & MAP LOGIC ---
-
             document.getElementById('open-address-modal').addEventListener('click', openAddressModal); 
             document.getElementById('close-address-modal').addEventListener('click', closeAddressModal);
-            
-            // Connect Profile Edit Button to Modal
             document.getElementById('profile-edit-btn')?.addEventListener('click', openAddressModal);
 
             document.getElementById('save-address-btn').addEventListener('click', () => { 
-                const n = document.getElementById('input-name').value.trim();
-                const p = document.getElementById('input-phone').value.trim();
-                const a = document.getElementById('input-address').value.trim();
-                const d = document.getElementById('input-dob').value.trim(); 
+                const n = document.getElementById('input-name').value.trim(); const p = document.getElementById('input-phone').value.trim(); const a = document.getElementById('input-address').value.trim(); const d = document.getElementById('input-dob').value.trim(); 
                 if(!p || p.length < 10) { alert("Please enter a valid 10-digit Mobile Number."); return; } 
                 userAddressInfo = { name: n || 'Valued Customer', phone: p, address: a || 'Location saved via map', dob: d }; 
-                
-                // SAVE TO LOCAL STORAGE
                 localStorage.setItem('iccha_user_info', JSON.stringify(userAddressInfo)); 
-                
-                document.getElementById('disp-name').textContent = userAddressInfo.name; 
-                document.getElementById('disp-phone').textContent = "+91 " + userAddressInfo.phone; 
-                document.getElementById('disp-address').textContent = userAddressInfo.address; 
-                
-                const profilePhoneEl = document.getElementById('profile-display-phone');
-                if(profilePhoneEl) profilePhoneEl.innerHTML = `<span class="material-symbols-outlined text-[14px] text-luxury-gold">call</span> +91 ${userAddressInfo.phone}`; 
-                
-                const profileNameEl = document.getElementById('profile-name-display');
-                if(profileNameEl) profileNameEl.textContent = userAddressInfo.name;
-                
+                document.getElementById('disp-name').textContent = userAddressInfo.name; document.getElementById('disp-phone').textContent = "+91 " + userAddressInfo.phone; document.getElementById('disp-address').textContent = userAddressInfo.address; 
+                const profilePhoneEl = document.getElementById('profile-display-phone'); if(profilePhoneEl) profilePhoneEl.innerHTML = `<span class="material-symbols-outlined text-[14px] text-luxury-gold">call</span> +91 ${userAddressInfo.phone}`; 
+                const profileNameEl = document.getElementById('profile-name-display'); if(profileNameEl) profileNameEl.textContent = userAddressInfo.name;
                 closeAddressModal(); 
             });
 
-            // RAZORPAY PLACE ORDER LOGIC
             document.getElementById('place-order-btn').addEventListener('click', async () => {
                 if(Object.keys(globalCart).length === 0) { alert("Your cart is empty!"); return; } 
                 if(!userAddressInfo.phone) { alert("Please set your address first."); openAddressModal(); return; }
-                
-                const btn = document.getElementById('place-order-btn'); 
-                const originalBtnHtml = btn.innerHTML;
+                const btn = document.getElementById('place-order-btn'); const originalBtnHtml = btn.innerHTML;
                 btn.innerHTML = '<span class="text-white font-bold text-lg uppercase font-body">Processing...</span>';
-                
-                let totalText = document.getElementById('checkout-total').textContent;
-                let finalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
-                
-                if (!finalAmount || finalAmount <= 0) {
-                    alert("Invalid Amount");
-                    btn.innerHTML = originalBtnHtml;
-                    return;
-                }
+                let totalText = document.getElementById('checkout-total').textContent; let finalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
+                if (!finalAmount || finalAmount <= 0) { alert("Invalid Amount"); btn.innerHTML = originalBtnHtml; return; }
 
                 try {
-                    const response = await fetch('https://iccha.onrender.com/create-order', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ amount: finalAmount })
-                    });
-                    
+                    const response = await fetch('https://iccha.onrender.com/create-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: finalAmount }) });
                     if (!response.ok) throw new Error("Server error");
                     const order = await response.json();
                     
                     const options = {
-                        "key": "rzp_live_SLt76BnauOx2Cb",
-                        "amount": order.amount,
-                        "currency": "INR",
-                        "name": "Iccha",
-                        "description": "Luxury Redefined Purchase",
-                        "order_id": order.id,
+                        "key": "rzp_live_SLt76BnauOx2Cb", "amount": order.amount, "currency": "INR", "name": "Iccha", "description": "Luxury Redefined Purchase", "order_id": order.id,
                         "handler": function (response) {
                             btn.innerHTML = '<span class="text-white font-bold text-lg uppercase font-body">Success!</span><span class="material-symbols-outlined text-white">check_circle</span>';
-                            database.ref('orders').push({ 
-                                customerInfo: userAddressInfo, 
-                                items: globalCart, 
-                                totalAmount: totalText, 
-                                paymentId: response.razorpay_payment_id, 
-                                paymentMethod: selectedPaymentMethod, 
-                                timestamp: firebase.database.ServerValue.TIMESTAMP, 
-                                status: 'Paid & Pending' 
-                            }).then(() => { 
-                                setTimeout(() => { 
-                                    alert("Order Placed Successfully!"); 
-                                    globalCart = {}; 
-                                    renderCart(); 
-                                    transitionTo(shopPage); 
-                                    btn.innerHTML = originalBtnHtml; 
-                                }, 1500); 
-                            }).catch(err => { 
-                                alert("Error saving order. Payment was successful."); 
-                                btn.innerHTML = originalBtnHtml; 
-                            });
+                            database.ref('orders').push({ customerInfo: userAddressInfo, items: globalCart, totalAmount: totalText, paymentId: response.razorpay_payment_id, paymentMethod: selectedPaymentMethod, timestamp: firebase.database.ServerValue.TIMESTAMP, status: 'Paid & Pending' }).then(() => { setTimeout(() => { alert("Order Placed Successfully!"); globalCart = {}; renderCart(); transitionTo(shopPage); btn.innerHTML = originalBtnHtml; }, 1500); }).catch(err => { alert("Error saving order. Payment was successful."); btn.innerHTML = originalBtnHtml; });
                         },
-                        "prefill": {
-                            "name": userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : '',
-                            "contact": userAddressInfo.phone
-                        },
+                        "prefill": { "name": userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : '', "contact": userAddressInfo.phone },
                         "theme": { "color": "#D4AF37" }
                     };
-                    
                     const rzp1 = new Razorpay(options);
-                    rzp1.on('payment.failed', function (response){
-                        alert("Payment Failed. Reason: " + response.error.description);
-                        btn.innerHTML = originalBtnHtml;
-                    });
+                    rzp1.on('payment.failed', function (response){ alert("Payment Failed. Reason: " + response.error.description); btn.innerHTML = originalBtnHtml; });
                     rzp1.open();
-                } catch (error) {
-                    console.error("Payment Error:", error);
-                    alert("Something went wrong initializing payment. Check server connection.");
-                    btn.innerHTML = originalBtnHtml;
-                }
+                } catch (error) { console.error("Payment Error:", error); alert("Something went wrong initializing payment. Check server connection."); btn.innerHTML = originalBtnHtml; }
             });
 
             document.getElementById('buy-now-btn').addEventListener('click', () => { globalCart = {}; addToCartItem(currentProduct); transitionTo(checkoutPage); if(!userAddressInfo.phone) setTimeout(openAddressModal, 800); });
             document.getElementById('add-to-cart-btn').addEventListener('click', () => { addToCartItem(currentProduct); transitionTo(cartPage); });
             
-            // --- OFFERS PAGE LOGIC ---
             function initCountdown(elementId, endTimeStr) {
-                const timerEl = document.getElementById(elementId);
-                if (!timerEl || !endTimeStr) return;
-                const endTime = new Date(endTimeStr).getTime();
-                let interval;
-                
+                const timerEl = document.getElementById(elementId); if (!timerEl || !endTimeStr) return;
+                const endTime = new Date(endTimeStr).getTime(); let interval;
                 const updateTimer = () => {
                     const now = new Date().getTime(); const distance = endTime - now;
                     if (distance < 0) { if (interval) clearInterval(interval); timerEl.innerHTML = "DEAL EXPIRED"; return; }
                     const days = Math.floor(distance / (1000 * 60 * 60 * 24)); const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)); const seconds = Math.floor((distance % (1000 * 60)) / 1000);
                     timerEl.innerHTML = `${days > 0 ? days + 'd ' : ''}${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
                 };
-                
-                updateTimer(); // Call immediately so it doesn't wait 1s showing --:--:--
-                interval = setInterval(updateTimer, 1000);
-                activeCountdownIntervals.push(interval);
+                updateTimer(); interval = setInterval(updateTimer, 1000); activeCountdownIntervals.push(interval);
             }
             
             function renderOffersPage(data) {
-                const wrapper = document.getElementById('offers-video-wrapper');
-                const stickerEl = document.getElementById('offer-character-sticker');
-                const bannerEl = document.getElementById('offer-promo-banner');
-                const gridEl = document.getElementById('offers-product-grid');
-                
+                const wrapper = document.getElementById('offers-video-wrapper'); const stickerEl = document.getElementById('offer-character-sticker'); const bannerEl = document.getElementById('offer-promo-banner'); const gridEl = document.getElementById('offers-product-grid');
                 if (data) {
                     if (data.videoUrls && wrapper) {
-                        const videoUrls = Array.isArray(data.videoUrls) ? data.videoUrls : Object.values(data.videoUrls);
-                        const isMultiple = videoUrls.length > 1;
+                        const videoUrls = Array.isArray(data.videoUrls) ? data.videoUrls : Object.values(data.videoUrls); const isMultiple = videoUrls.length > 1;
                         wrapper.innerHTML = videoUrls.map(url => `<div class="swiper-slide w-full h-full bg-black"><video src="${url}" muted playsinline ${isMultiple ? '' : 'loop'} class="w-full h-full object-cover offers-hero-video"></video></div>`).join('');
                         if (offersVideoSwiper) offersVideoSwiper.destroy(true, true);
                         offersVideoSwiper = new Swiper('.offers-video-swiper', { loop: isMultiple, pagination: { el: '.offers-video-swiper .swiper-pagination', clickable: true }, on: { init: function () { playCurrentOfferVideo(this); }, slideChangeTransitionEnd: function () { playCurrentOfferVideo(this); } } });
-                        function playCurrentOfferVideo(swiper) {
-                            document.querySelectorAll('.offers-hero-video').forEach(vid => { vid.pause(); vid.currentTime = 0; vid.onended = null; });
-                            const activeSlide = swiper.slides[swiper.activeIndex]; if(!activeSlide) return;
-                            const activeVideo = activeSlide.querySelector('.offers-hero-video');
-                            if (activeVideo) {
-                                activeVideo.play().catch(e=>console.log("Auto-play blocked", e));
-                                if(isMultiple) { activeVideo.onended = () => { swiper.slideNext(); }; }
-                            }
-                        }
+                        function playCurrentOfferVideo(swiper) { document.querySelectorAll('.offers-hero-video').forEach(vid => { vid.pause(); vid.currentTime = 0; vid.onended = null; }); const activeSlide = swiper.slides[swiper.activeIndex]; if(!activeSlide) return; const activeVideo = activeSlide.querySelector('.offers-hero-video'); if (activeVideo) { activeVideo.play().catch(e=>console.log("Auto-play blocked", e)); if(isMultiple) { activeVideo.onended = () => { swiper.slideNext(); }; } } }
                     }
-                    
                     if(stickerEl) stickerEl.src = data.characterStickerUrl || 'https://placehold.co/200x200/000000/000000?text=...';
                     if(bannerEl && data.bannerImageUrl) bannerEl.style.backgroundImage = `url('${data.bannerImageUrl}')`;
                 }
-
                 if (gridEl && globalProductsData) {
                     let offerProducts = [];
-                    
                     if (data && data.productIds) {
                         const selectedIds = Array.isArray(data.productIds) ? data.productIds : Object.values(data.productIds);
-                        offerProducts = Object.entries(globalProductsData).filter(([id, p]) => {
-                            return selectedIds.includes(id) && p.offerPrice && p.offerEndTime && new Date(p.offerEndTime) > new Date();
-                        });
-                    } else {
-                        offerProducts = Object.entries(globalProductsData).filter(([id, p]) => p.offerPrice && p.offerEndTime && new Date(p.offerEndTime) > new Date());
-                    }
-                    
+                        offerProducts = Object.entries(globalProductsData).filter(([id, p]) => { return selectedIds.includes(id) && p.offerPrice && p.offerEndTime && new Date(p.offerEndTime) > new Date(); });
+                    } else { offerProducts = Object.entries(globalProductsData).filter(([id, p]) => p.offerPrice && p.offerEndTime && new Date(p.offerEndTime) > new Date()); }
                     if (offerProducts.length > 0) {
-                        // COMPACT PRODUCT GRID FOR OFFERS PAGE
                         gridEl.innerHTML = offerProducts.map(([id, p]) => {
                             const img = getValidImagesArray(p.images)[0] || '';
-                            return `
-                            <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-gray-100 group cursor-pointer" onclick="window.directToProduct('${id}')">
-                                <div class="relative aspect-square w-full bg-gray-50 overflow-hidden">
-                                    <img src="${img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"/>
-                                </div>
-                                <div class="p-2.5 flex-1 flex flex-col justify-between">
-                                    <h4 class="text-[11px] font-bold luxury-text line-clamp-2 leading-tight">${p.name}</h4>
-                                    <div class="mt-1.5 space-y-0 text-left">
-                                        <p class="text-[9px] text-gray-400">MRP: <span class="line-through">₹${p.realPrice.toLocaleString()}</span></p>
-                                        <p class="text-[13px] font-bold text-deep-red">₹${p.offerPrice.toLocaleString()}</p>
-                                    </div>
-                                    <div class="mt-2 bg-iccha-primary text-white text-center p-1.5 rounded-md shadow-inner">
-                                        <div class="text-[8px] uppercase tracking-widest font-semibold opacity-90">Ends In</div>
-                                        <div id="timer-${id}" class="text-xs font-bold tracking-widest tabular-nums mt-0.5">--:--:--</div>
-                                    </div>
-                                </div>
-                            </div>`;
+                            return `<div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-gray-100 group cursor-pointer" onclick="window.directToProduct('${id}')"><div class="relative aspect-square w-full bg-gray-50 overflow-hidden"><img src="${img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"/></div><div class="p-2.5 flex-1 flex flex-col justify-between"><h4 class="text-[11px] font-bold luxury-text line-clamp-2 leading-tight">${p.name}</h4><div class="mt-1.5 space-y-0 text-left"><p class="text-[9px] text-gray-400">MRP: <span class="line-through">₹${p.realPrice.toLocaleString()}</span></p><p class="text-[13px] font-bold text-deep-red">₹${p.offerPrice.toLocaleString()}</p></div><div class="mt-2 bg-iccha-primary text-white text-center p-1.5 rounded-md shadow-inner"><div class="text-[8px] uppercase tracking-widest font-semibold opacity-90">Ends In</div><div id="timer-${id}" class="text-xs font-bold tracking-widest tabular-nums mt-0.5">--:--:--</div></div></div></div>`;
                         }).join('');
-                        
                         offerProducts.forEach(([id, p]) => { initCountdown(`timer-${id}`, p.offerEndTime); });
-                    } else {
-                        gridEl.innerHTML = `<p class="col-span-2 text-center text-gray-500 py-10">No special deals right now. Check back soon!</p>`;
-                    }
+                    } else { gridEl.innerHTML = `<p class="col-span-2 text-center text-gray-500 py-10">No special deals right now. Check back soon!</p>`; }
                 }
             }
 
@@ -2033,16 +1791,8 @@
             function renderWishlist(data) {
                 const has = data && Object.keys(data).length > 0;
                 wishlistGrid.classList.toggle('hidden', !has); wishlistEmptyState.classList.toggle('hidden', has); wishlistEmptyState.classList.toggle('flex', !has);
-                
                 const wishVid = document.getElementById('empty-wishlist-video');
-                if (wishVid) {
-                    if (!has && document.querySelector('.page-container:not(.hidden)')?.id === 'wishlist-page') {
-                        wishVid.play().catch(e=>console.log("Video play blocked"));
-                    } else {
-                        wishVid.pause();
-                    }
-                }
-
+                if (wishVid) { if (!has && document.querySelector('.page-container:not(.hidden)')?.id === 'wishlist-page') { wishVid.play().catch(e=>console.log("Video play blocked")); } else { wishVid.pause(); } }
                 if (has) wishlistGrid.innerHTML = Object.entries(data).map(([id, item]) => `<div class="flex flex-col group font-body"><div class="relative aspect-square w-full rounded-[20px] overflow-hidden bg-white border border-gray-200 shadow-sm"><img class="w-full h-full object-cover p-2 group-hover:scale-110 transition-transform duration-300" src="${item.image}" onerror="this.src='https://placehold.co/200x200/ffffff/D4AF37?text=NA'"/><button data-id="${id}" class="remove-wishlist-item absolute top-2 right-2 bg-white/80 backdrop-blur-sm border border-gray-200 size-8 rounded-full flex items-center justify-center text-gray-700 hover:bg-red-50 hover:text-red-500 transition shadow-sm"><span class="material-symbols-outlined text-xl">close</span></button></div><div class="mt-2 px-1"><h4 class="text-sm text-gray-800 line-clamp-1 font-bold uppercase">${item.name}</h4><p class="text-base text-gold font-bold">${item.price}</p></div></div>`).join('');
             }
 
@@ -2051,14 +1801,7 @@
             
             mainOfferRef.on('value', s => {
                 const offerData = s.val();
-                if(Object.keys(globalProductsData).length > 0) {
-                     renderOffersPage(offerData);
-                } else {
-                    productsRef.once('value').then(pSnap => {
-                        globalProductsData = pSnap.val() || {};
-                        renderOffersPage(offerData);
-                    });
-                }
+                if(Object.keys(globalProductsData).length > 0) { renderOffersPage(offerData); } else { productsRef.once('value').then(pSnap => { globalProductsData = pSnap.val() || {}; renderOffersPage(offerData); }); }
             });
             
             wishlistRef.on('value', s => { currentWishlist = s.val() || {}; renderWishlist(currentWishlist); const id = addToWishlistBtn.dataset.productId; if (id) updateWishlistButtonState(id); });
@@ -2074,128 +1817,59 @@
             document.querySelectorAll('.js-categories-nav-btn').forEach(b => b.addEventListener('click', e => { e.preventDefault(); openCategoryLayout(); }));
             document.querySelectorAll('.js-wishlist-nav-btn').forEach(b => b.addEventListener('click', e => { e.preventDefault(); transitionTo(wishlistPage); }));
             document.querySelectorAll('.js-offers-nav-btn').forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); transitionTo(offersPage); }));
-            document.querySelectorAll('.js-profile-nav-btn').forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); transitionTo(profilePage); }));
             
+            // NEW NAV BEHAVIOR
+            document.querySelectorAll('.js-profile-nav-btn').forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); transitionTo(profilePage); }));
+            document.querySelectorAll('.js-stores-nav-btn').forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); transitionTo(storesListPage); }));
+            
+            if(backFromProfileBtn) backFromProfileBtn.addEventListener('click', () => transitionTo(lastPage || shopPage));
+            if(backFromSingleStoreBtn) backFromSingleStoreBtn.addEventListener('click', () => transitionTo(storesListPage));
+
             if(featuredProductsGrid) featuredProductsGrid.addEventListener('click', e => { const c = e.target.closest('.product-card-link'); if(c) populateProductPage(c.dataset.productId); });
             if(productPage) productPage.addEventListener('click', e => { const t = e.target.closest('.product-thumbnail'); if(t) { document.getElementById('product-image-main').src = t.dataset.imgSrc; document.querySelectorAll('.product-thumbnail').forEach(th => th.classList.replace('border-gold', 'border-gray-200') && th.classList.replace('opacity-100', 'opacity-70')); t.classList.replace('border-gray-200', 'border-gold'); t.classList.replace('opacity-70', 'opacity-100'); } });
             if(wishlistGrid) wishlistGrid.addEventListener('click', e => { const b = e.target.closest('.remove-wishlist-item'); if(b && b.dataset.id) wishlistRef.child(b.dataset.id).remove(); });
             if(addToWishlistBtn) addToWishlistBtn.addEventListener('click', toggleWishlistItem);
             if(viewAllCategoriesBtn) viewAllCategoriesBtn.addEventListener('click', (e) => { e.preventDefault(); openCategoryLayout(); });
             
-            // Track Order Modal Setup
             let trackMap = null;
             function openTrackModal() {
                 const modal = document.getElementById('track-order-modal');
                 modal.classList.remove('hidden'); modal.classList.add('flex');
                 setTimeout(() => modal.classList.remove('opacity-0'), 10);
-                
                 if (!trackMap) {
                     trackMap = L.map('track-map-container').setView([28.7041, 77.1025], 5);
                     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(trackMap);
-                    
-                    const pickup = [28.7041, 77.1025]; // Dummy Pickup
-                    let drop = [19.0760, 72.8777]; // Dummy Drop
-                    
-                    // If user set GPS, use it
-                    if (mapMarker) {
-                        drop = [mapMarker.getLatLng().lat, mapMarker.getLatLng().lng];
-                    }
-
-                    // Custom Red Dot Icon for pickup
-                    const redIcon = L.divIcon({
-                        className: 'custom-div-icon',
-                        html: "<div style='background-color:#ef4444; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);'></div>",
-                        iconSize: [16, 16],
-                        iconAnchor: [8, 8]
-                    });
-                    
-                    L.marker(pickup, {icon: redIcon}).addTo(trackMap).bindPopup("Pickup Location");
-                    L.marker(drop).addTo(trackMap).bindPopup("Delivery Location");
-                    
-                    L.polyline([pickup, drop], {color: '#10b981', weight: 4, dashArray: '10, 10'}).addTo(trackMap);
-                    trackMap.fitBounds([pickup, drop], {padding: [50, 50]});
+                    const pickup = [28.7041, 77.1025]; let drop = [19.0760, 72.8777]; 
+                    if (mapMarker) { drop = [mapMarker.getLatLng().lat, mapMarker.getLatLng().lng]; }
+                    const redIcon = L.divIcon({ className: 'custom-div-icon', html: "<div style='background-color:#ef4444; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);'></div>", iconSize: [16, 16], iconAnchor: [8, 8] });
+                    L.marker(pickup, {icon: redIcon}).addTo(trackMap).bindPopup("Pickup Location"); L.marker(drop).addTo(trackMap).bindPopup("Delivery Location");
+                    L.polyline([pickup, drop], {color: '#10b981', weight: 4, dashArray: '10, 10'}).addTo(trackMap); trackMap.fitBounds([pickup, drop], {padding: [50, 50]});
                 }
                 setTimeout(() => { if (trackMap) trackMap.invalidateSize(); }, 300);
             }
             
             document.getElementById('track-order-btn')?.addEventListener('click', openTrackModal);
-            document.getElementById('close-track-modal')?.addEventListener('click', () => {
-                const modal = document.getElementById('track-order-modal');
-                modal.classList.add('opacity-0');
-                setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
-            });
+            document.getElementById('close-track-modal')?.addEventListener('click', () => { const modal = document.getElementById('track-order-modal'); modal.classList.add('opacity-0'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); });
 
-            // RAZORPAY WALLET LOGIC
             document.getElementById('wallet-btn')?.addEventListener('click', async () => {
-                const amountStr = prompt("Enter amount to add to wallet (in ₹):");
-                if (!amountStr) return;
-                const amount = parseInt(amountStr);
+                const amountStr = prompt("Enter amount to add to wallet (in ₹):"); if (!amountStr) return; const amount = parseInt(amountStr);
                 if (isNaN(amount) || amount <= 0) { alert("Please enter a valid amount."); return; }
-
                 try {
-                    const response = await fetch('https://iccha.onrender.com/create-order', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ amount: amount })
-                    });
+                    const response = await fetch('https://iccha.onrender.com/create-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: amount }) });
                     if (!response.ok) throw new Error("Server error");
                     const order = await response.json();
-
-                    const options = {
-                        "key": "rzp_live_SLt76BnauOx2Cb",
-                        "amount": order.amount,
-                        "currency": "INR",
-                        "name": "Iccha Wallet",
-                        "description": "Add money to wallet",
-                        "order_id": order.id,
-                        "handler": function (response) {
-                            alert("₹" + amount + " added to wallet successfully! (Payment ID: " + response.razorpay_payment_id + ")");
-                        },
-                        "prefill": {
-                            "name": userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : "",
-                            "contact": userAddressInfo.phone
-                        },
-                        "theme": { "color": "#D4AF37" }
-                    };
-                    const rzp1 = new Razorpay(options);
-                    rzp1.on('payment.failed', function (response){
-                        alert("Payment Failed: " + response.error.description);
-                    });
-                    rzp1.open();
-                } catch (err) {
-                    console.error(err);
-                    alert("Could not initiate payment. Check server connection.");
-                }
+                    const options = { "key": "rzp_live_SLt76BnauOx2Cb", "amount": order.amount, "currency": "INR", "name": "Iccha Wallet", "description": "Add money to wallet", "order_id": order.id, "handler": function (response) { alert("₹" + amount + " added to wallet successfully! (Payment ID: " + response.razorpay_payment_id + ")"); }, "prefill": { "name": userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : "", "contact": userAddressInfo.phone }, "theme": { "color": "#D4AF37" } };
+                    const rzp1 = new Razorpay(options); rzp1.on('payment.failed', function (response){ alert("Payment Failed: " + response.error.description); }); rzp1.open();
+                } catch (err) { console.error(err); alert("Could not initiate payment. Check server connection."); }
             });
 
-            // Help Redirect
-            document.getElementById('help-support-btn')?.addEventListener('click', () => {
-                window.location.href = 'help.html';
-            });
+            document.getElementById('help-support-btn')?.addEventListener('click', () => { window.location.href = 'help.html'; });
 
-            // Order History Modal
-            document.getElementById('order-history-btn')?.addEventListener('click', () => {
-                const modal = document.getElementById('order-history-modal');
-                modal.classList.remove('hidden'); modal.classList.add('flex');
-                setTimeout(() => modal.classList.remove('opacity-0'), 10);
-            });
-            document.getElementById('close-history-modal')?.addEventListener('click', () => {
-                const modal = document.getElementById('order-history-modal');
-                modal.classList.add('opacity-0');
-                setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
-            });
+            document.getElementById('order-history-btn')?.addEventListener('click', () => { const modal = document.getElementById('order-history-modal'); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => modal.classList.remove('opacity-0'), 10); });
+            document.getElementById('close-history-modal')?.addEventListener('click', () => { const modal = document.getElementById('order-history-modal'); modal.classList.add('opacity-0'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); });
 
-            // Return/Refund Modal
-            document.getElementById('return-refund-btn')?.addEventListener('click', () => {
-                const modal = document.getElementById('return-refund-modal');
-                modal.classList.remove('hidden'); modal.classList.add('flex');
-                setTimeout(() => modal.classList.remove('opacity-0'), 10);
-            });
-            document.getElementById('close-return-modal')?.addEventListener('click', () => {
-                const modal = document.getElementById('return-refund-modal');
-                modal.classList.add('opacity-0');
-                setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
-            });
+            document.getElementById('return-refund-btn')?.addEventListener('click', () => { const modal = document.getElementById('return-refund-modal'); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => modal.classList.remove('opacity-0'), 10); });
+            document.getElementById('close-return-modal')?.addEventListener('click', () => { const modal = document.getElementById('return-refund-modal'); modal.classList.add('opacity-0'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); });
 
             renderCart();
             renderRecentSearches();
