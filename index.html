@@ -23,6 +23,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Dancing+Script:wght@700&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+
+    <!-- Razorpay Checkout Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     
     <!-- Merged Tailwind Config -->
     <script id="tailwind-config">
@@ -555,10 +558,10 @@
                 </section>
                 <section class="px-4 py-8">
                     <h2 class="text-gray-500 text-sm font-semibold uppercase tracking-widest mb-4">Payment Method</h2>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-gray-50 p-4 rounded-[20px] border border-gray-200 flex flex-col items-center justify-center gap-2 cursor-pointer opacity-60 hover:opacity-100 transition"><span class="material-symbols-outlined text-gray-600">account_balance</span><span class="text-xs font-medium text-gray-600">Net Banking</span></div>
-                        <div class="bg-gray-50 p-4 rounded-[20px] border border-gray-200 flex flex-col items-center justify-center gap-2 cursor-pointer opacity-60 hover:opacity-100 transition"><span class="material-symbols-outlined text-gray-600">credit_card</span><span class="text-xs font-medium text-gray-600">Cards</span></div>
-                        <div class="bg-gray-50 p-4 rounded-[20px] border border-gray-200 flex flex-col items-center justify-center gap-2 cursor-pointer opacity-60 hover:opacity-100 transition col-span-2 sm:col-span-1"><span class="material-symbols-outlined text-gray-600">qr_code_2</span><span class="text-xs font-medium text-gray-600">UPI Pay</span></div>
+                    <div class="grid grid-cols-2 gap-3" id="payment-methods-grid">
+                        <div class="payment-method-btn bg-gray-50 p-4 rounded-[20px] border border-gray-200 flex flex-col items-center justify-center gap-2 cursor-pointer opacity-60 hover:opacity-100 transition" data-method="netbanking"><span class="material-symbols-outlined text-gray-600">account_balance</span><span class="text-xs font-medium text-gray-600">Net Banking</span></div>
+                        <div class="payment-method-btn bg-gray-50 p-4 rounded-[20px] border border-gray-200 flex flex-col items-center justify-center gap-2 cursor-pointer opacity-60 hover:opacity-100 transition" data-method="cards"><span class="material-symbols-outlined text-gray-600">credit_card</span><span class="text-xs font-medium text-gray-600">Cards</span></div>
+                        <div class="payment-method-btn bg-white p-4 rounded-[20px] border-2 border-luxury-gold shadow-sm flex flex-col items-center justify-center gap-2 cursor-pointer opacity-100 transition col-span-2 sm:col-span-1" data-method="upi"><span class="material-symbols-outlined text-luxury-gold">qr_code_2</span><span class="text-xs font-bold text-luxury-gold">UPI Pay</span></div>
                     </div>
                 </section>
                 <section class="px-4 py-4 space-y-3 mb-8">
@@ -956,7 +959,7 @@
                             <div class="size-8 rounded-full bg-luxury-gold/10 flex items-center justify-center text-luxury-gold group-hover:scale-110 transition-transform"><span class="material-symbols-outlined text-lg">account_balance_wallet</span></div>
                             <div>
                                 <p class="text-sm font-bold text-gray-800">My Wallet & Rewards</p>
-                                <p class="text-[10px] text-gray-500">Cashback Balance: <span class="text-luxury-gold font-bold">0 Coins</span> <span class="text-[8px]">(1 Rs = 1 Coin)</span></p>
+                                <p class="text-[10px] text-gray-500">Add Amount & Check Balance</p>
                             </div>
                         </div>
                         <span class="material-symbols-outlined text-gray-300">chevron_right</span>
@@ -1148,19 +1151,57 @@
             let offersVideoSwiper; 
             let activeCountdownIntervals = []; 
             
-            // Global Data State
+            // Global Data State & Persistent Local Storage Data
             let currentProduct = null;
             let globalCart = {}; 
             let globalCategoriesData = {}; 
             let globalProductsData = {};   
             let globalFiltersData = {};
-            let userAddressInfo = { name: '', phone: '', address: '', dob: '' };
+            
+            // FETCHING STORED DATA INSTEAD OF EMPTY VARIABLES
+            let userAddressInfo = JSON.parse(localStorage.getItem('iccha_user_info')) || { name: '', phone: '', address: '', dob: '' };
+            
             let leafletMap = null;
             let mapMarker = null;
             
             let currentShopCategory = 'all';
             let activeFilterSelections = {}; // Store selected dynamic filters: { "Color": ["Red", "Blue"] }
             let currentFilterTab = null;
+
+            // Payment Method Selection Logic
+            let selectedPaymentMethod = 'upi';
+            document.querySelectorAll('.payment-method-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.payment-method-btn').forEach(b => {
+                        b.classList.remove('border-2', 'border-luxury-gold', 'shadow-sm', 'bg-white', 'opacity-100');
+                        b.classList.add('border-gray-200', 'bg-gray-50', 'opacity-60');
+                        b.querySelectorAll('span')[0].classList.replace('text-luxury-gold', 'text-gray-600');
+                        b.querySelectorAll('span')[1].classList.replace('text-luxury-gold', 'text-gray-600');
+                        b.querySelectorAll('span')[1].classList.replace('font-bold', 'font-medium');
+                    });
+                    const target = e.currentTarget;
+                    selectedPaymentMethod = target.dataset.method;
+                    target.classList.remove('border-gray-200', 'bg-gray-50', 'opacity-60');
+                    target.classList.add('border-2', 'border-luxury-gold', 'shadow-sm', 'bg-white', 'opacity-100');
+                    target.querySelectorAll('span')[0].classList.replace('text-gray-600', 'text-luxury-gold');
+                    target.querySelectorAll('span')[1].classList.replace('text-gray-600', 'text-luxury-gold');
+                    target.querySelectorAll('span')[1].classList.replace('font-medium', 'font-bold');
+                });
+            });
+
+            // Updating UI on initial load if data exists
+            if (userAddressInfo && userAddressInfo.phone) {
+                document.getElementById('disp-name').textContent = userAddressInfo.name;
+                document.getElementById('disp-phone').textContent = "+91 " + userAddressInfo.phone;
+                document.getElementById('disp-address').textContent = userAddressInfo.address;
+                const profileDisplayPhone = document.getElementById('profile-display-phone');
+                if (profileDisplayPhone) profileDisplayPhone.textContent = "+91 " + userAddressInfo.phone;
+                
+                document.getElementById('input-name').value = userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : '';
+                document.getElementById('input-phone').value = userAddressInfo.phone;
+                document.getElementById('input-address').value = userAddressInfo.address !== 'Location saved via map' ? userAddressInfo.address : '';
+                document.getElementById('input-dob').value = userAddressInfo.dob || '';
+            }
 
             const productsRef = database.ref('products');
             const categoriesRef = database.ref('categories');
@@ -1787,12 +1828,103 @@
             // Connect Profile Edit Button to Modal
             document.getElementById('profile-edit-btn')?.addEventListener('click', openAddressModal);
 
-            document.getElementById('save-address-btn').addEventListener('click', () => { const n = document.getElementById('input-name').value.trim(), p = document.getElementById('input-phone').value.trim(), a = document.getElementById('input-address').value.trim(), d = document.getElementById('input-dob').value.trim(); if(!p || p.length < 10) { alert("Please enter a valid 10-digit Mobile Number."); return; } userAddressInfo = { name: n || 'Valued Customer', phone: p, address: a || 'Location saved via map', dob: d }; document.getElementById('disp-name').textContent = userAddressInfo.name; document.getElementById('disp-phone').textContent = "+91 " + userAddressInfo.phone; document.getElementById('disp-address').textContent = userAddressInfo.address; document.getElementById('profile-display-phone').textContent = "+91 " + userAddressInfo.phone; closeAddressModal(); });
-            document.getElementById('place-order-btn').addEventListener('click', () => {
-                if(Object.keys(globalCart).length === 0) { alert("Your cart is empty!"); return; } if(!userAddressInfo.phone) { alert("Please set your address first."); openAddressModal(); return; }
-                const btn = document.getElementById('place-order-btn'); btn.innerHTML = '<span class="text-white font-bold text-lg uppercase font-body">Processing...</span>';
-                database.ref('orders').push({ customerInfo: userAddressInfo, items: globalCart, totalAmount: document.getElementById('checkout-total').textContent, timestamp: firebase.database.ServerValue.TIMESTAMP, status: 'Pending' }).then(() => { btn.innerHTML = '<span class="text-white font-bold text-lg uppercase font-body">Success!</span><span class="material-symbols-outlined text-white">check_circle</span>'; setTimeout(() => { alert("Order Placed Successfully!"); globalCart = {}; renderCart(); transitionTo(shopPage); }, 1500); }).catch(err => { alert("Error placing order."); });
+            document.getElementById('save-address-btn').addEventListener('click', () => { 
+                const n = document.getElementById('input-name').value.trim();
+                const p = document.getElementById('input-phone').value.trim();
+                const a = document.getElementById('input-address').value.trim();
+                const d = document.getElementById('input-dob').value.trim(); 
+                if(!p || p.length < 10) { alert("Please enter a valid 10-digit Mobile Number."); return; } 
+                userAddressInfo = { name: n || 'Valued Customer', phone: p, address: a || 'Location saved via map', dob: d }; 
+                
+                // SAVE TO LOCAL STORAGE
+                localStorage.setItem('iccha_user_info', JSON.stringify(userAddressInfo)); 
+                
+                document.getElementById('disp-name').textContent = userAddressInfo.name; 
+                document.getElementById('disp-phone').textContent = "+91 " + userAddressInfo.phone; 
+                document.getElementById('disp-address').textContent = userAddressInfo.address; 
+                const profilePhoneEl = document.getElementById('profile-display-phone');
+                if(profilePhoneEl) profilePhoneEl.textContent = "+91 " + userAddressInfo.phone; 
+                closeAddressModal(); 
             });
+
+            // RAZORPAY PLACE ORDER LOGIC
+            document.getElementById('place-order-btn').addEventListener('click', async () => {
+                if(Object.keys(globalCart).length === 0) { alert("Your cart is empty!"); return; } 
+                if(!userAddressInfo.phone) { alert("Please set your address first."); openAddressModal(); return; }
+                
+                const btn = document.getElementById('place-order-btn'); 
+                const originalBtnHtml = btn.innerHTML;
+                btn.innerHTML = '<span class="text-white font-bold text-lg uppercase font-body">Processing...</span>';
+                
+                let totalText = document.getElementById('checkout-total').textContent;
+                let finalAmount = parseInt(totalText.replace(/[^0-9]/g, ''));
+                
+                if (!finalAmount || finalAmount <= 0) {
+                    alert("Invalid Amount");
+                    btn.innerHTML = originalBtnHtml;
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/create-order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ amount: finalAmount })
+                    });
+                    
+                    if (!response.ok) throw new Error("Server error");
+                    const order = await response.json();
+                    
+                    const options = {
+                        "key": "rzp_live_RJib5lN3jSUela",
+                        "amount": order.amount,
+                        "currency": "INR",
+                        "name": "Iccha",
+                        "description": "Luxury Redefined Purchase",
+                        "order_id": order.id,
+                        "handler": function (response) {
+                            btn.innerHTML = '<span class="text-white font-bold text-lg uppercase font-body">Success!</span><span class="material-symbols-outlined text-white">check_circle</span>';
+                            database.ref('orders').push({ 
+                                customerInfo: userAddressInfo, 
+                                items: globalCart, 
+                                totalAmount: totalText, 
+                                paymentId: response.razorpay_payment_id, 
+                                paymentMethod: selectedPaymentMethod, 
+                                timestamp: firebase.database.ServerValue.TIMESTAMP, 
+                                status: 'Paid & Pending' 
+                            }).then(() => { 
+                                setTimeout(() => { 
+                                    alert("Order Placed Successfully!"); 
+                                    globalCart = {}; 
+                                    renderCart(); 
+                                    transitionTo(shopPage); 
+                                    btn.innerHTML = originalBtnHtml; 
+                                }, 1500); 
+                            }).catch(err => { 
+                                alert("Error saving order. Payment was successful."); 
+                                btn.innerHTML = originalBtnHtml; 
+                            });
+                        },
+                        "prefill": {
+                            "name": userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : '',
+                            "contact": userAddressInfo.phone
+                        },
+                        "theme": { "color": "#D4AF37" }
+                    };
+                    
+                    const rzp1 = new Razorpay(options);
+                    rzp1.on('payment.failed', function (response){
+                        alert("Payment Failed. Reason: " + response.error.description);
+                        btn.innerHTML = originalBtnHtml;
+                    });
+                    rzp1.open();
+                } catch (error) {
+                    console.error("Payment Error:", error);
+                    alert("Something went wrong initializing payment.");
+                    btn.innerHTML = originalBtnHtml;
+                }
+            });
+
             document.getElementById('buy-now-btn').addEventListener('click', () => { globalCart = {}; addToCartItem(currentProduct); transitionTo(checkoutPage); if(!userAddressInfo.phone) setTimeout(openAddressModal, 800); });
             document.getElementById('add-to-cart-btn').addEventListener('click', () => { addToCartItem(currentProduct); transitionTo(cartPage); });
             
@@ -1982,9 +2114,47 @@
                 setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
             });
 
-            // Wallet Redirect
-            document.getElementById('wallet-btn')?.addEventListener('click', () => {
-                window.location.href = 'https://shubhzone.shop';
+            // RAZORPAY WALLET LOGIC
+            document.getElementById('wallet-btn')?.addEventListener('click', async () => {
+                const amountStr = prompt("Enter amount to add to wallet (in ₹):");
+                if (!amountStr) return;
+                const amount = parseInt(amountStr);
+                if (isNaN(amount) || amount <= 0) { alert("Please enter a valid amount."); return; }
+
+                try {
+                    const response = await fetch('/create-order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ amount: amount })
+                    });
+                    if (!response.ok) throw new Error("Server error");
+                    const order = await response.json();
+
+                    const options = {
+                        "key": "rzp_live_RJib5lN3jSUela",
+                        "amount": order.amount,
+                        "currency": "INR",
+                        "name": "Iccha Wallet",
+                        "description": "Add money to wallet",
+                        "order_id": order.id,
+                        "handler": function (response) {
+                            alert("₹" + amount + " added to wallet successfully! (Payment ID: " + response.razorpay_payment_id + ")");
+                        },
+                        "prefill": {
+                            "name": userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : "",
+                            "contact": userAddressInfo.phone
+                        },
+                        "theme": { "color": "#D4AF37" }
+                    };
+                    const rzp1 = new Razorpay(options);
+                    rzp1.on('payment.failed', function (response){
+                        alert("Payment Failed: " + response.error.description);
+                    });
+                    rzp1.open();
+                } catch (err) {
+                    console.error(err);
+                    alert("Could not initiate payment.");
+                }
             });
 
             // Help Redirect
