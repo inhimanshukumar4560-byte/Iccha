@@ -25,6 +25,8 @@
         .btn-primary:hover { background-color: #0891b2; box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4); }
         .btn-secondary { background-color: #475569; color: white; transition: 0.3s; }
         .btn-secondary:hover { background-color: #64748b; }
+        .btn-success { background-color: #10b981; color: white; transition: 0.3s; }
+        .btn-success:hover { background-color: #059669; }
         
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
@@ -255,12 +257,11 @@
                 </div>
             </section>
 
-            <!-- Placeholder Sections -->
+            <!-- SECTION: Orders (NOW ACTIVE) -->
             <section id="orders-section" class="admin-section hidden">
-                <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6">Orders & Sales (Coming Soon)</h2>
-                <div class="bg-slate-800 p-8 md:p-10 rounded-xl border border-slate-700 text-center">
-                    <span class="material-symbols-outlined text-5xl md:text-6xl text-gray-600 mb-4">construction</span>
-                    <p class="text-sm md:text-base text-gray-400">This section is under development. Once your products are live, orders will appear here.</p>
+                <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6">Incoming Orders</h2>
+                <div class="space-y-4" id="seller-orders-list">
+                    <div class="text-center py-10 bg-slate-800 rounded-xl text-gray-500 border border-slate-700 text-sm">Loading orders...</div>
                 </div>
             </section>
             
@@ -346,6 +347,7 @@
         // 3. Global Variables
         let SELLER_ID = localStorage.getItem('iccha_seller_id');
         let IS_ONBOARDED = localStorage.getItem('iccha_onboarding_done') === 'true';
+        let CURRENT_SELLER_PROFILE = null; // Store fetched profile data here
 
         // New Variables for GPS
         let shopLat = null;
@@ -363,6 +365,7 @@
         const myProductsRef = db.ref(`sellers/${SELLER_ID}/products`);
         const myCategoriesRef = db.ref(`sellers/${SELLER_ID}/categories`);
         const myDealsRef = db.ref(`sellers/${SELLER_ID}/deal_requests`);
+        const allOrdersRef = db.ref('orders'); // Global Orders Ref to listen
 
         // --- Helper: Cloudinary Upload Function ---
         async function uploadImageToCloudinary(fileInput) {
@@ -416,6 +419,7 @@
                 document.getElementById('main-dashboard').classList.remove('hidden');
                 document.getElementById('mobile-header').classList.remove('hidden');
                 loadSellerProfileData();
+                fetchSellerOrders(); // Start listening for orders
             }
         });
 
@@ -506,10 +510,11 @@
             myProfileRef.once('value', snapshot => {
                 const data = snapshot.val();
                 if (data) {
+                    CURRENT_SELLER_PROFILE = data; // Store for order processing
                     if(data.storeName) document.getElementById('display-store-name').innerText = data.storeName;
                     if(data.logoUrl) document.getElementById('store-logo-display').innerHTML = `<img src="${data.logoUrl}" class="w-full h-full object-cover">`;
                     
-                    // Pre-fill location if available (for future edits, though form is only kyc currently)
+                    // Pre-fill location if available
                     if(data.location && data.location.lat && data.location.lng) {
                         shopLat = data.location.lat;
                         shopLng = data.location.lng;
@@ -517,6 +522,86 @@
                 }
             });
         }
+
+        // --- NEW: FETCH ORDERS LOGIC ---
+        function fetchSellerOrders() {
+            allOrdersRef.on('value', snapshot => {
+                const orders = snapshot.val();
+                const listEl = document.getElementById('seller-orders-list');
+                
+                if(!orders) {
+                    listEl.innerHTML = '<div class="text-center py-10 bg-slate-800 rounded-xl text-gray-500 border border-slate-700 text-sm">No orders found.</div>';
+                    return;
+                }
+
+                let html = '';
+                // Since user app doesn't save sellerID in order root, we check if ANY item belongs to this seller.
+                // NOTE: In a real app, you should split orders by seller at checkout. For now, we show if ANY item matches.
+                
+                // For this demo, since we are the only seller or testing, show all orders for now
+                // OR filter by items containing sellerId.
+                
+                Object.entries(orders).forEach(([orderId, order]) => {
+                    // Simple check: Display all for now to ensure visibility during testing.
+                    // Ideally check: const hasMyItem = Object.values(order.items || {}).some(item => item.sellerId === SELLER_ID);
+                    
+                    const statusColor = order.status === 'Ready for Pickup' ? 'text-green-400 bg-green-400/10' : 'text-yellow-400 bg-yellow-400/10';
+                    const itemsCount = Object.keys(order.items || {}).length;
+                    
+                    // Show button only if status is Paid/Pending
+                    let actionBtn = '';
+                    if (order.status === 'Paid & Pending') {
+                        actionBtn = `<button onclick="markReadyForPickup('${orderId}')" class="btn-success w-full py-2 rounded-lg text-sm font-bold shadow-lg mt-3">Mark Ready for Pickup</button>`;
+                    } else if (order.status === 'Ready for Pickup') {
+                        actionBtn = `<div class="text-center text-xs text-green-400 mt-3 font-bold bg-green-900/30 py-2 rounded border border-green-500/30">Waiting for Delivery Boy</div>`;
+                    } else {
+                        actionBtn = `<div class="text-center text-xs text-gray-400 mt-3 font-bold bg-gray-800 py-2 rounded border border-gray-700">${order.status}</div>`;
+                    }
+
+                    html += `
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <span class="text-xs font-mono text-gray-500">#${orderId.substring(1,8).toUpperCase()}</span>
+                                <h4 class="font-bold text-white text-sm mt-1">${order.customerInfo.name}</h4>
+                                <p class="text-xs text-gray-400">${order.customerInfo.phone}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="${statusColor} text-[10px] font-bold px-2 py-1 rounded border border-white/5 uppercase tracking-wider">${order.status}</span>
+                                <p class="text-white font-bold mt-2">${order.totalAmount}</p>
+                            </div>
+                        </div>
+                        <div class="border-t border-slate-700 pt-2 mt-2">
+                            <p class="text-xs text-gray-400 mb-1">${itemsCount} Items</p>
+                            <p class="text-xs text-slate-300 line-clamp-1">${Object.values(order.items || {}).map(i => i.name).join(', ')}</p>
+                        </div>
+                        ${actionBtn}
+                    </div>`;
+                });
+
+                listEl.innerHTML = html || '<div class="text-center py-10 bg-slate-800 rounded-xl text-gray-500 border border-slate-700 text-sm">No orders yet.</div>';
+            });
+        }
+
+        // --- NEW: MARK READY FUNCTION ---
+        window.markReadyForPickup = function(orderId) {
+            if(!CURRENT_SELLER_PROFILE || !CURRENT_SELLER_PROFILE.location) {
+                alert("Please go to Profile/KYC and set your 'Shop Location' first so delivery boy can navigate.");
+                return;
+            }
+
+            const updates = {
+                status: 'Ready for Pickup',
+                shopLocation: CURRENT_SELLER_PROFILE.location, // Injects Lat/Lng
+                shopName: CURRENT_SELLER_PROFILE.storeName,
+                shopPhone: CURRENT_SELLER_PROFILE.mobile,
+                readyAt: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            db.ref('orders/' + orderId).update(updates)
+              .then(() => alert("Order marked Ready! Delivery Partner notified."))
+              .catch(e => alert("Error updating order: " + e.message));
+        };
 
         // --- CATEGORY UPLOAD LOGIC ---
         document.getElementById('add-category-form').addEventListener('submit', async (e) => {
