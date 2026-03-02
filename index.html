@@ -1212,7 +1212,9 @@
             let globalFiltersData = {};
             let globalSellersData = {}; // Stores
             
-            let userAddressInfo = JSON.parse(localStorage.getItem('iccha_user_info')) || { name: '', phone: '', address: '', dob: '' };
+            // MODIFIED: Added location: null to initial state
+            let userAddressInfo = JSON.parse(localStorage.getItem('iccha_user_info')) || { name: '', phone: '', address: '', dob: '', location: null };
+            
             let leafletMap = null;
             let mapMarker = null;
             let currentShopCategory = 'all';
@@ -1692,7 +1694,16 @@
                 modal.classList.remove('hidden'); modal.classList.add('flex');
                 setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
                 if(!leafletMap) { leafletMap = L.map('map').setView([20.5937, 78.9629], 5); L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(leafletMap); mapMarker = L.marker([20.5937, 78.9629], {draggable: true}).addTo(leafletMap); mapMarker.on('dragend', function(e) { fetchAddressFromCoords(mapMarker.getLatLng().lat, mapMarker.getLatLng().lng); }); }
-                setTimeout(() => { leafletMap.invalidateSize(); if (!userAddressInfo.address || userAddressInfo.address.trim() === '') { triggerGPSLocation(); } }, 300);
+                // MODIFIED: Center map on saved location if exists
+                setTimeout(() => { 
+                    leafletMap.invalidateSize(); 
+                    if (userAddressInfo.location && userAddressInfo.location.lat) {
+                        leafletMap.setView([userAddressInfo.location.lat, userAddressInfo.location.lng], 16);
+                        if(mapMarker) mapMarker.setLatLng([userAddressInfo.location.lat, userAddressInfo.location.lng]);
+                    } else if (!userAddressInfo.address || userAddressInfo.address.trim() === '') { 
+                        triggerGPSLocation(); 
+                    } 
+                }, 300);
             }
 
             function closeAddressModal() { const modal = document.getElementById('address-modal'); modal.classList.add('opacity-0'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); }
@@ -1706,7 +1717,15 @@
             document.getElementById('save-address-btn').addEventListener('click', () => { 
                 const n = document.getElementById('input-name').value.trim(); const p = document.getElementById('input-phone').value.trim(); const a = document.getElementById('input-address').value.trim(); const d = document.getElementById('input-dob').value.trim(); 
                 if(!p || p.length < 10) { alert("Please enter a valid 10-digit Mobile Number."); return; } 
-                userAddressInfo = { name: n || 'Valued Customer', phone: p, address: a || 'Location saved via map', dob: d }; 
+                
+                // MODIFIED: Save actual coordinates
+                let loc = null;
+                if(mapMarker) {
+                    const ll = mapMarker.getLatLng();
+                    loc = { lat: ll.lat, lng: ll.lng };
+                }
+
+                userAddressInfo = { name: n || 'Valued Customer', phone: p, address: a || 'Location saved via map', dob: d, location: loc }; 
                 localStorage.setItem('iccha_user_info', JSON.stringify(userAddressInfo)); 
                 document.getElementById('disp-name').textContent = userAddressInfo.name; document.getElementById('disp-phone').textContent = "+91 " + userAddressInfo.phone; document.getElementById('disp-address').textContent = userAddressInfo.address; 
                 const profilePhoneEl = document.getElementById('profile-display-phone'); if(profilePhoneEl) profilePhoneEl.innerHTML = `<span class="material-symbols-outlined text-[14px] text-luxury-gold">call</span> +91 ${userAddressInfo.phone}`; 
@@ -1731,6 +1750,7 @@
                         "key": "rzp_live_SLt76BnauOx2Cb", "amount": order.amount, "currency": "INR", "name": "Iccha", "description": "Luxury Redefined Purchase", "order_id": order.id,
                         "handler": function (response) {
                             btn.innerHTML = '<span class="text-white font-bold text-lg uppercase font-body">Success!</span><span class="material-symbols-outlined text-white">check_circle</span>';
+                            // Note: customerInfo already contains the location object now
                             database.ref('orders').push({ customerInfo: userAddressInfo, items: globalCart, totalAmount: totalText, paymentId: response.razorpay_payment_id, paymentMethod: selectedPaymentMethod, timestamp: firebase.database.ServerValue.TIMESTAMP, status: 'Paid & Pending' }).then(() => { setTimeout(() => { alert("Order Placed Successfully!"); globalCart = {}; renderCart(); transitionTo(shopPage); btn.innerHTML = originalBtnHtml; }, 1500); }).catch(err => { alert("Error saving order. Payment was successful."); btn.innerHTML = originalBtnHtml; });
                         },
                         "prefill": { "name": userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : '', "contact": userAddressInfo.phone },
