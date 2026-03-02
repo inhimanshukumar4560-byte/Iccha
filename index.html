@@ -17,15 +17,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
-    <!-- Fonts -->
+    <!-- Fonts (Poppins & Playfair Display for Luxury Feel) -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Dancing+Script:wght@700&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
-    <!-- NEW FONT FOR OFFERS DIALOGUE -->
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-
 
     <!-- Razorpay Checkout Script -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -71,7 +68,6 @@
                         "iccha-display": ["Playfair Display", "serif"],
                         "body": ["Poppins", "sans-serif"],
                         "script": ["Dancing Script", "cursive"],
-                        "handwritten": ["Pacifico", "cursive"], // NEW FONT
                     },
                     borderRadius: {
                         "DEFAULT": "0.25rem",
@@ -93,7 +89,6 @@
                         'shimmer': 'shimmer 2.5s infinite linear',
                         'slide-up': 'slideUp 0.8s ease-out forwards',
                         'slide-down': 'slideDown 0.5s ease-out forwards',
-                        'typing': 'typing 2s steps(40, end), blink-caret .75s step-end infinite', 
                     },
                     keyframes: {
                         float: {
@@ -115,14 +110,6 @@
                         slideDown: {
                             '0%': { transform: 'translateY(-50px)', opacity: '0' },
                             '100%': { transform: 'translateY(0)', opacity: '1' },
-                        },
-                        typing: {
-                          'from': { width: '0' },
-                          'to': { width: '100%' }
-                        },
-                        'blink-caret': {
-                          'from, to': { borderColor: 'transparent' },
-                          '50%': { borderColor: 'white' }
                         }
                     }
                 },
@@ -236,62 +223,6 @@
         
         /* Checkbox styling for Filter Modal */
         .filter-checkbox { accent-color: #D4AF37; width: 1.1rem; height: 1.1rem; border-radius: 4px; border: 1px solid #d1d5db; }
-    
-        /* NEW: Styles for the Single Store Page Header */
-        .glassy-store-header {
-            position: relative;
-            width: 100%;
-            height: 120px; 
-            overflow: hidden;
-            background-color: #f0f0f0;
-        }
-        .glassy-store-header-bg {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0; left: 0;
-            z-index: 1;
-        }
-        .glassy-store-header-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            gap: 12px;
-        }
-
-        /* NEW: Styles for Offer Page Animation */
-        #offer-promo-banner-new {
-            position: relative;
-            overflow: hidden;
-        }
-        #offer-sticker-new {
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            height: 120%;
-            width: auto;
-            transform: translateX(-20%); /* Start off-screen */
-            transition: transform 1s ease-in-out;
-            z-index: 20;
-        }
-        #offer-dialogue-container-new {
-            position: relative;
-            z-index: 10;
-        }
-        #offer-dialogue-text-new {
-            overflow: hidden;
-            white-space: nowrap;
-            margin: 0 auto;
-            border-right: .15em solid white; /* The typewriter cursor */
-            animation: typing 2s steps(40, end), blink-caret .75s step-end infinite;
-        }
     </style>
 </head>
 
@@ -423,6 +354,7 @@
     <div id="shop-page" class="page-container hidden relative h-auto min-h-screen w-full flex-col bg-shop-dark overflow-x-hidden opacity-0">
         <header class="sticky top-0 z-50 px-4 pt-6 pb-4 bg-white/95 border-b border-gray-100 backdrop-blur-md shadow-sm">
             <div class="flex items-center justify-between gap-4">
+                <!-- UPDATED: Replaced 3-line menu with Profile Picture -->
                 <button class="js-profile-nav-btn w-10 h-10 rounded-full border-2 border-luxury-gold overflow-hidden focus:outline-none hover:scale-105 transition-transform shadow-sm shrink-0">
                     <img src="https://placehold.co/100x100/f1f5f9/D4AF37?text=Me" class="w-full h-full object-cover" id="header-profile-img" alt="Profile">
                 </button>
@@ -494,6 +426,7 @@
             <a href="#" class="js-categories-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">category</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Categories</span></a>
             <a href="#" class="js-offers-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">local_offer</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Offers</span></a>
             <a href="#" class="js-wishlist-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">favorite</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Wishlist</span></a>
+            <!-- UPDATED: Profile replaced by Store Nav Button -->
             <a href="#" class="js-stores-nav-btn flex flex-col items-center gap-1 group transition hover:scale-105"><span class="material-symbols-outlined text-gray-400 text-2xl group-hover:text-gray-900">storefront</span><span class="text-[9px] uppercase text-gray-400 group-hover:text-gray-900">Stores</span></a>
         </nav>
         <div class="fixed top-0 right-0 w-64 h-64 bg-luxury-gold/5 rounded-full blur-[100px] pointer-events-none"></div>
@@ -516,8 +449,9 @@
         </nav>
         <main class="pb-32 selection:bg-gold/30">
             <section class="relative bg-gray-50">
-                <div id="pdp-main-media-container" class="w-full h-80 sm:h-96 overflow-hidden bg-white relative flex items-center justify-center border-b border-gray-200">
+                <div class="w-full h-80 sm:h-96 overflow-hidden bg-white relative flex items-center justify-center border-b border-gray-200">
                     <div id="pdp-limited-badge" class="absolute top-4 left-4 z-10 hidden bg-gradient-to-r from-red-500 to-red-700 text-white px-3 py-1 rounded text-xs font-bold tracking-wider uppercase shadow-md font-body">Limited Edition</div>
+                    <img id="product-image-main" class="w-full h-full object-cover transition-opacity duration-300 drop-shadow-lg" src="https://placehold.co/600x600/ffffff/D4AF37?text=Loading..." alt="Product Image"/>
                 </div>
                 <div id="product-thumbnails" class="flex gap-3 px-4 py-4 overflow-x-auto no-scrollbar"></div>
             </section>
@@ -752,18 +686,13 @@
         </header>
 
         <main class="flex-1 overflow-y-auto no-scrollbar pb-32">
-            <!-- NEW: Updated Offers Promo Banner Layout -->
             <section class="px-3 pt-4 animate-slide-up" style="animation-delay: 0.1s;">
-                <div id="offer-promo-banner-new" class="relative w-full h-36 sm:h-48 rounded-2xl shadow-lg overflow-hidden bg-cover bg-center animate-pulse-glow flex items-center justify-center p-3 text-center">
-                    <img id="offer-bg-image-new" src="https://placehold.co/800x200/cccccc/969696?text=+" class="absolute inset-0 w-full h-full object-cover z-0"/>
-                    <div class="absolute inset-0 bg-black/30 z-1"></div>
-                    
-                    <img id="offer-sticker-new" src="https://placehold.co/200x200/000000/000000?text=..." alt="Iccha Offers Character"/>
-                    
-                    <div id="offer-dialogue-container-new" class="relative">
-                        <div id="offer-dialogue-text-wrapper" class="overflow-hidden whitespace-nowrap">
-                            <p id="offer-dialogue-text-new" class="font-handwritten text-3xl sm:text-4xl text-white leading-none drop-shadow-md"></p>
-                        </div>
+                <div id="offer-promo-banner" class="relative w-full h-28 sm:h-36 rounded-2xl shadow-lg overflow-hidden bg-cover bg-center border-[2px] border-luxury-gold/50 flex items-center justify-between p-3 animate-pulse-glow">
+                    <div class="absolute inset-0 bg-black/40 z-0 pointer-events-none"></div>
+                    <img id="offer-character-sticker" src="https://placehold.co/200x200/000000/000000?text=..." class="absolute left-1 bottom-0 h-[120%] sm:h-[130%] w-auto drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)] z-10 pointer-events-none object-contain object-bottom" alt="Iccha Offers Character"/>
+                    <div class="relative z-20 text-white text-right w-full flex flex-col justify-center items-end pr-2">
+                        <p class="font-script text-3xl sm:text-4xl text-gold-light leading-none drop-shadow-md">Surprise!</p>
+                        <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest mt-1.5 drop-shadow-md text-gray-100">Your special discount awaits!</p>
                     </div>
                 </div>
             </section>
@@ -1026,7 +955,7 @@
                 </div>
             </div>
 
-            <!-- Partner Portals -->
+            <!-- NEW: Partner Portals -->
             <div class="bg-white rounded-[20px] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 overflow-hidden">
                 <div class="px-5 py-3 border-b border-gray-50 bg-gray-50/50">
                     <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500 flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-luxury-gold">handshake</span> Partner Portals</h3>
@@ -1092,7 +1021,7 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- PAGE 12: STORES LIST PAGE (APPROVED STORES)-->
+    <!-- NEW PAGE 12: STORES LIST PAGE (APPROVED STORES)-->
     <!-- ============================================== -->
     <div id="stores-list-page" class="page-container hidden relative h-auto min-h-screen w-full flex-col bg-shop-light opacity-0 pb-24 font-body">
         <header class="sticky top-0 z-50 px-4 py-4 bg-white shadow-sm flex items-center justify-center border-b border-gray-100">
@@ -1115,10 +1044,10 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- PAGE 13: SINGLE STORE VIEW PAGE            -->
+    <!-- NEW PAGE 13: SINGLE STORE VIEW PAGE            -->
     <!-- ============================================== -->
     <div id="single-store-page" class="page-container hidden relative h-auto min-h-screen w-full flex-col bg-white opacity-0 font-body">
-        <header class="sticky top-0 z-50 px-4 py-3 bg-white/90 backdrop-blur-sm border-b border-gray-100 flex items-center justify-between shadow-sm">
+        <header class="sticky top-0 z-50 px-4 py-3 bg-white border-b border-gray-100 flex items-center justify-between shadow-sm">
             <button id="back-from-single-store-btn" class="p-2 rounded-full hover:bg-gray-100 transition -ml-2 text-gray-900">
                 <span class="material-symbols-outlined text-2xl">arrow_back</span>
             </button>
@@ -1127,22 +1056,16 @@
         </header>
 
         <main class="flex-1 overflow-y-auto">
-            <div id="single-store-banner-container" class="glassy-store-header">
-                <img id="single-store-banner-img" src="https://placehold.co/600x200/cccccc/969696?text=+" class="glassy-store-header-bg">
-                <div class="glassy-store-header-overlay">
-                    <div class="w-16 h-16 rounded-full border-2 border-white shadow-lg overflow-hidden shrink-0 bg-white">
-                        <img id="single-store-logo-img" src="https://placehold.co/100x100/f1f5f9/D4AF37?text=S" class="w-full h-full object-cover">
-                    </div>
-                    <div>
-                        <h2 id="single-store-banner-name" class="text-white text-xl font-bold luxury-text drop-shadow-lg">Store Name</h2>
-                        <span class="bg-luxury-gold text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-md">Official Partner</span>
-                    </div>
+            <div class="w-full bg-gray-50 border-b border-gray-100 py-3 sticky top-0 z-40">
+                <div id="single-store-categories" class="flex overflow-x-auto hide-scrollbar gap-2 px-4">
+                    <!-- Dynamic categories injected here -->
                 </div>
             </div>
-
-            <!-- NEW: Updated Content Area -->
-            <div id="single-store-content-area" class="p-4 pb-10">
-                <!-- Content will be injected here by JS -->
+            
+            <div class="p-4 pb-10">
+                <div id="single-store-products-grid" class="grid grid-cols-3 gap-2 w-full">
+                    <!-- Dynamic products 1:1 ratio injected here -->
+                </div>
             </div>
         </main>
     </div>
@@ -1237,6 +1160,8 @@
             const searchPage = document.getElementById('search-page');
             const subcategoryPage = document.getElementById('subcategory-page');
             const profilePage = document.getElementById('profile-page'); 
+            
+            // NEW PAGES
             const storesListPage = document.getElementById('stores-list-page');
             const singleStorePage = document.getElementById('single-store-page');
 
@@ -1278,7 +1203,6 @@
             let videoSwiper;
             let offersVideoSwiper; 
             let activeCountdownIntervals = []; 
-            let dialogueAnimationInterval = null; 
             
             // Global Data
             let currentProduct = null;
@@ -1288,6 +1212,7 @@
             let globalFiltersData = {};
             let globalSellersData = {}; // Stores
             
+            // MODIFIED: Added location: null to initial state
             let userAddressInfo = JSON.parse(localStorage.getItem('iccha_user_info')) || { name: '', phone: '', address: '', dob: '', location: null };
             
             let leafletMap = null;
@@ -1320,10 +1245,13 @@
                 document.getElementById('disp-name').textContent = userAddressInfo.name;
                 document.getElementById('disp-phone').textContent = "+91 " + userAddressInfo.phone;
                 document.getElementById('disp-address').textContent = userAddressInfo.address;
+                
                 const profilePhoneEl = document.getElementById('profile-display-phone');
                 if (profilePhoneEl) profilePhoneEl.innerHTML = `<span class="material-symbols-outlined text-[14px] text-luxury-gold">call</span> +91 ${userAddressInfo.phone}`;
+                
                 const profileNameEl = document.getElementById('profile-name-display');
                 if (profileNameEl) profileNameEl.textContent = userAddressInfo.name;
+                
                 document.getElementById('input-name').value = userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : '';
                 document.getElementById('input-phone').value = userAddressInfo.phone;
                 document.getElementById('input-address').value = userAddressInfo.address !== 'Location saved via map' ? userAddressInfo.address : '';
@@ -1332,11 +1260,15 @@
 
             const productsRef = database.ref('products');
             const categoriesRef = database.ref('categories');
+            const bannersRef = database.ref('heroBanners');
             const wishlistRef = database.ref('wishlist');
             const mainOfferRef = database.ref('offers/featured');
             const filtersRef = database.ref('filters');
-            const sellersRef = database.ref('sellers');
+            const sellersRef = database.ref('sellers'); // STORES DB REF
             
+            // ==========================================
+            // FILTER MODAL LOGIC
+            // ==========================================
             if(openFilterBtn) { openFilterBtn.addEventListener('click', () => { filterModal.classList.remove('hidden'); filterModal.classList.add('flex'); setTimeout(() => filterModal.classList.remove('opacity-0'), 10); }); }
             const closeFilterFunction = () => { filterModal.classList.add('opacity-0'); setTimeout(() => { filterModal.classList.add('hidden'); filterModal.classList.remove('flex'); }, 300); };
             if(closeFilterBtn) closeFilterBtn.addEventListener('click', closeFilterFunction);
@@ -1407,30 +1339,16 @@
             };
             
             function managePageSpecificLogic(activePageId) {
-                if (dialogueAnimationInterval) clearInterval(dialogueAnimationInterval);
-                activeCountdownIntervals.forEach(interval => clearInterval(interval));
-                activeCountdownIntervals = [];
-
-                if (activePageId === 'offers-page') {
-                    mainOfferRef.once('value').then(s => {
-                        const offerData = s.val();
-                        renderOffersPage(offerData); 
-                        startDialogueAnimation(offerData?.dialogs || []); 
-                    });
-                }
-                
+                if (activePageId !== 'offers-page') { activeCountdownIntervals.forEach(interval => clearInterval(interval)); activeCountdownIntervals = []; }
                 const wishVid = document.getElementById('empty-wishlist-video');
-                if (wishVid) { 
-                    const hasItems = Object.keys(currentWishlist).length > 0; 
-                    if(activePageId === 'wishlist-page' && !hasItems) { wishVid.currentTime = 0; wishVid.play().catch(e=>console.log("Video play blocked")); } 
-                    else { wishVid.pause(); } 
-                }
+                if (wishVid) { const hasItems = Object.keys(currentWishlist).length > 0; if(activePageId === 'wishlist-page' && !hasItems) { wishVid.currentTime = 0; wishVid.play().catch(e=>console.log("Video play blocked")); } else { wishVid.pause(); } }
             }
 
             function transitionTo(targetPage) {
                 const currentPage = document.querySelector('.page-container:not(.hidden)');
                 if (currentPage === targetPage) return;
                 managePageSpecificLogic(null); 
+                
                 const nonHistoryPages = ['cart-page', 'checkout-page', 'wishlist-page', 'profile-page', 'stores-list-page', 'single-store-page'];
                 if (currentPage && !nonHistoryPages.includes(currentPage.id)) lastPage = currentPage;
                 if (currentPage) currentPage.style.opacity = '0';
@@ -1438,12 +1356,17 @@
                 setTimeout(() => {
                     pageContainers.forEach(p => { p.classList.add('hidden', 'opacity-0'); p.classList.remove('flex'); });
                     targetPage.classList.remove('hidden'); targetPage.classList.add('flex');
+                    
                     const config = pageConfigs[targetPage.id];
                     if (config) { Object.values(pageConfigs).forEach(c => mainBody.classList.remove(...(c.add || []))); mainBody.classList.add(...(config.add || [])); }
+                    
                     void targetPage.offsetWidth; 
                     targetPage.style.opacity = '1';
+                    
                     if(!['all-categories-page', 'search-page', 'subcategory-page', 'stores-list-page', 'single-store-page'].includes(targetPage.id)) window.scrollTo(0, 0);
+                    
                     managePageSpecificLogic(targetPage.id);
+                    if (targetPage.id === 'offers-page') { mainOfferRef.once('value').then(s => renderOffersPage(s.val())); }
                     if (targetPage.id === 'shop-page' && videoSwiper) { setTimeout(() => { const activeSlide = videoSwiper.slides[videoSwiper.activeIndex]; if(activeSlide) { const vid = activeSlide.querySelector('.hero-video'); if(vid) vid.play().catch(e=>console.log("Auto-play blocked on return", e)); } }, 500); }
                     if (targetPage.id === 'offers-page' && offersVideoSwiper) { setTimeout(() => { const activeSlide = offersVideoSwiper.slides[offersVideoSwiper.activeIndex]; if(activeSlide) { const vid = activeSlide.querySelector('.offers-hero-video'); if(vid) vid.play().catch(e=>console.log("Auto-play blocked on return", e)); } }, 500); }
                 }, 500);
@@ -1455,6 +1378,7 @@
                 return Object.values(imagesObj).filter(img => img && typeof img === 'string' && img.trim() !== "");
             }
             
+            // Search Logic
             let recentSearches = JSON.parse(localStorage.getItem('iccha_recent_searches') || '[]');
             function renderRecentSearches() {
                 const container = document.getElementById('recent-searches-container'); if(!container) return;
@@ -1479,6 +1403,7 @@
                 if(results.length > 0) { searchResultsContainer.innerHTML = results.map(([id, p]) => { const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/150x150/ffffff/D4AF37?text=NA'; const discount = Math.round(((p.realPrice - p.nexaraPrice) / p.realPrice) * 100); return `<div class="flex gap-4 p-3 bg-white rounded-[20px] border border-gray-100 shadow-sm cursor-pointer hover:border-luxury-gold transition-colors" onclick="addRecentSearch(document.getElementById('main-search-input').value.trim()); window.directToProduct('${id}')"><div class="size-20 rounded-[15px] overflow-hidden shrink-0 bg-gray-50 border border-gray-200"><img src="${img}" class="w-full h-full object-cover" /></div><div class="flex flex-col justify-center"><h4 class="text-sm font-bold text-gray-900 luxury-text line-clamp-1">${p.name}</h4><div class="flex items-center gap-2 mt-1"><span class="text-luxury-gold font-bold text-sm">₹${p.nexaraPrice.toLocaleString()}</span>${discount > 0 ? `<span class="text-xs text-gray-400 line-through">₹${p.realPrice.toLocaleString()}</span>` : ''}</div><div class="flex items-center gap-1 mt-1 text-luxury-gold"><span class="material-symbols-outlined text-[12px] fill-1">star</span><span class="material-symbols-outlined text-[12px] fill-1">star</span><span class="material-symbols-outlined text-[12px] fill-1">star</span><span class="material-symbols-outlined text-[12px] fill-1">star</span><span class="text-[10px] text-gray-400 font-medium ml-1">Premium</span></div></div></div>`; }).join(''); } else { searchResultsContainer.innerHTML = `<div class="flex flex-col items-center justify-center py-20 text-center"><span class="material-symbols-outlined text-5xl text-gray-300 mb-3">search_off</span><h3 class="luxury-text text-lg font-bold text-gray-800">No matching products</h3><p class="text-xs text-gray-500 mt-1">Try searching for "Shoes", "Bags" or "Mobiles"</p></div>`; }
             }
             
+            // Category Filtering Logic
             window.filterShopByCategory = function(catId) {
                 currentShopCategory = catId; renderCategories(globalCategoriesData); renderProducts(globalProductsData);
                 if(document.querySelector('.page-container:not(.hidden)').id !== 'shop-page') { transitionTo(shopPage); }
@@ -1492,6 +1417,7 @@
                 if (data && categoriesContainer) { categoriesContainer.innerHTML = allHtml + cats.map(([id, c]) => `<div class="flex flex-col items-center flex-shrink-0 cursor-pointer w-[60px] group" onclick="filterShopByCategory('${id}')"><div class="w-14 h-14 rounded-full border ${currentShopCategory === id ? 'border-luxury-gold shadow-md' : 'border-gray-200'} bg-white flex items-center justify-center overflow-hidden shadow-sm transition-all group-hover:border-luxury-gold group-hover:shadow-md p-[2px]"><img class="w-full h-full object-cover rounded-full group-hover:scale-110 transition duration-300" src="${c.imageUrl}" alt="${c.name}" onerror="this.src='https://placehold.co/100x100/ffffff/D4AF37?text=NA'"/></div><p class="text-[9px] uppercase ${currentShopCategory === id ? 'text-luxury-gold' : 'text-gray-700'} font-bold group-hover:text-luxury-gold transition mt-1.5 text-center leading-[1.1] line-clamp-2 font-body">${c.name}</p></div>`).join(''); }
                 const searchQuickCatsContainer = document.getElementById('search-quick-categories');
                 if (data && searchQuickCatsContainer) { const topCats = Object.entries(globalCategoriesData).slice(0, 4); if(topCats.length > 0) { searchQuickCatsContainer.innerHTML = topCats.map(([id, c]) => `<div class="flex flex-col items-center gap-1 cursor-pointer hover:scale-105 transition" onclick="filterShopByCategory('${id}')"><div class="size-12 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center text-luxury-gold shadow-sm overflow-hidden p-[2px]"><img src="${c.imageUrl}" class="w-full h-full object-cover rounded-full" onerror="this.src='https://placehold.co/100x100/ffffff/D4AF37?text=NA'"/></div><span class="text-[10px] font-bold text-gray-600 uppercase tracking-widest truncate w-full text-center">${c.name}</span></div>`).join(''); } }
+                
                 const offersCatsContainer = document.getElementById('offers-categories-container');
                 if (data && offersCatsContainer) { offersCatsContainer.innerHTML = cats.map(([id, c]) => `<div class="flex flex-col items-center flex-shrink-0 cursor-pointer group gap-1.5" onclick="filterShopByCategory('${id}')"><div class="w-14 h-14 rounded-full border-2 border-luxury-gold/20 bg-white flex items-center justify-center overflow-hidden shadow-sm transition-all group-hover:border-luxury-gold p-[2px]"><img class="w-full h-full object-cover rounded-full" src="${c.imageUrl}" alt="${c.name}"/></div><p class="text-[9px] uppercase text-gray-700 font-bold group-hover:text-luxury-gold transition text-center line-clamp-1 w-16">${c.name}</p></div>`).join(''); }
             }
@@ -1533,112 +1459,123 @@
                 });
                 contentArea.innerHTML = html; transitionTo(subcategoryPage);
             };
-            
-            sellersRef.on('value', snap => { globalSellersData = snap.val() || {}; renderStoresList(); });
+
+            // NEW: SELLERS LOGIC FOR STORES TAB
+            sellersRef.on('value', snap => {
+                globalSellersData = snap.val() || {};
+                renderStoresList();
+            });
 
             function renderStoresList() {
                 const container = document.getElementById('stores-list-container');
                 if(!container) return;
+                
                 let html = '';
                 Object.entries(globalSellersData).forEach(([sellerId, seller]) => {
                     if(seller.profile && seller.profile.status === 'approved') {
                         const logo = seller.profile.logoUrl || 'https://placehold.co/600x337/f1f5f9/D4AF37?text=Store';
-                        html += `<div class="bg-white rounded-[20px] shadow-sm border border-gray-100 overflow-hidden cursor-pointer group mb-5 hover:border-luxury-gold transition-colors" onclick="openSingleStore('${sellerId}')"><div class="w-full aspect-[16/9] relative overflow-hidden bg-gray-50"><img src="${logo}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"><div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div><div class="absolute bottom-4 left-4 text-white"><h3 class="text-xl font-bold luxury-text tracking-widest drop-shadow-md">${seller.profile.storeName}</h3><p class="text-[10px] uppercase tracking-widest text-luxury-gold font-bold mt-1 bg-white/20 px-2 py-0.5 rounded backdrop-blur-md inline-block">Official Partner</p></div></div></div>`;
+                        html += `
+                        <div class="bg-white rounded-[20px] shadow-sm border border-gray-100 overflow-hidden cursor-pointer group mb-5 hover:border-luxury-gold transition-colors" onclick="openSingleStore('${sellerId}')">
+                            <div class="w-full aspect-[16/9] relative overflow-hidden bg-gray-50">
+                                <img src="${logo}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div class="absolute bottom-4 left-4 text-white">
+                                    <h3 class="text-xl font-bold luxury-text tracking-widest drop-shadow-md">${seller.profile.storeName}</h3>
+                                    <p class="text-[10px] uppercase tracking-widest text-luxury-gold font-bold mt-1 bg-white/20 px-2 py-0.5 rounded backdrop-blur-md inline-block">Official Partner</p>
+                                </div>
+                            </div>
+                        </div>`;
                     }
                 });
+                
                 container.innerHTML = html || '<div class="text-center py-20 text-gray-400 font-bold uppercase tracking-widest text-xs">No Stores Available</div>';
             }
 
-            // NEW: Updated openSingleStore logic
             window.openSingleStore = function(sellerId) {
                 const seller = globalSellersData[sellerId];
-                if(!seller || !seller.profile) return;
+                if(!seller) return;
                 
-                document.getElementById('single-store-banner-img').src = seller.profile.bannerUrl || 'https://placehold.co/600x200/cccccc/969696?text=+';
-                document.getElementById('single-store-logo-img').src = seller.profile.logoUrl || 'https://placehold.co/100x100/f1f5f9/D4AF37?text=S';
-                document.getElementById('single-store-banner-name').textContent = seller.profile.storeName;
                 document.getElementById('single-store-title').textContent = seller.profile.storeName;
-
-                // Prepare products and categories for this store
-                const storeProducts = Object.entries(globalProductsData).filter(([pid, p]) => p.sellerId === sellerId);
-                const storeCategories = {};
-                storeProducts.forEach(([pid, p]) => {
-                    const mainCat = p.category;
-                    const subCat = p.subcategory || 'General';
-                    if (!storeCategories[mainCat]) {
-                        storeCategories[mainCat] = { subcategories: {}, id: p.categoryId };
-                    }
-                    if (!storeCategories[mainCat].subcategories[subCat]) {
-                        storeCategories[mainCat].subcategories[subCat] = [];
-                    }
-                    storeCategories[mainCat].subcategories[subCat].push([pid, p]);
-                });
-
-                const contentArea = document.getElementById('single-store-content-area');
-                let html = '';
-
-                // Render category circles
-                html += `<div class="flex overflow-x-auto hide-scrollbar gap-4 pb-4 mb-4 border-b border-gray-100">`;
-                for (const catName in storeCategories) {
-                    const catData = globalCategoriesData[storeCategories[catName].id];
-                    if (catData) {
-                        html += `<div class="flex flex-col items-center flex-shrink-0 cursor-pointer group w-[70px]" onclick="document.getElementById('cat-section-${storeCategories[catName].id}').scrollIntoView({behavior: 'smooth'})">
-                            <div class="w-16 h-16 rounded-full border border-gray-200 bg-white flex items-center justify-center overflow-hidden shadow-sm p-1 group-hover:border-luxury-gold"><img class="w-full h-full object-cover rounded-full" src="${catData.imageUrl}" alt="${catName}"></div>
-                            <p class="text-[10px] uppercase text-gray-700 font-bold mt-1.5 text-center leading-tight">${catName}</p>
-                        </div>`;
-                    }
+                
+                const catContainer = document.getElementById('single-store-categories');
+                let catHtml = `<button class="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-luxury-gold text-white shadow-sm" onclick="filterSingleStore('${sellerId}', 'all')">All Products</button>`;
+                
+                if(seller.categories) {
+                    Object.entries(seller.categories).forEach(([catId, cat]) => {
+                        if(cat.status === 'approved') {
+                            catHtml += `<button class="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-white text-gray-600 border border-gray-200 hover:border-luxury-gold transition" onclick="filterSingleStore('${sellerId}', '${cat.name}')">${cat.name}</button>`;
+                        }
+                    });
                 }
-                html += `</div>`;
-
-                // Render products grouped by category and subcategory
-                for (const catName in storeCategories) {
-                    html += `<div id="cat-section-${storeCategories[catName].id}" class="mb-8">`;
-                    for (const subCatName in storeCategories[catName].subcategories) {
-                        const products = storeCategories[catName].subcategories[subCatName];
-                        const displayProds = products.slice(0, 16);
-                        
-                        html += `<div class="flex flex-col mb-6">
-                            <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider border-l-2 border-luxury-gold pl-2">${subCatName}</h3>
-                                ${products.length > 16 ? `<button class="flex items-center gap-1 text-luxury-gold text-[10px] font-bold">View All <span class="material-symbols-outlined text-[12px]">chevron_right</span></button>` : ''}
-                            </div>
-                            <div class="grid grid-cols-4 gap-x-2 gap-y-4 w-full">`;
-                        
-                        displayProds.forEach(([pid, p]) => {
-                            const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/150x150/ffffff/D4AF37?text=NA';
-                            html += `<div class="flex flex-col items-center cursor-pointer group product-card-link" data-product-id="${pid}">
-                                        <div class="w-full aspect-square rounded-[15px] overflow-hidden border border-gray-200 group-hover:border-luxury-gold transition-colors shadow-sm bg-white p-[2px]"><img src="${img}" class="w-full h-full rounded-[12px] object-cover group-hover:scale-110 transition-transform duration-500" /></div>
-                                        <span class="text-[9px] text-gray-700 text-center mt-1.5 font-semibold group-hover:text-black line-clamp-2 leading-tight px-0.5 font-body">${p.name}</span>
-                                    </div>`;
-                        });
-
-                        html += `</div></div>`;
-                    }
-                    html += `</div>`;
-                }
-
-                contentArea.innerHTML = html;
+                catContainer.innerHTML = catHtml;
+                
+                filterSingleStore(sellerId, 'all');
                 transitionTo(singleStorePage);
             };
-            
-            window.directToProduct = function(pid) { populateProductPage(pid); };
-            
-            // Bug Fix: Added event listener to the correct parent for product clicks on the store page
-            document.getElementById('single-store-content-area').addEventListener('click', e => {
-                const card = e.target.closest('.product-card-link');
-                if (card && card.dataset.productId) {
-                    window.directToProduct(card.dataset.productId);
-                }
-            });
 
+            window.filterSingleStore = function(sellerId, categoryName) {
+                const grid = document.getElementById('single-store-products-grid');
+                let storeProducts = Object.entries(globalProductsData).filter(([pid, p]) => p.sellerId === sellerId);
+                
+                if(categoryName !== 'all') {
+                    storeProducts = storeProducts.filter(([pid, p]) => p.category === categoryName);
+                }
+                
+                if(storeProducts.length > 0) {
+                    grid.innerHTML = storeProducts.map(([id, p]) => {
+                        const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/200x200/ffffff/D4AF37?text=NA';
+                        const discount = Math.round(((p.realPrice - p.nexaraPrice) / p.realPrice) * 100); 
+                        return `
+                        <div class="flex flex-col product-card-link cursor-pointer group w-full mb-3" onclick="window.directToProduct('${id}')">
+                            <div class="w-full aspect-square rounded-[15px] overflow-hidden bg-gray-50 border border-gray-100 shadow-sm relative p-1 group-hover:border-luxury-gold transition-colors">
+                                <img src="${img}" class="w-full h-full object-cover rounded-[12px] group-hover:scale-110 transition-transform duration-300">
+                                ${discount > 0 ? `<div class="absolute top-1.5 left-1.5 bg-luxury-gold text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow-sm">${discount}% OFF</div>` : ''}
+                            </div>
+                            <div class="mt-1.5 px-0.5 flex flex-col items-center text-center">
+                                <h4 class="text-[9px] font-bold text-gray-800 line-clamp-1 uppercase tracking-wide leading-tight">${p.name}</h4>
+                                <div class="flex items-center gap-1.5 mt-0.5">
+                                    <span class="text-[10px] font-bold text-luxury-gold">₹${p.nexaraPrice.toLocaleString()}</span>
+                                    ${discount > 0 ? `<span class="text-[8px] text-gray-400 line-through">₹${p.realPrice.toLocaleString()}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                } else {
+                    grid.innerHTML = `<div class="col-span-3 text-center py-16 text-gray-400 text-xs font-bold uppercase tracking-widest">No Products in this Category</div>`;
+                }
+            };
+
+            window.directToProduct = function(pid) { populateProductPage(pid); };
 
             function renderProducts(data) {
                 globalProductsData = data || {}; if (!data) return;
                 if (featuredProductsGrid) {
                     let homeProducts = Object.entries(globalProductsData);
-                    if (currentShopCategory !== 'all') { homeProducts = homeProducts.filter(([id, p]) => p.category === currentShopCategory || p.categoryId === currentShopCategory || (p.category && p.category.toLowerCase() === globalCategoriesData[currentShopCategory]?.name.toLowerCase())); }
-                    if (Object.keys(activeFilterSelections).length > 0) { homeProducts = homeProducts.filter(([id, p]) => { if(!p.dynamicFilters) return false; let passesAll = true; for(const mainKey in activeFilterSelections) { const selectedSubs = activeFilterSelections[mainKey]; if(selectedSubs.length === 0) continue; const productSubs = p.dynamicFilters[mainKey] || []; const hasMatch = selectedSubs.some(sub => productSubs.includes(sub)); if(!hasMatch) { passesAll = false; break; } } return passesAll; }); }
-                    homeProducts.sort((a, b) => { const priceA = (a[1].offerPrice && a[1].offerEndTime && new Date(a[1].offerEndTime) > new Date()) ? a[1].offerPrice : a[1].nexaraPrice; const priceB = (b[1].offerPrice && b[1].offerEndTime && new Date(b[1].offerEndTime) > new Date()) ? b[1].offerPrice : b[1].nexaraPrice; return priceA - priceB; });
+                    
+                    if (currentShopCategory !== 'all') {
+                        homeProducts = homeProducts.filter(([id, p]) => p.category === currentShopCategory || p.categoryId === currentShopCategory || (p.category && p.category.toLowerCase() === globalCategoriesData[currentShopCategory]?.name.toLowerCase()));
+                    }
+
+                    if (Object.keys(activeFilterSelections).length > 0) {
+                        homeProducts = homeProducts.filter(([id, p]) => {
+                            if(!p.dynamicFilters) return false; 
+                            let passesAll = true;
+                            for(const mainKey in activeFilterSelections) {
+                                const selectedSubs = activeFilterSelections[mainKey];
+                                if(selectedSubs.length === 0) continue;
+                                const productSubs = p.dynamicFilters[mainKey] || [];
+                                const hasMatch = selectedSubs.some(sub => productSubs.includes(sub));
+                                if(!hasMatch) { passesAll = false; break; }
+                            }
+                            return passesAll;
+                        });
+                    }
+
+                    homeProducts.sort((a, b) => {
+                        const priceA = (a[1].offerPrice && a[1].offerEndTime && new Date(a[1].offerEndTime) > new Date()) ? a[1].offerPrice : a[1].nexaraPrice;
+                        const priceB = (b[1].offerPrice && b[1].offerEndTime && new Date(b[1].offerEndTime) > new Date()) ? b[1].offerPrice : b[1].nexaraPrice;
+                        return priceA - priceB;
+                    });
 
                     if(homeProducts.length > 0) {
                         featuredProductsGrid.innerHTML = homeProducts.map(([id, p]) => { 
@@ -1646,8 +1583,8 @@
                             const activePrice = isActiveOffer ? p.offerPrice : p.nexaraPrice;
                             const discount = Math.round(((p.realPrice - activePrice) / p.realPrice) * 100); 
                             const imgUrl = getValidImagesArray(p.images)[0] || 'https://placehold.co/400x400/ffffff/D4AF37?text=No+Image'; 
-                            const mediaElement = p.videoUrl ? `<video class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="${p.videoUrl}" autoplay loop muted playsinline></video><div class="absolute bottom-1 right-1 bg-black/50 text-white rounded p-0.5"><span class="material-symbols-outlined text-[14px]">videocam</span></div>` : `<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="${imgUrl}"/>`;
-                            return `<div class="flex flex-col product-card-link cursor-pointer w-full font-body" data-product-id="${id}"><div class="relative aspect-square w-full rounded-[20px] overflow-hidden bg-white border border-gray-200 group shadow-sm">${mediaElement}${discount > 0 ? `<div class="absolute top-1 left-1 sm:top-2 sm:left-2 bg-luxury-gold text-white px-1.5 py-[2px] rounded text-[9px] font-bold shadow-sm">${discount}% OFF</div>` : ''}${p.isLimited ? `<div class="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-1.5 py-[2px] rounded text-[8px] font-bold tracking-widest uppercase shadow-sm">Limited</div>` : ''}</div><div class="mt-2 space-y-0.5 px-0.5"><h4 class="text-[10px] sm:text-[11px] text-gray-800 line-clamp-1 uppercase font-bold tracking-wide leading-tight">${p.name}</h4><div class="flex items-center gap-1.5 flex-wrap"><p class="text-[11px] sm:text-xs text-luxury-gold font-bold">₹${activePrice.toLocaleString()}</p>${discount > 0 ? `<p class="text-[9px] sm:text-[10px] text-gray-400 line-through">₹${p.realPrice.toLocaleString()}</p>` : ''}</div></div></div>`; 
+                            
+                            return `<div class="flex flex-col product-card-link cursor-pointer w-full font-body" data-product-id="${id}"><div class="relative aspect-square w-full rounded-[20px] overflow-hidden bg-white border border-gray-200 group shadow-sm"><img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="${imgUrl}"/>${discount > 0 ? `<div class="absolute top-1 left-1 sm:top-2 sm:left-2 bg-luxury-gold text-white px-1.5 py-[2px] rounded text-[9px] font-bold shadow-sm">${discount}% OFF</div>` : ''}${p.isLimited ? `<div class="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-1.5 py-[2px] rounded text-[8px] font-bold tracking-widest uppercase shadow-sm">Limited</div>` : ''}</div><div class="mt-2 space-y-0.5 px-0.5"><h4 class="text-[10px] sm:text-[11px] text-gray-800 line-clamp-1 uppercase font-bold tracking-wide leading-tight">${p.name}</h4><div class="flex items-center gap-1.5 flex-wrap"><p class="text-[11px] sm:text-xs text-luxury-gold font-bold">₹${activePrice.toLocaleString()}</p>${discount > 0 ? `<p class="text-[9px] sm:text-[10px] text-gray-400 line-through">₹${p.realPrice.toLocaleString()}</p>` : ''}</div></div></div>`; 
                         }).join('');
                     } else {
                         featuredProductsGrid.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center py-10 text-center font-body w-full"><div class="w-40 h-40 rounded-full overflow-hidden border-4 border-luxury-gold/30 shadow-lg mb-6 relative mx-auto flex items-center justify-center bg-gray-50"><img src="https://i.ibb.co/60stmC4L/v-Ns0e-Rg-HS0mv-Ys1-WGBWb-LA-2k.webp" alt="Empty Category" class="w-full h-full object-cover"></div><span class="text-gray-400 text-xs uppercase tracking-widest font-bold">No items found</span></div>`;
@@ -1672,25 +1609,63 @@
             async function populateProductPage(id) {
                 const s = await productsRef.child(id).once('value'); const p = s.val(); if (!p) return;
                 currentProduct = { id: id, ...p }; addToWishlistBtn.dataset.productId = id; document.getElementById('product-name').textContent = p.name;
-                const mainMediaContainer = document.getElementById('pdp-main-media-container');
-                if (p.videoUrl) { mainMediaContainer.innerHTML = `<video class="w-full h-full object-cover" src="${p.videoUrl}" autoplay loop muted playsinline controls></video>`; } 
-                else { const imageArray = getValidImagesArray(p.images); const mainImgSrc = imageArray.length > 0 ? imageArray[0] : 'https://placehold.co/600x600/ffffff/D4AF37?text=Image+Not+Found'; mainMediaContainer.innerHTML = `<img id="product-image-main" class="w-full h-full object-cover transition-opacity duration-300 drop-shadow-lg" src="${mainImgSrc}" alt="Product Image"/>`; }
+                const imageArray = getValidImagesArray(p.images); const mainImg = document.getElementById('product-image-main'); mainImg.src = imageArray.length > 0 ? imageArray[0] : 'https://placehold.co/600x600/ffffff/D4AF37?text=Image+Not+Found';
                 document.getElementById('pdp-limited-badge').classList.toggle('hidden', !p.isLimited);
+                
                 const isActiveOffer = p.offerPrice && p.offerEndTime && new Date(p.offerEndTime) > new Date();
-                const discount = isActiveOffer ? Math.round(((p.realPrice - p.offerPrice) / p.realPrice) * 100) : Math.round(((p.realPrice - p.nexaraPrice) / p.realPrice) * 100);
+                const discount = isActiveOffer 
+                    ? Math.round(((p.realPrice - p.offerPrice) / p.realPrice) * 100) 
+                    : Math.round(((p.realPrice - p.nexaraPrice) / p.realPrice) * 100);
+                
                 let priceHTML = '';
-                if(isActiveOffer) { priceHTML = `<div class="flex flex-col w-full bg-red-50/50 p-3 rounded-[15px] border border-red-100 mt-2"><div class="flex items-center gap-2 mb-1"><span class="bg-gradient-to-r from-red-600 to-red-700 text-white px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase shadow-sm">Special Offer</span><span class="text-red-600 font-bold text-sm">Ends Soon!</span></div><div class="flex items-end gap-3 mb-1"><span class="text-3xl font-bold text-deep-red drop-shadow-sm">₹${p.offerPrice.toLocaleString()}</span><span class="text-gray-500 font-medium text-sm mb-1 line-through">₹${p.nexaraPrice.toLocaleString()}</span></div><div class="flex items-center gap-2 mt-0.5"><span class="text-xs text-gray-400">MRP: <span class="line-through">₹${p.realPrice.toLocaleString()}</span></span><span class="text-[10px] text-green-600 font-bold bg-green-50 px-1.5 py-0.5 rounded border border-green-200 shadow-sm">${discount}% OFF Total</span></div></div>`; }
-                else { priceHTML = `<div class="flex flex-col w-full mt-2"><div class="flex items-end gap-3 mb-1"><span class="text-3xl font-bold text-gold drop-shadow-sm">₹${p.nexaraPrice.toLocaleString()}</span>${discount > 0 ? `<span class="bg-gradient-to-r from-red-500 to-red-600 text-white px-2 py-0.5 rounded text-xs font-bold shadow-sm mb-1">${discount}% OFF</span>` : ''}</div><div class="mt-0.5 flex items-center gap-2"><span class="text-sm text-gray-400">MRP: <span class="line-through">₹${p.realPrice.toLocaleString()}</span></span><span class="text-[10px] text-gray-500 font-medium">(Inclusive of all taxes)</span></div></div>`; }
+                if(isActiveOffer) {
+                    priceHTML = `
+                        <div class="flex flex-col w-full bg-red-50/50 p-3 rounded-[15px] border border-red-100 mt-2">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="bg-gradient-to-r from-red-600 to-red-700 text-white px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase shadow-sm">Special Offer</span>
+                                <span class="text-red-600 font-bold text-sm">Ends Soon!</span>
+                            </div>
+                            <div class="flex items-end gap-3 mb-1">
+                                <span class="text-3xl font-bold text-deep-red drop-shadow-sm">₹${p.offerPrice.toLocaleString()}</span>
+                                <span class="text-gray-500 font-medium text-sm mb-1 line-through">₹${p.nexaraPrice.toLocaleString()}</span>
+                            </div>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-xs text-gray-400">MRP: <span class="line-through">₹${p.realPrice.toLocaleString()}</span></span>
+                                <span class="text-[10px] text-green-600 font-bold bg-green-50 px-1.5 py-0.5 rounded border border-green-200 shadow-sm">${discount}% OFF Total</span>
+                            </div>
+                        </div>`;
+                } else {
+                    priceHTML = `
+                        <div class="flex flex-col w-full mt-2">
+                            <div class="flex items-end gap-3 mb-1">
+                                <span class="text-3xl font-bold text-gold drop-shadow-sm">₹${p.nexaraPrice.toLocaleString()}</span>
+                                ${discount > 0 ? `<span class="bg-gradient-to-r from-red-500 to-red-600 text-white px-2 py-0.5 rounded text-xs font-bold shadow-sm mb-1">${discount}% OFF</span>` : ''}
+                            </div>
+                            <div class="mt-0.5 flex items-center gap-2">
+                                <span class="text-sm text-gray-400">MRP: <span class="line-through">₹${p.realPrice.toLocaleString()}</span></span>
+                                <span class="text-[10px] text-gray-500 font-medium">(Inclusive of all taxes)</span>
+                            </div>
+                        </div>`;
+                }
                 document.getElementById('product-pricing').innerHTML = priceHTML;
-                const imageArray = getValidImagesArray(p.images);
-                document.getElementById('product-thumbnails').innerHTML = imageArray.map((img, i) => `<div class="size-20 rounded-xl border-2 ${i===0 && !p.videoUrl ?'border-gold':'border-gray-200 opacity-70'} flex-shrink-0 overflow-hidden cursor-pointer product-thumbnail transition-all hover:opacity-100 bg-gray-50 p-1" data-img-src="${img}"><img class="w-full h-full object-cover rounded-lg" src="${img}" onerror="this.src='https://placehold.co/200x200/ffffff/D4AF37?text=NA'"/></div>`).join('');
+                
+                document.getElementById('product-thumbnails').innerHTML = imageArray.map((img, i) => `<div class="size-20 rounded-xl border-2 ${i===0?'border-gold':'border-gray-200 opacity-70'} flex-shrink-0 overflow-hidden cursor-pointer product-thumbnail transition-all hover:opacity-100 bg-gray-50 p-1" data-img-src="${img}"><img class="w-full h-full object-cover rounded-lg" src="${img}" onerror="this.src='https://placehold.co/200x200/ffffff/D4AF37?text=NA'"/></div>`).join('');
                 document.getElementById('product-finishes-container').innerHTML = (p.finishes && p.finishes.length) ? `<h3 class="text-sm uppercase text-gray-500 font-bold">Select Finish</h3><div class="flex gap-4">${p.finishes.map((f, i) => `<button class="flex flex-col items-center gap-2 ${i>0?'opacity-50 hover:opacity-100 transition':''}"><div class="size-12 rounded-full p-[2px] ${i===0?'border-2 border-gold shadow-[0_0_15px_rgba(212,175,55,0.2)]':'border border-gray-300'}"><div class="w-full h-full rounded-full border border-gray-100" style="background-color: ${f.color};"></div></div><span class="text-[10px] font-bold ${i===0?'text-gold':'text-gray-700'}">${f.name}</span></button>`).join('')}</div>` : '';
                 document.getElementById('product-specs-container').innerHTML = (p.specifications && p.specifications.length) ? `<h3 class="text-sm uppercase text-gray-500 font-bold">Specifications</h3><ul class="grid grid-cols-1 gap-3 bg-white p-4 rounded-[20px] border border-gray-200 shadow-sm">${p.specifications.map(spec => `<li class="flex items-center gap-3 text-sm text-gray-700 font-medium"><span class="material-symbols-outlined text-gold text-lg">check_circle</span> ${spec}</li>`).join('')}</ul>` : '';
                 updateWishlistButtonState(id); loadReviews(id); transitionTo(productPage);
             }
 
             window.updateQty = function(id, delta) { if(globalCart[id]) { globalCart[id].qty += delta; if(globalCart[id].qty <= 0) delete globalCart[id]; renderCart(); } };
-            function addToCartItem(productToCart) { if(!productToCart) return; const id = productToCart.id; const imageArray = getValidImagesArray(productToCart.images); const isActiveOffer = productToCart.offerPrice && productToCart.offerEndTime && new Date(productToCart.offerEndTime) > new Date(); const activePrice = isActiveOffer ? productToCart.offerPrice : productToCart.nexaraPrice; if(globalCart[id]) { globalCart[id].qty++; globalCart[id].price = activePrice; } else { globalCart[id] = { name: productToCart.name, price: activePrice, img: imageArray.length > 0 ? imageArray[0] : 'https://placehold.co/200x200/ffffff/D4AF37?text=NA', qty: 1 }; } renderCart(); }
+            function addToCartItem(productToCart) { 
+                if(!productToCart) return; 
+                const id = productToCart.id; 
+                const imageArray = getValidImagesArray(productToCart.images); 
+                const isActiveOffer = productToCart.offerPrice && productToCart.offerEndTime && new Date(productToCart.offerEndTime) > new Date();
+                const activePrice = isActiveOffer ? productToCart.offerPrice : productToCart.nexaraPrice;
+                
+                if(globalCart[id]) { globalCart[id].qty++; globalCart[id].price = activePrice; } else { globalCart[id] = { name: productToCart.name, price: activePrice, img: imageArray.length > 0 ? imageArray[0] : 'https://placehold.co/200x200/ffffff/D4AF37?text=NA', qty: 1 }; } 
+                renderCart(); 
+            }
             function renderCart() {
                 const container = document.getElementById('cart-items-container'); const countEls = [document.getElementById('cart-items-count'), document.getElementById('shop-cart-badge'), document.getElementById('pdp-cart-badge')]; const extraBadges = document.querySelectorAll('.js-global-cart-badge'); let html = ''; let totalItems = 0; let subtotal = 0;
                 Object.entries(globalCart).forEach(([id, item]) => { totalItems += item.qty; subtotal += (item.price * item.qty); html += `<div class="glass-panel-cart rounded-[20px] p-4 flex gap-4 bg-white shadow-sm font-body"><div class="w-24 h-24 rounded-[15px] bg-gray-50 overflow-hidden flex-shrink-0 border border-gray-200 p-1 flex items-center justify-center"><img class="w-full h-full object-cover rounded-lg" src="${item.img}"/></div><div class="flex flex-col justify-between flex-1"><div><h3 class="font-bold text-base text-gray-900 luxury-text">${item.name}</h3></div><div class="flex items-center justify-between mt-2"><div><span class="gold-text font-bold text-lg">₹${item.price.toLocaleString()}</span></div><div class="flex items-center bg-gray-100 rounded-full p-1 border border-gray-200"><button onclick="updateQty('${id}', -1)" class="w-7 h-7 flex items-center justify-center rounded-full text-gray-700 hover:bg-gray-200">-</button><span class="px-3 text-sm font-bold text-gray-900">${item.qty}</span><button onclick="updateQty('${id}', 1)" class="w-7 h-7 flex items-center justify-center rounded-full bg-luxury-gold text-white hover:brightness-110">+</button></div></div></div></div>`; });
@@ -1707,8 +1682,11 @@
                         leafletMap.setView([lat, lng], 16);
                         if (mapMarker) { mapMarker.setLatLng([lat, lng]); }
                         fetchAddressFromCoords(lat, lng);
-                    }, error => { alert("Location access denied."); document.getElementById('input-address').value = ""; }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
-                } else { alert("Geolocation is not supported."); }
+                    }, error => {
+                        alert("Location access denied. Please enable it in your browser settings or enter your address manually.");
+                        document.getElementById('input-address').value = ""; 
+                    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+                } else { alert("Geolocation is not supported by your browser. Please enter your address manually."); }
             }
 
             function openAddressModal() {
@@ -1716,15 +1694,20 @@
                 modal.classList.remove('hidden'); modal.classList.add('flex');
                 setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
                 if(!leafletMap) { leafletMap = L.map('map').setView([20.5937, 78.9629], 5); L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(leafletMap); mapMarker = L.marker([20.5937, 78.9629], {draggable: true}).addTo(leafletMap); mapMarker.on('dragend', function(e) { fetchAddressFromCoords(mapMarker.getLatLng().lat, mapMarker.getLatLng().lng); }); }
+                // MODIFIED: Center map on saved location if exists
                 setTimeout(() => { 
                     leafletMap.invalidateSize(); 
-                    if (userAddressInfo.location && userAddressInfo.location.lat) { leafletMap.setView([userAddressInfo.location.lat, userAddressInfo.location.lng], 16); if(mapMarker) mapMarker.setLatLng([userAddressInfo.location.lat, userAddressInfo.location.lng]); }
-                    else if (!userAddressInfo.address || userAddressInfo.address.trim() === '') { triggerGPSLocation(); } 
+                    if (userAddressInfo.location && userAddressInfo.location.lat) {
+                        leafletMap.setView([userAddressInfo.location.lat, userAddressInfo.location.lng], 16);
+                        if(mapMarker) mapMarker.setLatLng([userAddressInfo.location.lat, userAddressInfo.location.lng]);
+                    } else if (!userAddressInfo.address || userAddressInfo.address.trim() === '') { 
+                        triggerGPSLocation(); 
+                    } 
                 }, 300);
             }
 
             function closeAddressModal() { const modal = document.getElementById('address-modal'); modal.classList.add('opacity-0'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); }
-            function fetchAddressFromCoords(lat, lng) { document.getElementById('input-address').value = "Fetching address..."; fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`).then(res => res.json()).then(data => { if(data && data.display_name) document.getElementById('input-address').value = data.display_name; }).catch(err => { document.getElementById('input-address').value = "Unable to fetch automatically."; }); }
+            function fetchAddressFromCoords(lat, lng) { document.getElementById('input-address').value = "Fetching address..."; fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`).then(res => res.json()).then(data => { if(data && data.display_name) document.getElementById('input-address').value = data.display_name; }).catch(err => { document.getElementById('input-address').value = "Unable to fetch automatically. Please enter manually."; }); }
             
             document.getElementById('get-gps-btn').addEventListener('click', triggerGPSLocation);
             document.getElementById('open-address-modal').addEventListener('click', openAddressModal); 
@@ -1734,7 +1717,14 @@
             document.getElementById('save-address-btn').addEventListener('click', () => { 
                 const n = document.getElementById('input-name').value.trim(); const p = document.getElementById('input-phone').value.trim(); const a = document.getElementById('input-address').value.trim(); const d = document.getElementById('input-dob').value.trim(); 
                 if(!p || p.length < 10) { alert("Please enter a valid 10-digit Mobile Number."); return; } 
-                let loc = null; if(mapMarker) { const ll = mapMarker.getLatLng(); loc = { lat: ll.lat, lng: ll.lng }; }
+                
+                // MODIFIED: Save actual coordinates
+                let loc = null;
+                if(mapMarker) {
+                    const ll = mapMarker.getLatLng();
+                    loc = { lat: ll.lat, lng: ll.lng };
+                }
+
                 userAddressInfo = { name: n || 'Valued Customer', phone: p, address: a || 'Location saved via map', dob: d, location: loc }; 
                 localStorage.setItem('iccha_user_info', JSON.stringify(userAddressInfo)); 
                 document.getElementById('disp-name').textContent = userAddressInfo.name; document.getElementById('disp-phone').textContent = "+91 " + userAddressInfo.phone; document.getElementById('disp-address').textContent = userAddressInfo.address; 
@@ -1755,11 +1745,21 @@
                     const response = await fetch('https://iccha.onrender.com/create-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: finalAmount }) });
                     if (!response.ok) throw new Error("Server error");
                     const order = await response.json();
-                    const options = { "key": "rzp_live_SLt76BnauOx2Cb", "amount": order.amount, "currency": "INR", "name": "Iccha", "description": "Luxury Redefined Purchase", "order_id": order.id, "handler": function (response) { btn.innerHTML = '<span class="text-white font-bold text-lg uppercase font-body">Success!</span><span class="material-symbols-outlined text-white">check_circle</span>'; database.ref('orders').push({ customerInfo: userAddressInfo, items: globalCart, totalAmount: totalText, paymentId: response.razorpay_payment_id, paymentMethod: selectedPaymentMethod, timestamp: firebase.database.ServerValue.TIMESTAMP, status: 'Paid & Pending' }).then(() => { setTimeout(() => { alert("Order Placed Successfully!"); globalCart = {}; renderCart(); transitionTo(shopPage); btn.innerHTML = originalBtnHtml; }, 1500); }).catch(err => { alert("Error saving order."); btn.innerHTML = originalBtnHtml; }); }, "prefill": { "name": userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : '', "contact": userAddressInfo.phone }, "theme": { "color": "#D4AF37" } };
+                    
+                    const options = {
+                        "key": "rzp_live_SLt76BnauOx2Cb", "amount": order.amount, "currency": "INR", "name": "Iccha", "description": "Luxury Redefined Purchase", "order_id": order.id,
+                        "handler": function (response) {
+                            btn.innerHTML = '<span class="text-white font-bold text-lg uppercase font-body">Success!</span><span class="material-symbols-outlined text-white">check_circle</span>';
+                            // Note: customerInfo already contains the location object now
+                            database.ref('orders').push({ customerInfo: userAddressInfo, items: globalCart, totalAmount: totalText, paymentId: response.razorpay_payment_id, paymentMethod: selectedPaymentMethod, timestamp: firebase.database.ServerValue.TIMESTAMP, status: 'Paid & Pending' }).then(() => { setTimeout(() => { alert("Order Placed Successfully!"); globalCart = {}; renderCart(); transitionTo(shopPage); btn.innerHTML = originalBtnHtml; }, 1500); }).catch(err => { alert("Error saving order. Payment was successful."); btn.innerHTML = originalBtnHtml; });
+                        },
+                        "prefill": { "name": userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : '', "contact": userAddressInfo.phone },
+                        "theme": { "color": "#D4AF37" }
+                    };
                     const rzp1 = new Razorpay(options);
                     rzp1.on('payment.failed', function (response){ alert("Payment Failed. Reason: " + response.error.description); btn.innerHTML = originalBtnHtml; });
                     rzp1.open();
-                } catch (error) { console.error("Payment Error:", error); alert("Something went wrong initializing payment."); btn.innerHTML = originalBtnHtml; }
+                } catch (error) { console.error("Payment Error:", error); alert("Something went wrong initializing payment. Check server connection."); btn.innerHTML = originalBtnHtml; }
             });
 
             document.getElementById('buy-now-btn').addEventListener('click', () => { globalCart = {}; addToCartItem(currentProduct); transitionTo(checkoutPage); if(!userAddressInfo.phone) setTimeout(openAddressModal, 800); });
@@ -1776,63 +1776,9 @@
                 };
                 updateTimer(); interval = setInterval(updateTimer, 1000); activeCountdownIntervals.push(interval);
             }
-
-            // NEW: Updated Animation function for Offers Page
-            function startDialogueAnimation(dialogs) {
-                if (dialogueAnimationInterval) clearInterval(dialogueAnimationInterval);
-                if (!dialogs || dialogs.length === 0) return;
-
-                const sticker = document.getElementById('offer-sticker-new');
-                const dialogueText = document.getElementById('offer-dialogue-text-new');
-                if (!sticker || !dialogueText) return;
-
-                let currentIndex = 0;
-                let isMovingRight = true;
-
-                const animate = () => {
-                    if (isMovingRight) {
-                        // Move right and wipe (fade out)
-                        sticker.style.transform = 'translateX(120%)'; // Move completely across
-                        dialogueText.style.transition = 'opacity 0.5s ease-out';
-                        dialogueText.style.opacity = '0';
-
-                        setTimeout(() => {
-                            currentIndex = (currentIndex + 1) % dialogs.length;
-                            isMovingRight = false;
-                            animate();
-                        }, 1200); 
-                    } else {
-                        // Move left and type
-                        sticker.style.transform = 'translateX(-20%)';
-                        dialogueText.style.opacity = '1';
-                        dialogueText.style.transition = 'none';
-
-                        // Reset and apply typing animation
-                        dialogueText.textContent = dialogs[currentIndex];
-                        dialogueText.classList.remove('animate-typing');
-                        void dialogueText.offsetWidth;
-                        dialogueText.classList.add('animate-typing');
-
-                        setTimeout(() => {
-                            isMovingRight = true;
-                        }, 4000); 
-                    }
-                };
-                // Initial setup
-                dialogueText.textContent = dialogs[0];
-                dialogueText.classList.add('animate-typing');
-                sticker.style.transform = 'translateX(-20%)';
-                setTimeout(() => { sticker.style.transform = 'translateX(0)';}, 100);
-
-                dialogueAnimationInterval = setInterval(animate, 5500);
-            }
             
             function renderOffersPage(data) {
-                const wrapper = document.getElementById('offers-video-wrapper'); 
-                const stickerEl = document.getElementById('offer-sticker-new'); 
-                const bannerEl = document.getElementById('offer-bg-image-new'); 
-                const gridEl = document.getElementById('offers-product-grid');
-                
+                const wrapper = document.getElementById('offers-video-wrapper'); const stickerEl = document.getElementById('offer-character-sticker'); const bannerEl = document.getElementById('offer-promo-banner'); const gridEl = document.getElementById('offers-product-grid');
                 if (data) {
                     if (data.videoUrls && wrapper) {
                         const videoUrls = Array.isArray(data.videoUrls) ? data.videoUrls : Object.values(data.videoUrls); const isMultiple = videoUrls.length > 1;
@@ -1842,7 +1788,7 @@
                         function playCurrentOfferVideo(swiper) { document.querySelectorAll('.offers-hero-video').forEach(vid => { vid.pause(); vid.currentTime = 0; vid.onended = null; }); const activeSlide = swiper.slides[swiper.activeIndex]; if(!activeSlide) return; const activeVideo = activeSlide.querySelector('.offers-hero-video'); if (activeVideo) { activeVideo.play().catch(e=>console.log("Auto-play blocked", e)); if(isMultiple) { activeVideo.onended = () => { swiper.slideNext(); }; } } }
                     }
                     if(stickerEl) stickerEl.src = data.characterStickerUrl || 'https://placehold.co/200x200/000000/000000?text=...';
-                    if(bannerEl && data.bannerImageUrl) bannerEl.src = data.bannerImageUrl;
+                    if(bannerEl && data.bannerImageUrl) bannerEl.style.backgroundImage = `url('${data.bannerImageUrl}')`;
                 }
                 if (gridEl && globalProductsData) {
                     let offerProducts = [];
@@ -1860,7 +1806,7 @@
                 }
             }
 
-            function toggleWishlistItem() { const id = addToWishlistBtn.dataset.productId; if (!id) return; if (currentWishlist && currentWishlist[id]) wishlistRef.child(id).remove(); else wishlistRef.child(id).set({ name: document.getElementById('product-name').textContent, price: document.querySelector('#product-pricing .text-gold')?.textContent || document.querySelector('#product-pricing .text-deep-red')?.textContent || '₹0', image: getValidImagesArray(currentProduct.images)[0] || '' }); }
+            function toggleWishlistItem() { const id = addToWishlistBtn.dataset.productId; if (!id) return; if (currentWishlist && currentWishlist[id]) wishlistRef.child(id).remove(); else wishlistRef.child(id).set({ name: document.getElementById('product-name').textContent, price: document.querySelector('#product-pricing .text-gold')?.textContent || document.querySelector('#product-pricing .text-deep-red')?.textContent || '₹0', image: document.getElementById('product-image-main').src }); }
             function updateWishlistButtonState(id) { addToWishlistBtn.classList.toggle('wishlisted', currentWishlist && currentWishlist[id]); }
             function renderWishlist(data) {
                 const has = data && Object.keys(data).length > 0;
@@ -1873,10 +1819,15 @@
             categoriesRef.on('value', s => renderCategories(s.val()));
             productsRef.on('value', s => renderProducts(s.val()));
             
+            mainOfferRef.on('value', s => {
+                const offerData = s.val();
+                if(Object.keys(globalProductsData).length > 0) { renderOffersPage(offerData); } else { productsRef.once('value').then(pSnap => { globalProductsData = pSnap.val() || {}; renderOffersPage(offerData); }); }
+            });
+            
             wishlistRef.on('value', s => { currentWishlist = s.val() || {}; renderWishlist(currentWishlist); const id = addToWishlistBtn.dataset.productId; if (id) updateWishlistButtonState(id); });
             
             if(getStartedBtn) getStartedBtn.addEventListener('click', () => transitionTo(shopPage));
-            if(backToShopBtn) backToShopBtn.addEventListener('click', () => transitionTo(lastPage || shopPage));
+            if(backToShopBtn) backToShopBtn.addEventListener('click', () => transitionTo(shopPage));
             document.querySelectorAll('.js-cart-icon').forEach(i => i.addEventListener('click', e => { e.preventDefault(); transitionTo(cartPage); }));
             document.getElementById('back-from-cart-btn').addEventListener('click', () => transitionTo(lastPage || shopPage));
             document.getElementById('proceed-checkout-btn').addEventListener('click', () => { if(Object.keys(globalCart).length === 0) { alert("Add items to cart first!"); return; } transitionTo(checkoutPage); });
@@ -1887,6 +1838,7 @@
             document.querySelectorAll('.js-wishlist-nav-btn').forEach(b => b.addEventListener('click', e => { e.preventDefault(); transitionTo(wishlistPage); }));
             document.querySelectorAll('.js-offers-nav-btn').forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); transitionTo(offersPage); }));
             
+            // NEW NAV BEHAVIOR
             document.querySelectorAll('.js-profile-nav-btn').forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); transitionTo(profilePage); }));
             document.querySelectorAll('.js-stores-nav-btn').forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); transitionTo(storesListPage); }));
             
@@ -1894,29 +1846,21 @@
             if(backFromSingleStoreBtn) backFromSingleStoreBtn.addEventListener('click', () => transitionTo(storesListPage));
 
             if(featuredProductsGrid) featuredProductsGrid.addEventListener('click', e => { const c = e.target.closest('.product-card-link'); if(c) populateProductPage(c.dataset.productId); });
-            
-            if(productPage) productPage.addEventListener('click', e => { 
-                const t = e.target.closest('.product-thumbnail'); 
-                if(t) { 
-                    const mainMediaContainer = document.getElementById('pdp-main-media-container');
-                    mainMediaContainer.innerHTML = `<img id="product-image-main" class="w-full h-full object-cover transition-opacity duration-300 drop-shadow-lg" src="${t.dataset.imgSrc}" alt="Product Image"/>`;
-                    document.querySelectorAll('.product-thumbnail').forEach(th => {th.classList.replace('border-gold', 'border-gray-200'); th.classList.add('opacity-70');}); 
-                    t.classList.replace('border-gray-200', 'border-gold'); t.classList.remove('opacity-70'); 
-                } 
-            });
-
+            if(productPage) productPage.addEventListener('click', e => { const t = e.target.closest('.product-thumbnail'); if(t) { document.getElementById('product-image-main').src = t.dataset.imgSrc; document.querySelectorAll('.product-thumbnail').forEach(th => th.classList.replace('border-gold', 'border-gray-200') && th.classList.replace('opacity-100', 'opacity-70')); t.classList.replace('border-gray-200', 'border-gold'); t.classList.replace('opacity-70', 'opacity-100'); } });
             if(wishlistGrid) wishlistGrid.addEventListener('click', e => { const b = e.target.closest('.remove-wishlist-item'); if(b && b.dataset.id) wishlistRef.child(b.dataset.id).remove(); });
             if(addToWishlistBtn) addToWishlistBtn.addEventListener('click', toggleWishlistItem);
             if(viewAllCategoriesBtn) viewAllCategoriesBtn.addEventListener('click', (e) => { e.preventDefault(); openCategoryLayout(); });
             
             let trackMap = null;
             function openTrackModal() {
-                const modal = document.getElementById('track-order-modal'); modal.classList.remove('hidden'); modal.classList.add('flex');
+                const modal = document.getElementById('track-order-modal');
+                modal.classList.remove('hidden'); modal.classList.add('flex');
                 setTimeout(() => modal.classList.remove('opacity-0'), 10);
                 if (!trackMap) {
                     trackMap = L.map('track-map-container').setView([28.7041, 77.1025], 5);
                     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(trackMap);
-                    const pickup = [28.7041, 77.1025]; let drop = [19.0760, 72.8777]; if (mapMarker) { drop = [mapMarker.getLatLng().lat, mapMarker.getLatLng().lng]; }
+                    const pickup = [28.7041, 77.1025]; let drop = [19.0760, 72.8777]; 
+                    if (mapMarker) { drop = [mapMarker.getLatLng().lat, mapMarker.getLatLng().lng]; }
                     const redIcon = L.divIcon({ className: 'custom-div-icon', html: "<div style='background-color:#ef4444; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);'></div>", iconSize: [16, 16], iconAnchor: [8, 8] });
                     L.marker(pickup, {icon: redIcon}).addTo(trackMap).bindPopup("Pickup Location"); L.marker(drop).addTo(trackMap).bindPopup("Delivery Location");
                     L.polyline([pickup, drop], {color: '#10b981', weight: 4, dashArray: '10, 10'}).addTo(trackMap); trackMap.fitBounds([pickup, drop], {padding: [50, 50]});
@@ -1934,14 +1878,16 @@
                     const response = await fetch('https://iccha.onrender.com/create-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: amount }) });
                     if (!response.ok) throw new Error("Server error");
                     const order = await response.json();
-                    const options = { "key": "rzp_live_SLt76BnauOx2Cb", "amount": order.amount, "currency": "INR", "name": "Iccha Wallet", "description": "Add money to wallet", "order_id": order.id, "handler": function (response) { alert("₹" + amount + " added to wallet successfully!"); }, "prefill": { "name": userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : "", "contact": userAddressInfo.phone }, "theme": { "color": "#D4AF37" } };
+                    const options = { "key": "rzp_live_SLt76BnauOx2Cb", "amount": order.amount, "currency": "INR", "name": "Iccha Wallet", "description": "Add money to wallet", "order_id": order.id, "handler": function (response) { alert("₹" + amount + " added to wallet successfully! (Payment ID: " + response.razorpay_payment_id + ")"); }, "prefill": { "name": userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : "", "contact": userAddressInfo.phone }, "theme": { "color": "#D4AF37" } };
                     const rzp1 = new Razorpay(options); rzp1.on('payment.failed', function (response){ alert("Payment Failed: " + response.error.description); }); rzp1.open();
-                } catch (err) { console.error(err); alert("Could not initiate payment."); }
+                } catch (err) { console.error(err); alert("Could not initiate payment. Check server connection."); }
             });
 
             document.getElementById('help-support-btn')?.addEventListener('click', () => { window.location.href = 'help.html'; });
+
             document.getElementById('order-history-btn')?.addEventListener('click', () => { const modal = document.getElementById('order-history-modal'); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => modal.classList.remove('opacity-0'), 10); });
             document.getElementById('close-history-modal')?.addEventListener('click', () => { const modal = document.getElementById('order-history-modal'); modal.classList.add('opacity-0'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); });
+
             document.getElementById('return-refund-btn')?.addEventListener('click', () => { const modal = document.getElementById('return-refund-modal'); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => modal.classList.remove('opacity-0'), 10); });
             document.getElementById('close-return-modal')?.addEventListener('click', () => { const modal = document.getElementById('return-refund-modal'); modal.classList.add('opacity-0'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); });
 
