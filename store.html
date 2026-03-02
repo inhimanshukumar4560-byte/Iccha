@@ -92,7 +92,23 @@
                         <div><label class="block text-xs md:text-sm text-gray-400 mb-1">Account Holder Name</label><input type="text" id="acc-name"></div>
                         <div><label class="block text-xs md:text-sm text-gray-400 mb-1">Bank Account Number</label><input type="text" id="acc-no"></div>
                         <div><label class="block text-xs md:text-sm text-gray-400 mb-1">IFSC Code</label><input type="text" id="ifsc"></div>
-                        <div class="md:col-span-2"><label class="block text-xs md:text-sm text-gray-400 mb-1">Warehouse / Pickup Address</label><input type="text" id="pickup-address" placeholder="Where should courier boy come?"></div>
+                        <div class="md:col-span-3">
+                            <label class="block text-xs md:text-sm text-gray-400 mb-1">Warehouse / Pickup Address</label>
+                            <input type="text" id="pickup-address" placeholder="Where should courier boy come?">
+                        </div>
+                        
+                        <!-- NEW GPS LOCATION BUTTON -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs md:text-sm text-gray-400 mb-1">Exact Shop Location (For Delivery Boy Navigation)</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="gps-coords" placeholder="Latitude, Longitude" readonly class="bg-slate-900 cursor-not-allowed text-gray-500">
+                                <button type="button" id="get-location-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-1 transition text-xs md:text-sm whitespace-nowrap">
+                                    <span class="material-symbols-outlined text-sm">my_location</span> Get Location
+                                </button>
+                            </div>
+                            <p class="text-[10px] text-gray-500 mt-1">Click button to auto-detect shop location.</p>
+                        </div>
+
                         <div><label class="block text-xs md:text-sm text-gray-400 mb-1">Preferred Pickup Time</label><input type="time" id="pickup-time"></div>
                     </div>
                 </div>
@@ -331,6 +347,10 @@
         let SELLER_ID = localStorage.getItem('iccha_seller_id');
         let IS_ONBOARDED = localStorage.getItem('iccha_onboarding_done') === 'true';
 
+        // New Variables for GPS
+        let shopLat = null;
+        let shopLng = null;
+
         // Set up Seller ID if new
         if (!SELLER_ID) {
             SELLER_ID = db.ref('sellers').push().key;
@@ -362,6 +382,32 @@
                 return null;
             }
         }
+
+        // --- NEW: GPS LOCATION LOGIC ---
+        document.getElementById('get-location-btn').addEventListener('click', () => {
+            const btn = document.getElementById('get-location-btn');
+            const input = document.getElementById('gps-coords');
+            
+            if (!navigator.geolocation) {
+                alert("Geolocation is not supported by your browser");
+                return;
+            }
+
+            btn.innerHTML = '<span class="loader" style="display:block; width:16px; height:16px; border-width:2px;"></span> Finding...';
+            
+            navigator.geolocation.getCurrentPosition((position) => {
+                shopLat = position.coords.latitude;
+                shopLng = position.coords.longitude;
+                input.value = `${shopLat}, ${shopLng}`;
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm">check</span> Found';
+                btn.classList.remove('bg-blue-600', 'hover:bg-blue-500');
+                btn.classList.add('bg-green-600', 'hover:bg-green-500');
+            }, (error) => {
+                console.error(error);
+                alert("Unable to retrieve your location. Please allow location access.");
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm">error</span> Retry';
+            });
+        });
 
         // --- INITIALIZATION ---
         window.addEventListener('DOMContentLoaded', () => {
@@ -424,7 +470,7 @@
                 if (uploadedUrl) logoUrl = uploadedUrl;
             }
 
-            // 2. Gather Data
+            // 2. Gather Data (Updated to include GPS)
             const profileData = {
                 storeName: document.getElementById('store-name').value || "My Store",
                 logoUrl: logoUrl,
@@ -439,6 +485,11 @@
                 ifsc: document.getElementById('ifsc').value,
                 pickupAddress: document.getElementById('pickup-address').value,
                 pickupTime: document.getElementById('pickup-time').value,
+                // New Location Object
+                location: {
+                    lat: shopLat,
+                    lng: shopLng
+                },
                 status: 'pending_kyc_verification', // For admin panel
                 createdAt: firebase.database.ServerValue.TIMESTAMP
             };
@@ -457,6 +508,12 @@
                 if (data) {
                     if(data.storeName) document.getElementById('display-store-name').innerText = data.storeName;
                     if(data.logoUrl) document.getElementById('store-logo-display').innerHTML = `<img src="${data.logoUrl}" class="w-full h-full object-cover">`;
+                    
+                    // Pre-fill location if available (for future edits, though form is only kyc currently)
+                    if(data.location && data.location.lat && data.location.lng) {
+                        shopLat = data.location.lat;
+                        shopLng = data.location.lng;
+                    }
                 }
             });
         }
