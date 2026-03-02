@@ -18,7 +18,7 @@
 
     <style>
         /* ================== */
-        /* NUEVO: TEMA CLARO  */
+        /* TEMA CLARO         */
         /* ================== */
         :root { 
             --primary: #06b6d4; /* Cyan */
@@ -41,7 +41,6 @@
         ::-webkit-scrollbar { display: none; }
         * { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* MODIFICADO: Estilo de tarjeta para tema claro */
         .card {
             background-color: var(--card-light);
             border: 1px solid var(--border-color);
@@ -55,7 +54,6 @@
         .btn-danger { background-color: #ef4444; color: white; font-weight: 600; transition: 0.2s; }
         .btn-danger:active { transform: scale(0.98); background-color: #dc2626; }
 
-        /* MODIFICADO: Estilo de inputs para tema claro */
         input, select {
             background-color: #f8fafc;
             border: 1px solid #cbd5e1;
@@ -79,7 +77,6 @@
 
         #map { z-index: 10; border-radius: 1rem; }
         
-        /* Slide up animation for new orders */
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
         
@@ -87,7 +84,7 @@
         .loader { border: 3px solid #e2e8f0; border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* NUEVO: Estilos para el mapa en pantalla completa */
+        /* Map Fullscreen */
         .map-fullscreen {
             position: fixed !important;
             top: 0;
@@ -97,9 +94,7 @@
             z-index: 1000;
             border-radius: 0 !important;
         }
-        .map-fullscreen #map {
-            border-radius: 0 !important;
-        }
+        .map-fullscreen #map { border-radius: 0 !important; }
         
         /* Navigation Button Style */
         .nav-btn {
@@ -120,9 +115,7 @@
 </head>
 <body class="overflow-hidden h-screen w-screen flex flex-col relative selection:bg-cyan-500/30">
 
-    <!-- ========================================== -->
-    <!-- 1. ONBOARDING / KYC SCREEN                 -->
-    <!-- ========================================== -->
+    <!-- 1. ONBOARDING / KYC SCREEN -->
     <div id="kyc-screen" class="fixed inset-0 z-[100] bg-slate-100 overflow-y-auto hidden">
         <div class="p-6 pb-20 max-w-md mx-auto">
             <div class="text-center mb-8 pt-4">
@@ -166,9 +159,7 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 2. PENDING APPROVAL SCREEN                 -->
-    <!-- ========================================== -->
+    <!-- 2. PENDING APPROVAL SCREEN -->
     <div id="pending-screen" class="fixed inset-0 z-[90] bg-slate-100 flex flex-col items-center justify-center p-6 text-center hidden">
         <div class="w-32 h-32 rounded-full bg-white border-4 border-yellow-500 flex items-center justify-center mb-6 shadow-lg shadow-yellow-500/10">
             <span class="material-symbols-outlined text-yellow-500 text-6xl">hourglass_empty</span>
@@ -178,9 +169,7 @@
         <button onclick="window.location.reload()" class="mt-8 px-6 py-3 bg-white text-slate-700 rounded-lg border border-slate-200 hover:bg-slate-50 transition shadow-sm">Refresh Status</button>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 3. MAIN DASHBOARD SCREEN                   -->
-    <!-- ========================================== -->
+    <!-- 3. MAIN DASHBOARD SCREEN -->
     <div id="main-dashboard" class="flex-1 flex flex-col h-full hidden">
         
         <!-- Header Section -->
@@ -222,14 +211,12 @@
         <!-- Main Scrollable Content Area -->
         <main class="flex-1 overflow-y-auto p-4 pb-24 space-y-4 relative" id="main-content-area">
             
-            <!-- Map Container (Hidden by default, shown when active delivery exists) -->
+            <!-- Map Container -->
             <div id="map-container" class="w-full h-64 bg-slate-200 rounded-2xl border border-slate-200 overflow-hidden shadow-lg hidden relative">
                 <div id="map" class="w-full h-full"></div>
-                <!-- GPS Focus Button -->
                 <button id="focus-gps-btn" class="absolute bottom-4 right-16 z-[400] bg-white text-black p-2 rounded-full shadow-lg border border-gray-200 focus:outline-none active:scale-95">
                     <span class="material-symbols-outlined text-cyan-600">my_location</span>
                 </button>
-                <!-- NUEVO: Botón de pantalla completa -->
                 <button id="fullscreen-map-btn" class="absolute bottom-4 right-4 z-[400] bg-white text-black p-2 rounded-full shadow-lg border border-gray-200 focus:outline-none active:scale-95">
                     <span class="material-symbols-outlined text-cyan-600">fullscreen</span>
                 </button>
@@ -323,17 +310,14 @@
         let isOnline = false;
         let currentActiveOrder = null;
         
-        // Map Variables
         let map = null;
         let myMarker = null;
-        let shopMarker = null;      // NUEVO: Marcador para la tienda
+        let shopMarker = null;
         let customerMarker = null;
-        let routingLine = null;
         let watchPositionId = null;
         let myCurrentLat = 0;
         let myCurrentLng = 0;
 
-        // Initialize Partner ID
         if (!PARTNER_ID) {
             PARTNER_ID = db.ref('delivery_partners').push().key;
             localStorage.setItem('iccha_dp_id', PARTNER_ID);
@@ -342,16 +326,12 @@
         const myProfileRef = db.ref(`delivery_partners/${PARTNER_ID}`);
         const ordersRef = db.ref('orders');
 
-        // ==========================================
-        // HELPER FOR NAVIGATION (Google Maps)
-        // ==========================================
+        // Helper for Google Maps
         function openGoogleMaps(lat, lng, address = "") {
             let url;
             if (lat && lng) {
-                // Direct coordinate navigation
                 url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
             } else if (address) {
-                // Address fallback if coordinates missing
                 url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
             } else {
                 alert("Destination location not available.");
@@ -360,9 +340,7 @@
             window.open(url, '_blank');
         }
 
-        // ==========================================
-        // INITIALIZATION & SCREEN ROUTING
-        // ==========================================
+        // Initialization
         window.addEventListener('DOMContentLoaded', () => {
             checkOnboardingStatus();
             
@@ -412,9 +390,6 @@
             });
         }
 
-        // ==========================================
-        // KYC FORM SUBMISSION
-        // ==========================================
         document.getElementById('kyc-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const loader = document.getElementById('kyc-loader');
@@ -449,9 +424,6 @@
             loader.style.display = 'none'; btnSpan.style.display = 'block';
         });
 
-        // ==========================================
-        // DASHBOARD SETUP & LOGIC
-        // ==========================================
         function setupDashboard() {
             if (PARTNER_DATA.name) document.getElementById('head-name').innerText = PARTNER_DATA.name;
             if (PARTNER_DATA.vehicleNo) document.getElementById('head-vehicle').innerText = PARTNER_DATA.vehicleNo;
@@ -477,13 +449,18 @@
                 let newOrdersHtml = '';
 
                 Object.entries(data).forEach(([orderId, order]) => {
+                    // Check for assigned active order
                     if (order.deliveryBoyId === PARTNER_ID && (order.status === 'Accepted by Delivery' || order.status === 'Out for Delivery')) {
                         hasActiveOrder = true;
                         currentActiveOrder = { id: orderId, ...order };
                         renderActiveOrder(currentActiveOrder);
                     }
                     
-                    if (isOnline && !hasActiveOrder && order.status === 'Ready for Pickup' && (!order.deliveryBoyId || order.deliveryBoyId === PARTNER_ID)) {
+                    // MODIFIED LOGIC: Allow 'Paid & Pending' OR 'Ready for Pickup'
+                    // This allows direct flow from User App -> Delivery App
+                    if (isOnline && !hasActiveOrder && 
+                       (order.status === 'Ready for Pickup' || order.status === 'Paid & Pending') && 
+                       (!order.deliveryBoyId || order.deliveryBoyId === PARTNER_ID)) {
                         newOrdersHtml += generateNewOrderCard(orderId, order);
                     }
                 });
@@ -564,34 +541,28 @@
             alert("Order Accepted! Head to the shop for pickup.");
         };
         
-        // ==========================================
-        // ACTIVE ORDER UI LOGIC
-        // ==========================================
         function renderActiveOrder(order) {
             const card = document.getElementById('active-order-card');
             const state = order.status; 
             let html = '';
             
-            // MODIFICADO: Actualizar marcadores del mapa según el estado del pedido
             updateMapMarkers(order);
 
             if (state === 'Accepted by Delivery') {
                 const shopName = order.shopName || "Seller Shop";
                 const shopPhone = order.shopPhone || "N/A";
                 
-                // Prepare Navigation Logic for Shop
+                // Navigation Logic for Shop
                 let navButtonHtml = '';
                 if(order.shopLocation && order.shopLocation.lat && order.shopLocation.lng) {
                      navButtonHtml = `<button onclick="openGoogleMaps(${order.shopLocation.lat}, ${order.shopLocation.lng})" class="nav-btn"><span class="material-symbols-outlined text-sm">directions</span> Navigate to Shop</button>`;
                 } else {
-                    // Fallback to text address navigation if coords missing but not ideal
                     navButtonHtml = `<button onclick="openGoogleMaps(null, null, '${shopName}')" class="nav-btn"><span class="material-symbols-outlined text-sm">directions</span> Navigate</button>`;
                 }
 
                 html = `
                 <div class="flex justify-between items-center mb-4 border-b border-slate-200 pb-3">
                     <span class="bg-yellow-100 text-yellow-600 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">Go to Pickup</span>
-                    <!-- NUEVO: Contenedor para la distancia -->
                     <span id="distance-display" class="text-xs font-bold text-cyan-600">-- km away</span>
                 </div>
                 
@@ -626,19 +597,18 @@
                 const custAddress = order.customerInfo ? order.customerInfo.address : "Address not provided";
                 const amountToCollect = order.paymentMethod === 'COD' ? `₹${order.totalAmount}` : "PAID";
 
-                // Prepare Navigation Logic for Customer
+                // Navigation Logic for Customer
                 let navButtonHtml = '';
+                // Check if location exists in customerInfo
                 if(order.customerInfo && order.customerInfo.location && order.customerInfo.location.lat && order.customerInfo.location.lng) {
                      navButtonHtml = `<button onclick="openGoogleMaps(${order.customerInfo.location.lat}, ${order.customerInfo.location.lng})" class="nav-btn"><span class="material-symbols-outlined text-sm">directions</span> Navigate to Customer</button>`;
                 } else {
-                     // Fallback to text address navigation
                      navButtonHtml = `<button onclick="openGoogleMaps(null, null, '${custAddress}')" class="nav-btn"><span class="material-symbols-outlined text-sm">directions</span> Navigate</button>`;
                 }
 
                 html = `
                 <div class="flex justify-between items-center mb-4 border-b border-slate-200 pb-3">
                     <span class="bg-green-100 text-green-600 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">Out for Delivery</span>
-                     <!-- NUEVO: Contenedor para la distancia -->
                     <span id="distance-display" class="text-xs font-bold text-cyan-600">-- km away</span>
                 </div>
                 
@@ -693,17 +663,13 @@
             }
         };
 
-        // ==========================================
-        // MAP & LIVE TRACKING
-        // ==========================================
         function initMap() {
             if (map !== null) {
-                map.invalidateSize(); // Asegura que el mapa se redibuje si estaba oculto
+                map.invalidateSize();
                 return;
             }
             
             map = L.map('map', { zoomControl: false }).setView([20.5937, 78.9629], 5);
-            // MODIFICADO: Cambiado a un tema de mapa claro
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
                 attribution: ''
             }).addTo(map);
@@ -713,7 +679,7 @@
             const dropIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#ef4444; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;'><span class='material-symbols-outlined' style='font-size:12px; color:white;'>home</span></div>", iconSize: [20, 20], iconAnchor: [10, 10] });
             
             myMarker = L.marker([0, 0], { icon: myIcon, zIndexOffset: 1000 }).addTo(map);
-            shopMarker = L.marker([0, 0], { icon: shopIcon }).addTo(map); // NUEVO
+            shopMarker = L.marker([0, 0], { icon: shopIcon }).addTo(map); 
             customerMarker = L.marker([0, 0], { icon: dropIcon }).addTo(map); 
             
             document.getElementById('focus-gps-btn').addEventListener('click', () => {
@@ -722,18 +688,15 @@
                 }
             });
 
-            // NUEVO: Lógica para el botón de pantalla completa
             const fullscreenBtn = document.getElementById('fullscreen-map-btn');
             const mapContainer = document.getElementById('map-container');
             fullscreenBtn.addEventListener('click', () => {
                 mapContainer.classList.toggle('map-fullscreen');
                 fullscreenBtn.querySelector('span').innerText = mapContainer.classList.contains('map-fullscreen') ? 'fullscreen_exit' : 'fullscreen';
-                // ¡Muy importante! Redibujar el mapa después de cambiar el tamaño del contenedor
                 setTimeout(() => { map.invalidateSize() }, 200);
             });
         }
 
-        // NUEVO: Función para actualizar marcadores y centrar el mapa
         function updateMapMarkers(order) {
             if (!map) return;
         
@@ -742,7 +705,6 @@
                 bounds.push(myMarker.getLatLng());
             }
 
-            // Ocultar ambos marcadores de destino al principio
             shopMarker.setOpacity(0);
             customerMarker.setOpacity(0);
         
@@ -757,13 +719,12 @@
             }
         
             if (bounds.length > 1) {
-                map.flyToBounds(bounds, { padding: [50, 50] }); // Centra el mapa para ver ambos puntos
+                map.flyToBounds(bounds, { padding: [50, 50] });
             }
         }
 
-        // NUEVO: Función para calcular la distancia entre dos puntos (Haversine)
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Radio de la Tierra en km
+            const R = 6371; 
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a =
@@ -771,7 +732,7 @@
                 Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c; // Distancia en km
+            return R * c; 
         }
 
         function startLocationTracking() {
@@ -798,7 +759,6 @@
                             timestamp: firebase.database.ServerValue.TIMESTAMP
                         });
 
-                        // MODIFICADO: Calcular y mostrar distancia
                         const distanceEl = document.getElementById('distance-display');
                         if (distanceEl) {
                             let destLat, destLng;
