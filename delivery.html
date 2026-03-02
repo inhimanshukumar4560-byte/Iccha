@@ -12,27 +12,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
     
-    <!-- Leaflet JS for Maps & Routing (Live Tracking & Exact Distance) -->
+    <!-- Leaflet JS for Maps (Live Tracking) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Leaflet Routing Machine for Actual Road Routes -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
     <style>
+        /* ================== */
+        /* NUEVO: TEMA CLARO  */
+        /* ================== */
         :root { 
             --primary: #06b6d4; /* Cyan */
             --primary-dark: #0891b2;
-            --bg-dark: #0f172a; 
-            --card-dark: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-light: #f1f5f9;      /* Light Gray BG */
+            --card-light: #ffffff;     /* White Cards */
+            --text-dark: #0f172a;     /* Dark Slate Text */
+            --text-muted: #64748b;     /* Muted Slate Text */
+            --border-color: #e2e8f0; /* Border Color */
         }
         
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-dark); 
-            color: var(--text-main); 
+            background-color: var(--bg-light); 
+            color: var(--text-dark); 
             -webkit-tap-highlight-color: transparent;
         }
         
@@ -40,10 +41,11 @@
         ::-webkit-scrollbar { display: none; }
         * { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .glass-card {
-            background: rgba(30, 41, 59, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        /* MODIFICADO: Estilo de tarjeta para tema claro */
+        .card {
+            background-color: var(--card-light);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
         }
 
         .btn-primary { background-color: var(--primary); color: white; font-weight: 600; transition: 0.2s; }
@@ -53,10 +55,11 @@
         .btn-danger { background-color: #ef4444; color: white; font-weight: 600; transition: 0.2s; }
         .btn-danger:active { transform: scale(0.98); background-color: #dc2626; }
 
+        /* MODIFICADO: Estilo de inputs para tema claro */
         input, select {
-            background-color: #334155;
-            border: 1px solid #475569;
-            color: white;
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: var(--text-dark);
             border-radius: 0.5rem;
             padding: 0.875rem;
             width: 100%;
@@ -74,18 +77,29 @@
         .toggle-checkbox { right: 0; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
         .toggle-label { width: 3rem; height: 1.5rem; background-color: #ef4444; border-radius: 9999px; transition: all 0.3s; }
 
-        #map { z-index: 10; border-radius: 1rem; width: 100%; height: 100%; }
-        
-        /* Hide Leaflet Routing Text Box to save space */
-        .leaflet-routing-container { display: none !important; }
+        #map { z-index: 10; border-radius: 1rem; }
         
         /* Slide up animation for new orders */
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
         
         /* Loader */
-        .loader { border: 3px solid #334155; border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; }
+        .loader { border: 3px solid #e2e8f0; border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* NUEVO: Estilos para el mapa en pantalla completa */
+        .map-fullscreen {
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 1000;
+            border-radius: 0 !important;
+        }
+        .map-fullscreen #map {
+            border-radius: 0 !important;
+        }
     </style>
 </head>
 <body class="overflow-hidden h-screen w-screen flex flex-col relative selection:bg-cyan-500/30">
@@ -93,40 +107,40 @@
     <!-- ========================================== -->
     <!-- 1. ONBOARDING / KYC SCREEN                 -->
     <!-- ========================================== -->
-    <div id="kyc-screen" class="fixed inset-0 z-[100] bg-slate-900 overflow-y-auto hidden">
+    <div id="kyc-screen" class="fixed inset-0 z-[100] bg-slate-100 overflow-y-auto hidden">
         <div class="p-6 pb-20 max-w-md mx-auto">
             <div class="text-center mb-8 pt-4">
-                <span class="material-symbols-outlined text-cyan-400 text-6xl mb-2">two_wheeler</span>
-                <h1 class="text-2xl font-bold text-white tracking-wide">Delivery Partner KYC</h1>
-                <p class="text-sm text-gray-400 mt-2">Join Iccha as a delivery executive. Fill in your details for admin approval.</p>
+                <span class="material-symbols-outlined text-cyan-500 text-6xl mb-2">two_wheeler</span>
+                <h1 class="text-2xl font-bold text-slate-800 tracking-wide">Delivery Partner KYC</h1>
+                <p class="text-sm text-slate-500 mt-2">Join Iccha as a delivery executive. Fill in your details for admin approval.</p>
             </div>
 
             <form id="kyc-form" class="space-y-5">
-                <div><label class="block text-sm text-gray-400 mb-1">Full Name</label><input type="text" id="dp-name" placeholder="John Doe" required></div>
-                <div><label class="block text-sm text-gray-400 mb-1">Mobile Number</label><input type="tel" id="dp-phone" placeholder="10-digit mobile number" maxlength="10" required></div>
+                <div><label class="block text-sm text-slate-500 mb-1">Full Name</label><input type="text" id="dp-name" placeholder="John Doe" required></div>
+                <div><label class="block text-sm text-slate-500 mb-1">Mobile Number</label><input type="tel" id="dp-phone" placeholder="10-digit mobile number" maxlength="10" required></div>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm text-gray-400 mb-1">Vehicle Type</label>
+                        <label class="block text-sm text-slate-500 mb-1">Vehicle Type</label>
                         <select id="dp-vehicle-type" required>
                             <option value="bike">Bike / Motorcycle</option>
                             <option value="scooter">Scooter / Activa</option>
                             <option value="van">Mini Van / Auto</option>
                         </select>
                     </div>
-                    <div><label class="block text-sm text-gray-400 mb-1">Vehicle Number</label><input type="text" id="dp-vehicle-no" placeholder="MH 01 AB 1234" class="uppercase" required></div>
+                    <div><label class="block text-sm text-slate-500 mb-1">Vehicle Number</label><input type="text" id="dp-vehicle-no" placeholder="MH 01 AB 1234" class="uppercase" required></div>
                 </div>
 
-                <div><label class="block text-sm text-gray-400 mb-1">Driving License Number</label><input type="text" id="dp-dl-no" placeholder="DL-1420110012345" class="uppercase" required></div>
+                <div><label class="block text-sm text-slate-500 mb-1">Driving License Number</label><input type="text" id="dp-dl-no" placeholder="DL-1420110012345" class="uppercase" required></div>
                 
-                <div class="p-4 bg-slate-800 rounded-xl border border-slate-700">
-                    <label class="block text-sm text-gray-400 mb-2">Upload Profile Photo (Selfie)</label>
-                    <input type="file" id="dp-photo" accept="image/*" class="text-sm bg-slate-700 p-2 border-none" required>
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <label class="block text-sm text-slate-500 mb-2">Upload Profile Photo (Selfie)</label>
+                    <input type="file" id="dp-photo" accept="image/*" class="text-sm bg-white p-2" required>
                 </div>
 
-                <div class="p-4 bg-slate-800 rounded-xl border border-slate-700">
-                    <label class="block text-sm text-gray-400 mb-2">Upload Driving License (Front)</label>
-                    <input type="file" id="dp-dl-photo" accept="image/*" class="text-sm bg-slate-700 p-2 border-none" required>
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <label class="block text-sm text-slate-500 mb-2">Upload Driving License (Front)</label>
+                    <input type="file" id="dp-dl-photo" accept="image/*" class="text-sm bg-white p-2" required>
                 </div>
 
                 <button type="submit" class="w-full btn-primary py-4 rounded-xl text-lg flex justify-center items-center gap-2 mt-4 shadow-[0_0_15px_rgba(6,182,212,0.4)]">
@@ -139,30 +153,30 @@
     <!-- ========================================== -->
     <!-- 2. PENDING APPROVAL SCREEN                 -->
     <!-- ========================================== -->
-    <div id="pending-screen" class="fixed inset-0 z-[90] bg-slate-900 flex flex-col items-center justify-center p-6 text-center hidden">
-        <div class="w-32 h-32 rounded-full bg-slate-800 border-4 border-yellow-500 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(234,179,8,0.2)]">
+    <div id="pending-screen" class="fixed inset-0 z-[90] bg-slate-100 flex flex-col items-center justify-center p-6 text-center hidden">
+        <div class="w-32 h-32 rounded-full bg-white border-4 border-yellow-500 flex items-center justify-center mb-6 shadow-lg shadow-yellow-500/10">
             <span class="material-symbols-outlined text-yellow-500 text-6xl">hourglass_empty</span>
         </div>
-        <h2 class="text-2xl font-bold text-white mb-2">Under Verification</h2>
-        <p class="text-gray-400 text-sm max-w-xs leading-relaxed">Your application has been submitted successfully. Please wait while the Admin verifies your documents. You will be able to access the dashboard once approved.</p>
-        <button onclick="window.location.reload()" class="mt-8 px-6 py-3 bg-slate-800 text-white rounded-lg border border-slate-700 hover:bg-slate-700 transition">Refresh Status</button>
+        <h2 class="text-2xl font-bold text-slate-800 mb-2">Under Verification</h2>
+        <p class="text-slate-500 text-sm max-w-xs leading-relaxed">Your application has been submitted successfully. Please wait while the Admin verifies your documents. You will be able to access the dashboard once approved.</p>
+        <button onclick="window.location.reload()" class="mt-8 px-6 py-3 bg-white text-slate-700 rounded-lg border border-slate-200 hover:bg-slate-50 transition shadow-sm">Refresh Status</button>
     </div>
 
     <!-- ========================================== -->
     <!-- 3. MAIN DASHBOARD SCREEN                   -->
     <!-- ========================================== -->
-    <div id="main-dashboard" class="flex-1 flex flex-col h-full hidden bg-slate-900">
+    <div id="main-dashboard" class="flex-1 flex flex-col h-full hidden">
         
         <!-- Header Section -->
-        <header class="glass-card px-4 py-3 sticky top-0 z-50 rounded-b-2xl shadow-lg border-b-0">
+        <header class="card px-4 py-3 sticky top-0 z-50 rounded-b-2xl border-t-0">
             <div class="flex justify-between items-center mb-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-slate-700 border border-cyan-500 overflow-hidden p-0.5">
-                        <img id="head-profile-img" src="https://placehold.co/100x100/1e293b/06b6d4?text=DP" class="w-full h-full rounded-full object-cover">
+                    <div class="w-10 h-10 rounded-full bg-slate-200 border border-cyan-500 overflow-hidden p-0.5">
+                        <img id="head-profile-img" src="https://placehold.co/100x100/e2e8f0/06b6d4?text=DP" class="w-full h-full rounded-full object-cover">
                     </div>
                     <div>
-                        <h2 class="text-sm font-bold text-white leading-tight" id="head-name">Driver Name</h2>
-                        <p class="text-[10px] text-cyan-400 font-semibold" id="head-vehicle">Vehicle No</p>
+                        <h2 class="text-sm font-bold text-slate-800 leading-tight" id="head-name">Driver Name</h2>
+                        <p class="text-[10px] text-cyan-500 font-semibold" id="head-vehicle">Vehicle No</p>
                     </div>
                 </div>
                 
@@ -178,13 +192,13 @@
 
             <!-- Quick Stats -->
             <div class="grid grid-cols-2 gap-3 mt-2">
-                <div class="bg-slate-800 rounded-xl p-3 border border-slate-700 shadow-inner">
-                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Today's Earnings</p>
-                    <p class="text-xl font-bold text-green-400">₹<span id="stat-earnings">0</span></p>
+                <div class="bg-slate-50 rounded-xl p-3 border border-slate-200">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Today's Earnings</p>
+                    <p class="text-xl font-bold text-green-500">₹<span id="stat-earnings">0</span></p>
                 </div>
-                <div class="bg-slate-800 rounded-xl p-3 border border-slate-700 shadow-inner">
-                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-1">Deliveries Done</p>
-                    <p class="text-xl font-bold text-white"><span id="stat-deliveries">0</span></p>
+                <div class="bg-slate-50 rounded-xl p-3 border border-slate-200">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Deliveries Done</p>
+                    <p class="text-xl font-bold text-slate-800"><span id="stat-deliveries">0</span></p>
                 </div>
             </div>
         </header>
@@ -193,33 +207,34 @@
         <main class="flex-1 overflow-y-auto p-4 pb-24 space-y-4 relative" id="main-content-area">
             
             <!-- Map Container (Hidden by default, shown when active delivery exists) -->
-            <div id="map-container" class="w-full h-72 bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-lg hidden relative">
-                <div id="map"></div>
+            <div id="map-container" class="w-full h-64 bg-slate-200 rounded-2xl border border-slate-200 overflow-hidden shadow-lg hidden relative">
+                <div id="map" class="w-full h-full"></div>
                 <!-- GPS Focus Button -->
-                <button id="focus-gps-btn" class="absolute bottom-4 right-4 z-[400] bg-white text-black p-2.5 rounded-full shadow-lg border border-gray-200 focus:outline-none active:scale-95">
+                <button id="focus-gps-btn" class="absolute bottom-4 right-16 z-[400] bg-white text-black p-2 rounded-full shadow-lg border border-gray-200 focus:outline-none active:scale-95">
                     <span class="material-symbols-outlined text-cyan-600">my_location</span>
+                </button>
+                <!-- NUEVO: Botón de pantalla completa -->
+                <button id="fullscreen-map-btn" class="absolute bottom-4 right-4 z-[400] bg-white text-black p-2 rounded-full shadow-lg border border-gray-200 focus:outline-none active:scale-95">
+                    <span class="material-symbols-outlined text-cyan-600">fullscreen</span>
                 </button>
             </div>
 
             <!-- Active / Current Delivery Section -->
             <div id="active-delivery-section" class="hidden animate-slide-up">
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2"><span class="material-symbols-outlined text-sm text-cyan-400">navigation</span> Current Task</h3>
-                    <span id="live-distance-badge" class="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2 py-1 rounded text-[10px] font-bold shadow-sm hidden">Calc Dist...</span>
-                </div>
-                <div id="active-order-card" class="bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl p-4 border border-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.15)] relative overflow-hidden">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-sm text-cyan-500">navigation</span> Current Task</h3>
+                <div id="active-order-card" class="card rounded-2xl p-4 border border-cyan-500/50 shadow-lg shadow-cyan-500/10 relative overflow-hidden">
                     <!-- Dynamic Content Injected Here via JS -->
                 </div>
             </div>
 
             <!-- New Incoming Requests Section -->
             <div id="new-requests-section">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-sm text-yellow-500">notifications_active</span> New Requests</h3>
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-sm text-yellow-500">notifications_active</span> New Requests</h3>
                 <div id="new-orders-list" class="space-y-3">
-                    <div class="text-center py-10 bg-slate-800/50 rounded-2xl border border-slate-800 border-dashed">
-                        <span class="material-symbols-outlined text-gray-600 text-4xl mb-2">moped</span>
-                        <p class="text-sm text-gray-500 font-medium">Waiting for new orders...</p>
-                        <p class="text-[10px] text-gray-600 mt-1">Make sure you are ONLINE.</p>
+                    <div class="text-center py-10 bg-slate-100 rounded-2xl border border-slate-200 border-dashed">
+                        <span class="material-symbols-outlined text-slate-400 text-4xl mb-2">moped</span>
+                        <p class="text-sm text-slate-500 font-medium">Waiting for new orders...</p>
+                        <p class="text-[10px] text-slate-400 mt-1">Make sure you are ONLINE.</p>
                     </div>
                 </div>
             </div>
@@ -227,20 +242,20 @@
         </main>
 
         <!-- Bottom Navigation -->
-        <nav class="glass-card fixed bottom-0 left-0 right-0 h-16 flex justify-around items-center rounded-t-2xl border-b-0 z-50">
-            <button class="flex flex-col items-center gap-1 text-cyan-400 transition-transform active:scale-95 w-16">
+        <nav class="card fixed bottom-0 left-0 right-0 h-16 flex justify-around items-center rounded-t-2xl border-b-0 z-50">
+            <button class="flex flex-col items-center gap-1 text-cyan-500 transition-transform active:scale-95 w-16">
                 <span class="material-symbols-outlined fill-1">home</span>
                 <span class="text-[9px] font-bold tracking-wider uppercase">Home</span>
             </button>
-            <button class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-transform active:scale-95 w-16">
+            <button class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-800 transition-transform active:scale-95 w-16">
                 <span class="material-symbols-outlined">receipt_long</span>
                 <span class="text-[9px] font-bold tracking-wider uppercase">History</span>
             </button>
-            <button class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-transform active:scale-95 w-16">
+            <button class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-800 transition-transform active:scale-95 w-16">
                 <span class="material-symbols-outlined">account_balance_wallet</span>
                 <span class="text-[9px] font-bold tracking-wider uppercase">Wallet</span>
             </button>
-            <button class="flex flex-col items-center gap-1 text-gray-500 hover:text-white transition-transform active:scale-95 w-16">
+            <button class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-800 transition-transform active:scale-95 w-16">
                 <span class="material-symbols-outlined">person</span>
                 <span class="text-[9px] font-bold tracking-wider uppercase">Profile</span>
             </button>
@@ -295,7 +310,9 @@
         // Map Variables
         let map = null;
         let myMarker = null;
-        let routingControl = null;
+        let shopMarker = null;      // NUEVO: Marcador para la tienda
+        let customerMarker = null;
+        let routingLine = null;
         let watchPositionId = null;
         let myCurrentLat = 0;
         let myCurrentLng = 0;
@@ -315,7 +332,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             checkOnboardingStatus();
             
-            // Toggle Logic
             const toggle = document.getElementById('duty-toggle');
             const statusText = document.getElementById('duty-status-text');
             
@@ -323,19 +339,18 @@
                 isOnline = e.target.checked;
                 statusText.innerText = isOnline ? 'ONLINE' : 'OFFLINE';
                 statusText.className = `text-[10px] font-bold uppercase mt-1 tracking-wider mr-2 ${isOnline ? 'text-green-500' : 'text-red-500'}`;
-                
                 myProfileRef.update({ isOnline: isOnline });
 
                 if (isOnline) {
                     startLocationTracking();
-                    fetchOrders(); 
+                    fetchOrders();
                 } else {
                     stopLocationTracking();
                     document.getElementById('new-orders-list').innerHTML = `
-                        <div class="text-center py-10 bg-slate-800/50 rounded-2xl border border-slate-800 border-dashed">
-                            <span class="material-symbols-outlined text-gray-600 text-4xl mb-2">cloud_off</span>
-                            <p class="text-sm text-gray-500 font-medium">You are Offline</p>
-                            <p class="text-[10px] text-gray-600 mt-1">Go online to receive delivery requests.</p>
+                        <div class="text-center py-10 bg-slate-100 rounded-2xl border border-slate-200 border-dashed">
+                            <span class="material-symbols-outlined text-slate-400 text-4xl mb-2">cloud_off</span>
+                            <p class="text-sm text-slate-500 font-medium">You are Offline</p>
+                            <p class="text-[10px] text-slate-400 mt-1">Go online to receive delivery requests.</p>
                         </div>`;
                 }
             });
@@ -389,7 +404,7 @@
                 dlNumber: document.getElementById('dp-dl-no').value.trim().toUpperCase(),
                 photoUrl: photoUrl,
                 dlUrl: dlUrl,
-                status: 'pending', 
+                status: 'pending',
                 isOnline: false,
                 earnings: 0,
                 totalDeliveries: 0,
@@ -416,7 +431,7 @@
                 document.getElementById('duty-toggle').dispatchEvent(e);
             }
 
-            fetchOrders(); 
+            fetchOrders();
         }
 
         function fetchOrders() {
@@ -428,47 +443,35 @@
                 let newOrdersHtml = '';
 
                 Object.entries(data).forEach(([orderId, order]) => {
-                    // Check if actively assigned to me
                     if (order.deliveryBoyId === PARTNER_ID && (order.status === 'Accepted by Delivery' || order.status === 'Out for Delivery')) {
                         hasActiveOrder = true;
                         currentActiveOrder = { id: orderId, ...order };
                         renderActiveOrder(currentActiveOrder);
                     }
                     
-                    // FIX: Checking for ANY pending order state that needs delivery assignment
-                    const isPending = (order.status === 'Paid & Pending' || order.status === 'Ready for Pickup' || order.status === 'Pending');
-                    
-                    if (isOnline && !hasActiveOrder && isPending && (!order.deliveryBoyId || order.deliveryBoyId === PARTNER_ID)) {
+                    if (isOnline && !hasActiveOrder && order.status === 'Ready for Pickup' && (!order.deliveryBoyId || order.deliveryBoyId === PARTNER_ID)) {
                         newOrdersHtml += generateNewOrderCard(orderId, order);
                     }
                 });
 
-                // Toggle Views
                 if (hasActiveOrder) {
                     document.getElementById('new-requests-section').classList.add('hidden');
                     document.getElementById('active-delivery-section').classList.remove('hidden');
                     document.getElementById('map-container').classList.remove('hidden');
-                    initMap(); 
-                    if(currentActiveOrder) drawRouteForActiveOrder(currentActiveOrder);
+                    initMap();
                 } else {
                     currentActiveOrder = null;
                     document.getElementById('new-requests-section').classList.remove('hidden');
                     document.getElementById('active-delivery-section').classList.add('hidden');
                     document.getElementById('map-container').classList.add('hidden');
-                    document.getElementById('live-distance-badge').classList.add('hidden');
-                    
-                    if(routingControl && map) {
-                        map.removeControl(routingControl);
-                        routingControl = null;
-                    }
                     
                     const listEl = document.getElementById('new-orders-list');
                     if (isOnline) {
                         listEl.innerHTML = newOrdersHtml || `
-                            <div class="text-center py-10 bg-slate-800/50 rounded-2xl border border-slate-800 border-dashed">
-                                <span class="material-symbols-outlined text-gray-600 text-4xl mb-2">moped</span>
-                                <p class="text-sm text-gray-500 font-medium">Looking for nearby orders...</p>
-                                <div class="w-3/4 mx-auto h-1 bg-slate-700 mt-3 rounded-full overflow-hidden"><div class="h-full bg-cyan-500 w-1/3 animate-shimmer rounded-full" style="animation: shimmer 1.5s infinite linear; transform-origin: left;"></div></div>
+                            <div class="text-center py-10 bg-slate-100 rounded-2xl border border-slate-200 border-dashed">
+                                <span class="material-symbols-outlined text-slate-400 text-4xl mb-2">moped</span>
+                                <p class="text-sm text-slate-500 font-medium">Looking for nearby orders...</p>
+                                <div class="w-3/4 mx-auto h-1 bg-slate-200 mt-3 rounded-full overflow-hidden"><div class="h-full bg-cyan-500 w-1/3 animate-shimmer rounded-full" style="animation: shimmer 1.5s infinite linear; transform-origin: left;"></div></div>
                             </div>`;
                     }
                 }
@@ -476,57 +479,46 @@
         }
 
         function generateNewOrderCard(orderId, order) {
-            const earning = 40; // Static placeholder
-            const shopName = order.shopName || "Iccha Fulfillment Hub";
-            const custAddress = order.customerInfo ? order.customerInfo.address : "Customer Address Not Provided";
-            const timeStr = order.timestamp ? new Date(order.timestamp).toLocaleTimeString() : 'Just Now';
+            const earning = 40; 
+            const shopName = order.shopName || "Seller Shop";
+            const custAddress = order.customerInfo ? order.customerInfo.address : "Customer Address";
 
             return `
-            <div class="bg-slate-800 rounded-2xl p-4 border border-slate-700 shadow-md transition-transform active:scale-[0.98]">
-                <div class="flex justify-between items-start mb-3 border-b border-slate-700 pb-3">
+            <div class="card rounded-2xl p-4">
+                <div class="flex justify-between items-start mb-3 border-b border-slate-200 pb-3">
                     <div>
-                        <span class="bg-cyan-500/20 text-cyan-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">New Request</span>
-                        <p class="text-sm font-bold text-white mt-2">Order #${orderId.substring(1,8).toUpperCase()}</p>
-                        <p class="text-[9px] text-gray-500 mt-0.5">${timeStr}</p>
+                        <span class="bg-cyan-100 text-cyan-600 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">New Request</span>
+                        <p class="text-sm font-bold text-slate-800 mt-2">Order #${orderId.substring(1,7).toUpperCase()}</p>
                     </div>
                     <div class="text-right">
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Est. Earning</p>
-                        <p class="text-2xl font-bold text-green-400">₹${earning}</p>
-                        <p class="text-[9px] text-gray-500 bg-slate-700 px-1.5 py-0.5 rounded mt-1">${order.paymentMethod || 'PREPAID'}</p>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Est. Earning</p>
+                        <p class="text-2xl font-bold text-green-500">₹${earning}</p>
                     </div>
                 </div>
                 
-                <div class="space-y-3 mb-4 relative pl-1">
-                    <div class="absolute left-4 top-3 bottom-3 w-0.5 bg-slate-600 border-l border-dashed border-slate-500"></div>
-                    
+                <div class="space-y-3 mb-4 relative">
+                    <div class="absolute left-3 top-2 bottom-2 w-0.5 bg-slate-200"></div>
                     <div class="flex gap-3 relative z-10">
-                        <div class="w-6 h-6 rounded-full bg-slate-800 border-2 border-cyan-400 flex items-center justify-center shrink-0 shadow-[0_0_8px_rgba(6,182,212,0.4)]"><span class="material-symbols-outlined text-[12px] text-cyan-400">storefront</span></div>
+                        <div class="w-6 h-6 rounded-full bg-slate-100 border-2 border-cyan-400 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[12px] text-cyan-400">storefront</span></div>
                         <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Pickup From</p>
-                            <p class="text-xs font-medium text-white line-clamp-1">${shopName}</p>
+                            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Pickup</p>
+                            <p class="text-xs font-medium text-slate-700 line-clamp-2">${shopName}</p>
                         </div>
                     </div>
-                    
-                    <div class="flex gap-3 relative z-10 pt-2">
-                        <div class="w-6 h-6 rounded-full bg-slate-800 border-2 border-red-400 flex items-center justify-center shrink-0 shadow-[0_0_8px_rgba(239,68,68,0.4)]"><span class="material-symbols-outlined text-[12px] text-red-400">location_on</span></div>
+                    <div class="flex gap-3 relative z-10">
+                        <div class="w-6 h-6 rounded-full bg-slate-100 border-2 border-red-400 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[12px] text-red-400">location_on</span></div>
                         <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Dropoff To</p>
-                            <p class="text-xs font-medium text-gray-300 line-clamp-2 leading-tight">${custAddress}</p>
+                            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Dropoff</p>
+                            <p class="text-xs font-medium text-slate-700 line-clamp-2">${custAddress}</p>
                         </div>
                     </div>
                 </div>
-
-                <div class="flex gap-3 pt-3 border-t border-slate-700">
-                    <button onclick="acceptOrder('${orderId}')" class="flex-1 btn-primary py-3 rounded-xl shadow-[0_4px_15px_rgba(6,182,212,0.3)] font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined">check_circle</span> Accept Order
-                    </button>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="acceptOrder('${orderId}')" class="flex-1 btn-primary py-3 rounded-xl shadow-lg shadow-cyan-500/20">Accept</button>
                 </div>
             </div>`;
         }
 
-        // ==========================================
-        // ACTION: ACCEPT ORDER
-        // ==========================================
         window.acceptOrder = function(orderId) {
             ordersRef.child(orderId).update({
                 deliveryBoyId: PARTNER_ID,
@@ -535,42 +527,49 @@
                 status: 'Accepted by Delivery',
                 acceptedAt: firebase.database.ServerValue.TIMESTAMP
             });
-            alert("Order Accepted! Map will now guide you.");
+            alert("Order Accepted! Head to the shop for pickup.");
         };
-
+        
         // ==========================================
         // ACTIVE ORDER UI LOGIC
         // ==========================================
         function renderActiveOrder(order) {
             const card = document.getElementById('active-order-card');
             const state = order.status; 
-            
             let html = '';
             
+            // MODIFICADO: Actualizar marcadores del mapa según el estado del pedido
+            updateMapMarkers(order);
+
             if (state === 'Accepted by Delivery') {
-                const shopName = order.shopName || "Iccha Hub";
+                const shopName = order.shopName || "Seller Shop";
                 const shopPhone = order.shopPhone || "N/A";
                 
                 html = `
-                <div class="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-3">
-                    <span class="bg-yellow-500/20 text-yellow-500 border border-yellow-500/30 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider animate-pulse flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">directions_bike</span> Go to Pickup</span>
-                    <span class="text-xs text-gray-400 font-mono">#${order.id.substring(1,8).toUpperCase()}</span>
+                <div class="flex justify-between items-center mb-4 border-b border-slate-200 pb-3">
+                    <span class="bg-yellow-100 text-yellow-600 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">Go to Pickup</span>
+                    <!-- NUEVO: Contenedor para la distancia -->
+                    <span id="distance-display" class="text-xs font-bold text-cyan-600">-- km away</span>
                 </div>
                 
                 <div class="flex gap-4 items-center mb-5">
-                    <div class="w-12 h-12 rounded-full bg-cyan-950 border-2 border-cyan-400 flex flex-col items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.4)] shrink-0 relative">
-                        <span class="material-symbols-outlined text-cyan-400">storefront</span>
+                    <div class="w-12 h-12 rounded-full bg-cyan-50 border-2 border-cyan-400 flex items-center justify-center shadow-lg shadow-cyan-500/10 shrink-0">
+                        <span class="material-symbols-outlined text-cyan-500">storefront</span>
                     </div>
-                    <div class="flex-1">
-                        <p class="text-[9px] uppercase font-bold text-gray-500 tracking-widest mb-0.5">Shop Details</p>
-                        <h4 class="font-bold text-white text-sm leading-tight line-clamp-1">${shopName}</h4>
-                        <p class="text-xs text-cyan-400 mt-1 font-mono">${shopPhone}</p>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-base leading-tight">${shopName}</h4>
+                        <p class="text-xs text-slate-500 mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">call</span> ${shopPhone}</p>
                     </div>
-                    <a href="tel:${shopPhone}" class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-green-400 border border-slate-600 shadow-md active:scale-95 transition"><span class="material-symbols-outlined text-[20px]">phone</span></a>
+                    <a href="tel:${shopPhone}" class="ml-auto w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-green-500 border border-slate-200"><span class="material-symbols-outlined">phone</span></a>
                 </div>
 
-                <button onclick="markPickedUp('${order.id}')" class="w-full py-4 btn-primary rounded-xl text-sm font-bold uppercase tracking-widest shadow-[0_4px_15px_rgba(6,182,212,0.3)] flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined">inventory_2</span> Mark as Picked Up
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 mb-4">
+                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Action Required</p>
+                    <p class="text-sm text-slate-600">Reach the shop, collect the package, and mark it as picked up.</p>
+                </div>
+
+                <button onclick="markPickedUp('${order.id}')" class="w-full py-4 btn-primary rounded-xl text-lg shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2">
+                    <span>Mark as Picked Up</span> <span class="material-symbols-outlined">check_circle</span>
                 </button>
                 `;
             } 
@@ -578,40 +577,39 @@
                 const custName = order.customerInfo ? order.customerInfo.name : "Customer";
                 const custPhone = order.customerInfo ? order.customerInfo.phone : "N/A";
                 const custAddress = order.customerInfo ? order.customerInfo.address : "Address not provided";
-                const amountToCollect = order.paymentMethod === 'COD' ? order.totalAmount : "PAID";
+                const amountToCollect = order.paymentMethod === 'COD' ? `₹${order.totalAmount}` : "PAID";
 
                 html = `
-                <div class="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-3">
-                    <span class="bg-green-500/20 text-green-400 border border-green-500/30 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider animate-pulse flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">two_wheeler</span> Out for Delivery</span>
-                    <span class="text-xs text-gray-400 font-mono">#${order.id.substring(1,8).toUpperCase()}</span>
+                <div class="flex justify-between items-center mb-4 border-b border-slate-200 pb-3">
+                    <span class="bg-green-100 text-green-600 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">Out for Delivery</span>
+                     <!-- NUEVO: Contenedor para la distancia -->
+                    <span id="distance-display" class="text-xs font-bold text-cyan-600">-- km away</span>
                 </div>
                 
                 <div class="flex gap-4 items-center mb-4">
-                    <div class="w-12 h-12 rounded-full bg-red-950 border-2 border-red-400 flex flex-col items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.4)] shrink-0">
-                        <span class="material-symbols-outlined text-red-400">person</span>
+                    <div class="w-12 h-12 rounded-full bg-red-50 border-2 border-red-400 flex items-center justify-center shadow-lg shadow-red-500/10 shrink-0">
+                        <span class="material-symbols-outlined text-red-500">person</span>
                     </div>
-                    <div class="flex-1">
-                        <p class="text-[9px] uppercase font-bold text-gray-500 tracking-widest mb-0.5">Customer</p>
-                        <h4 class="font-bold text-white text-sm leading-tight line-clamp-1">${custName}</h4>
-                        <p class="text-xs text-red-400 mt-1 font-mono">${custPhone}</p>
-                    </div>
-                    <a href="tel:${custPhone}" class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-green-400 border border-slate-600 shadow-md active:scale-95 transition"><span class="material-symbols-outlined text-[20px]">phone</span></a>
-                </div>
-
-                <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-700 mb-4 space-y-3 shadow-inner">
                     <div>
-                        <p class="text-[9px] text-gray-500 uppercase font-bold tracking-widest mb-1 flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-red-400">location_on</span> Delivery Address</p>
-                        <p class="text-[11px] text-gray-300 leading-relaxed">${custAddress}</p>
+                        <h4 class="font-bold text-slate-800 text-base leading-tight">${custName}</h4>
+                        <p class="text-xs text-slate-500 mt-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">call</span> ${custPhone}</p>
                     </div>
-                    <div class="border-t border-slate-700 pt-2 flex justify-between items-center">
-                        <span class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Collect Amount</span>
-                        <span class="text-lg font-bold ${amountToCollect === 'PAID' ? 'text-green-400 bg-green-400/10 px-2 rounded' : 'text-yellow-400'}">${amountToCollect}</span>
+                    <a href="tel:${custPhone}" class="ml-auto w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-green-500 border border-slate-200"><span class="material-symbols-outlined">phone</span></a>
+                </div>
+
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 mb-4 space-y-3">
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Delivery Address</p>
+                        <p class="text-xs text-slate-700 leading-relaxed">${custAddress}</p>
+                    </div>
+                    <div class="border-t border-slate-200 pt-2 flex justify-between items-center">
+                        <span class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Amount to Collect</span>
+                        <span class="text-lg font-bold ${amountToCollect === 'PAID' ? 'text-green-500' : 'text-yellow-500'}">${amountToCollect}</span>
                     </div>
                 </div>
 
-                <button onclick="markDelivered('${order.id}', ${order.paymentMethod === 'COD'})" class="w-full py-4 btn-success rounded-xl text-sm font-bold uppercase tracking-widest shadow-[0_4px_15px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-white/20 w-1/4 skew-x-[-20deg] animate-shimmer"></div>
-                    <span class="material-symbols-outlined">how_to_reg</span> Complete Delivery
+                <button onclick="markDelivered('${order.id}', ${order.paymentMethod === 'COD'})" class="w-full py-4 btn-success rounded-xl text-lg shadow-lg shadow-green-500/30 flex items-center justify-center gap-2">
+                    <span>Swipe to Deliver</span> <span class="material-symbols-outlined">how_to_reg</span>
                 </button>
                 `;
             }
@@ -620,150 +618,101 @@
 
         window.markPickedUp = function(orderId) {
             if(confirm("Confirm you have picked up the package from the shop?")) {
-                ordersRef.child(orderId).update({
-                    status: 'Out for Delivery',
-                    pickedUpAt: firebase.database.ServerValue.TIMESTAMP
-                });
+                ordersRef.child(orderId).update({ status: 'Out for Delivery', pickedUpAt: firebase.database.ServerValue.TIMESTAMP });
             }
         };
 
         window.markDelivered = function(orderId, isCOD) {
-            let msg = isCOD ? "Confirm Cash Collected and Package Delivered?" : "Confirm Package Delivered to Customer?";
+            let msg = isCOD ? "Confirm cash collected and package delivered?" : "Confirm package delivered to customer?";
             if(confirm(msg)) {
-                ordersRef.child(orderId).update({
-                    status: 'Delivered',
-                    deliveredAt: firebase.database.ServerValue.TIMESTAMP
-                });
-
+                ordersRef.child(orderId).update({ status: 'Delivered', deliveredAt: firebase.database.ServerValue.TIMESTAMP });
                 const newEarnings = (PARTNER_DATA.earnings || 0) + 40;
                 const newTotal = (PARTNER_DATA.totalDeliveries || 0) + 1;
-                
-                myProfileRef.update({
-                    earnings: newEarnings,
-                    totalDeliveries: newTotal
-                });
-
+                myProfileRef.update({ earnings: newEarnings, totalDeliveries: newTotal });
                 alert("Delivery Successful! Great job.");
-                
-                // Clear Route
-                if(routingControl && map) {
-                    map.removeControl(routingControl);
-                    routingControl = null;
-                }
-                document.getElementById('live-distance-badge').classList.add('hidden');
             }
         };
 
         // ==========================================
-        // MAP & ROAD ROUTING (LEAFLET + LRM)
+        // MAP & LIVE TRACKING
         // ==========================================
         function initMap() {
             if (map !== null) {
-                map.invalidateSize();
+                map.invalidateSize(); // Asegura que el mapa se redibuje si estaba oculto
                 return;
             }
             
             map = L.map('map', { zoomControl: false }).setView([20.5937, 78.9629], 5);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            // MODIFICADO: Cambiado a un tema de mapa claro
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
                 attribution: ''
             }).addTo(map);
 
-            const myIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#06b6d4; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 0 15px #06b6d4;'></div>", iconSize: [16, 16], iconAnchor: [8, 8] });
-            myMarker = L.marker([0, 0], {icon: myIcon, zIndexOffset: 1000}).addTo(map);
+            const myIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#06b6d4; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3);'></div>", iconSize: [16, 16], iconAnchor: [8, 8] });
+            const shopIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#6366f1; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;'><span class='material-symbols-outlined' style='font-size:12px; color:white;'>storefront</span></div>", iconSize: [20, 20], iconAnchor: [10, 10] });
+            const dropIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#ef4444; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;'><span class='material-symbols-outlined' style='font-size:12px; color:white;'>home</span></div>", iconSize: [20, 20], iconAnchor: [10, 10] });
+            
+            myMarker = L.marker([0, 0], { icon: myIcon, zIndexOffset: 1000 }).addTo(map);
+            shopMarker = L.marker([0, 0], { icon: shopIcon }).addTo(map); // NUEVO
+            customerMarker = L.marker([0, 0], { icon: dropIcon }).addTo(map); 
             
             document.getElementById('focus-gps-btn').addEventListener('click', () => {
                 if(myCurrentLat && myCurrentLng) {
-                    map.flyTo([myCurrentLat, myCurrentLng], 15, { animate: true, duration: 1 });
+                    map.flyTo([myCurrentLat, myCurrentLng], 16, { animate: true, duration: 1 });
                 }
+            });
+
+            // NUEVO: Lógica para el botón de pantalla completa
+            const fullscreenBtn = document.getElementById('fullscreen-map-btn');
+            const mapContainer = document.getElementById('map-container');
+            fullscreenBtn.addEventListener('click', () => {
+                mapContainer.classList.toggle('map-fullscreen');
+                fullscreenBtn.querySelector('span').innerText = mapContainer.classList.contains('map-fullscreen') ? 'fullscreen_exit' : 'fullscreen';
+                // ¡Muy importante! Redibujar el mapa después de cambiar el tamaño del contenedor
+                setTimeout(() => { map.invalidateSize() }, 200);
             });
         }
 
-        // Function to extract coordinates from text via Nominatim Geocoding API
-        async function geocodeAddress(addressText) {
-            try {
-                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addressText)}`);
-                const data = await res.json();
-                if(data && data.length > 0) {
-                    return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-                }
-            } catch(e) { console.error("Geocoding failed", e); }
-            return null;
-        }
-
-        // Draw Actual Road Route
-        async function drawRouteForActiveOrder(order) {
-            if(!map || !myCurrentLat || !myCurrentLng) return;
-
-            const badge = document.getElementById('live-distance-badge');
-            badge.classList.remove('hidden');
-            badge.innerText = "Routing...";
-
-            let waypoints = [];
-            // Point A: Delivery Boy
-            waypoints.push(L.latLng(myCurrentLat, myCurrentLng));
-
-            // Custom Icons for Waypoints
-            const shopIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#ef4444; width:18px; height:18px; border-radius:50%; border:2px solid white; box-shadow: 0 0 10px #ef4444;'></div>", iconSize: [18, 18], iconAnchor: [9, 9] }); // RED DOT FOR SHOP
-            const dropIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#10b981; width:20px; height:20px; border-radius:50%; border:2px solid white; box-shadow: 0 0 10px #10b981;'></div>", iconSize: [20, 20], iconAnchor: [10, 10] }); // GREEN DOT FOR CUSTOMER
-
-            let shopCoords = null;
-            let custCoords = null;
-
-            // Simple Geocoding fallback logic.
-            // If API fails, we create dummy coordinates near the delivery boy so the map doesn't look broken.
-            const dummyOffset1 = 0.02; // ~2km
-            const dummyOffset2 = 0.05; // ~5km
-
-            if(order.status === 'Accepted by Delivery') {
-                // Must go to shop first
-                if(order.shopAddress) shopCoords = await geocodeAddress(order.shopAddress);
-                if(!shopCoords) shopCoords = [myCurrentLat + dummyOffset1, myCurrentLng + dummyOffset1]; // Fallback Red Dot
-                
-                waypoints.push(L.latLng(shopCoords[0], shopCoords[1]));
-            } 
-            else if (order.status === 'Out for Delivery') {
-                // Going to Customer
-                const addr = order.customerInfo ? order.customerInfo.address : "";
-                if(addr) custCoords = await geocodeAddress(addr);
-                if(!custCoords) custCoords = [myCurrentLat - dummyOffset2, myCurrentLng - dummyOffset2]; // Fallback Green Dot
-                
-                waypoints.push(L.latLng(custCoords[0], custCoords[1]));
+        // NUEVO: Función para actualizar marcadores y centrar el mapa
+        function updateMapMarkers(order) {
+            if (!map) return;
+        
+            const bounds = [];
+            if(myMarker.getLatLng().lat !== 0) {
+                bounds.push(myMarker.getLatLng());
             }
 
-            // Remove existing route if any
-            if(routingControl) { map.removeControl(routingControl); }
-
-            // Add new Route
-            routingControl = L.Routing.control({
-                waypoints: waypoints,
-                routeWhileDragging: false,
-                addWaypoints: false,
-                fitSelectedRoutes: true,
-                show: false, // Hides the big text instruction box
-                lineOptions: {
-                    styles: [{color: '#06b6d4', opacity: 0.8, weight: 5}]
-                },
-                createMarker: function(i, wp, nWps) {
-                    if (i === 0) return null; // DP marker already exists
-                    
-                    if (order.status === 'Accepted by Delivery' && i === 1) {
-                        return L.marker(wp.latLng, {icon: shopIcon}).bindPopup("Shop (Pickup)");
-                    }
-                    if (order.status === 'Out for Delivery' && i === 1) {
-                        return L.marker(wp.latLng, {icon: dropIcon}).bindPopup("Customer (Drop)");
-                    }
-                    return L.marker(wp.latLng);
-                }
-            }).addTo(map);
-
-            // Get exact distance
-            routingControl.on('routesfound', function(e) {
-                var routes = e.routes;
-                var distanceKm = (routes[0].summary.totalDistance / 1000).toFixed(1);
-                badge.innerHTML = `<span class="material-symbols-outlined text-[12px] align-middle mr-1">route</span>${distanceKm} km`;
-            });
+            // Ocultar ambos marcadores de destino al principio
+            shopMarker.setOpacity(0);
+            customerMarker.setOpacity(0);
+        
+            if (order.status === 'Accepted by Delivery' && order.shopLocation) {
+                const shopLatLng = [order.shopLocation.lat, order.shopLocation.lng];
+                shopMarker.setLatLng(shopLatLng).setOpacity(1);
+                bounds.push(shopLatLng);
+            } else if (order.status === 'Out for Delivery' && order.customerInfo && order.customerInfo.location) {
+                const customerLatLng = [order.customerInfo.location.lat, order.customerInfo.location.lng];
+                customerMarker.setLatLng(customerLatLng).setOpacity(1);
+                bounds.push(customerLatLng);
+            }
+        
+            if (bounds.length > 1) {
+                map.flyToBounds(bounds, { padding: [50, 50] }); // Centra el mapa para ver ambos puntos
+            }
         }
 
+        // NUEVO: Función para calcular la distancia entre dos puntos (Haversine)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radio de la Tierra en km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; // Distancia en km
+        }
 
         function startLocationTracking() {
             if (!("geolocation" in navigator)) { 
@@ -779,43 +728,43 @@
                     if(map && myMarker) {
                         const newLatLng = new L.LatLng(myCurrentLat, myCurrentLng);
                         myMarker.setLatLng(newLatLng);
-                        
-                        if(map.getZoom() < 12) {
-                            map.setView(newLatLng, 15);
-                        }
+                        if(map.getZoom() < 10) map.setView(newLatLng, 16);
                     }
 
-                    // Initial Route Draw if just came online and has order
-                    if(currentActiveOrder && !routingControl) {
-                        drawRouteForActiveOrder(currentActiveOrder);
-                    }
-
-                    if (currentActiveOrder && (currentActiveOrder.status === 'Accepted by Delivery' || currentActiveOrder.status === 'Out for Delivery')) {
+                    if (currentActiveOrder) {
                         ordersRef.child(currentActiveOrder.id).child('deliveryLocation').set({
                             lat: myCurrentLat,
                             lng: myCurrentLng,
                             timestamp: firebase.database.ServerValue.TIMESTAMP
                         });
+
+                        // MODIFICADO: Calcular y mostrar distancia
+                        const distanceEl = document.getElementById('distance-display');
+                        if (distanceEl) {
+                            let destLat, destLng;
+                            if (currentActiveOrder.status === 'Accepted by Delivery' && currentActiveOrder.shopLocation) {
+                                destLat = currentActiveOrder.shopLocation.lat;
+                                destLng = currentActiveOrder.shopLocation.lng;
+                            } else if (currentActiveOrder.status === 'Out for Delivery' && currentActiveOrder.customerInfo.location) {
+                                destLat = currentActiveOrder.customerInfo.location.lat;
+                                destLng = currentActiveOrder.customerInfo.location.lng;
+                            }
+
+                            if (destLat && destLng) {
+                                const dist = calculateDistance(myCurrentLat, myCurrentLng, destLat, destLng);
+                                distanceEl.innerText = `${dist.toFixed(2)} km away`;
+                            }
+                        }
                     }
                 },
                 (error) => { 
                     console.error("GPS Error:", error); 
-                    // Handling the HTTP/Secure Origin Error Gracefully so map still shows up
                     if(error.code === 1 || (error.message && error.message.includes("secure origins"))) {
-                        // FALLBACK FOR HTTP TESTING (Delhi coordinates)
-                        myCurrentLat = 28.6139;
-                        myCurrentLng = 77.2090;
-                        if(map && myMarker) {
-                            const newLatLng = new L.LatLng(myCurrentLat, myCurrentLng);
-                            myMarker.setLatLng(newLatLng);
-                            map.setView(newLatLng, 15);
-                        }
-                        if(currentActiveOrder && !routingControl) { drawRouteForActiveOrder(currentActiveOrder); }
+                        alert("Bhai, Live Location ke liye app ko HTTPS (Secure) par host karna zaroori hai. Localhost ya secure link par test karein.");
+                        if(document.getElementById('duty-toggle').checked) { document.getElementById('duty-toggle').click(); }
                     } else {
                         alert("Please turn on your device GPS/Location to receive orders.");
-                        if(document.getElementById('duty-toggle').checked) {
-                            document.getElementById('duty-toggle').click();
-                        }
+                        if(document.getElementById('duty-toggle').checked) { document.getElementById('duty-toggle').click(); }
                     }
                 },
                 { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
@@ -830,12 +779,7 @@
         }
 
         const style = document.createElement('style');
-        style.innerHTML = `
-            @keyframes shimmer {
-                0% { transform: translateX(-150%); }
-                100% { transform: translateX(300%); }
-            }
-        `;
+        style.innerHTML = `@keyframes shimmer { 0% { transform: translateX(-150%); } 100% { transform: translateX(300%); } }`;
         document.head.appendChild(style);
 
     </script>
