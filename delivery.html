@@ -17,9 +17,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
-        /* ================== */
-        /* NUEVO: TEMA CLARO  */
-        /* ================== */
+        /* TEMA: LIGHT MODE (Jaisa aapne screenshot me dikhaya) */
         :root { 
             --primary: #06b6d4; /* Cyan */
             --primary-dark: #0891b2;
@@ -41,21 +39,25 @@
         ::-webkit-scrollbar { display: none; }
         * { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* MODIFICADO: Estilo de tarjeta para tema claro */
+        /* Card Style */
         .card {
             background-color: var(--card-light);
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
         }
 
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
         .btn-primary { background-color: var(--primary); color: white; font-weight: 600; transition: 0.2s; }
         .btn-primary:active { transform: scale(0.98); background-color: var(--primary-dark); }
         .btn-success { background-color: #10b981; color: white; font-weight: 600; transition: 0.2s; }
         .btn-success:active { transform: scale(0.98); background-color: #059669; }
-        .btn-danger { background-color: #ef4444; color: white; font-weight: 600; transition: 0.2s; }
-        .btn-danger:active { transform: scale(0.98); background-color: #dc2626; }
-
-        /* MODIFICADO: Estilo de inputs para tema claro */
+        
+        /* Inputs */
         input, select {
             background-color: #f8fafc;
             border: 1px solid #cbd5e1;
@@ -79,7 +81,7 @@
 
         #map { z-index: 10; border-radius: 1rem; }
         
-        /* Slide up animation for new orders */
+        /* Animations */
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
         
@@ -87,7 +89,7 @@
         .loader { border: 3px solid #e2e8f0; border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* NUEVO: Estilos para el mapa en pantalla completa */
+        /* Fullscreen Map Override */
         .map-fullscreen {
             position: fixed !important;
             top: 0;
@@ -143,7 +145,7 @@
                     <input type="file" id="dp-dl-photo" accept="image/*" class="text-sm bg-white p-2" required>
                 </div>
 
-                <button type="submit" class="w-full btn-primary py-4 rounded-xl text-lg flex justify-center items-center gap-2 mt-4 shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+                <button type="submit" class="w-full btn-primary py-4 rounded-xl text-lg flex justify-center items-center gap-2 mt-4 shadow-lg shadow-cyan-500/30">
                     <span>Submit Application</span><div id="kyc-loader" class="loader"></div>
                 </button>
             </form>
@@ -158,14 +160,14 @@
             <span class="material-symbols-outlined text-yellow-500 text-6xl">hourglass_empty</span>
         </div>
         <h2 class="text-2xl font-bold text-slate-800 mb-2">Under Verification</h2>
-        <p class="text-slate-500 text-sm max-w-xs leading-relaxed">Your application has been submitted successfully. Please wait while the Admin verifies your documents. You will be able to access the dashboard once approved.</p>
+        <p class="text-slate-500 text-sm max-w-xs leading-relaxed">Your application has been submitted successfully. Please wait while the Admin verifies your documents.</p>
         <button onclick="window.location.reload()" class="mt-8 px-6 py-3 bg-white text-slate-700 rounded-lg border border-slate-200 hover:bg-slate-50 transition shadow-sm">Refresh Status</button>
     </div>
 
     <!-- ========================================== -->
     <!-- 3. MAIN DASHBOARD SCREEN                   -->
     <!-- ========================================== -->
-    <div id="main-dashboard" class="flex-1 flex flex-col h-full hidden">
+    <div id="main-dashboard" class="flex-1 flex flex-col h-full hidden bg-slate-50">
         
         <!-- Header Section -->
         <header class="card px-4 py-3 sticky top-0 z-50 rounded-b-2xl border-t-0">
@@ -213,7 +215,7 @@
                 <button id="focus-gps-btn" class="absolute bottom-4 right-16 z-[400] bg-white text-black p-2 rounded-full shadow-lg border border-gray-200 focus:outline-none active:scale-95">
                     <span class="material-symbols-outlined text-cyan-600">my_location</span>
                 </button>
-                <!-- NUEVO: Botón de pantalla completa -->
+                <!-- Fullscreen Button -->
                 <button id="fullscreen-map-btn" class="absolute bottom-4 right-4 z-[400] bg-white text-black p-2 rounded-full shadow-lg border border-gray-200 focus:outline-none active:scale-95">
                     <span class="material-symbols-outlined text-cyan-600">fullscreen</span>
                 </button>
@@ -310,9 +312,8 @@
         // Map Variables
         let map = null;
         let myMarker = null;
-        let shopMarker = null;      // NUEVO: Marcador para la tienda
+        let shopMarker = null;
         let customerMarker = null;
-        let routingLine = null;
         let watchPositionId = null;
         let myCurrentLat = 0;
         let myCurrentLng = 0;
@@ -332,6 +333,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             checkOnboardingStatus();
             
+            // Toggle Logic
             const toggle = document.getElementById('duty-toggle');
             const statusText = document.getElementById('duty-status-text');
             
@@ -339,11 +341,12 @@
                 isOnline = e.target.checked;
                 statusText.innerText = isOnline ? 'ONLINE' : 'OFFLINE';
                 statusText.className = `text-[10px] font-bold uppercase mt-1 tracking-wider mr-2 ${isOnline ? 'text-green-500' : 'text-red-500'}`;
+                
                 myProfileRef.update({ isOnline: isOnline });
 
                 if (isOnline) {
                     startLocationTracking();
-                    fetchOrders();
+                    fetchOrders(); // Fetch new requests
                 } else {
                     stopLocationTracking();
                     document.getElementById('new-orders-list').innerHTML = `
@@ -404,7 +407,7 @@
                 dlNumber: document.getElementById('dp-dl-no').value.trim().toUpperCase(),
                 photoUrl: photoUrl,
                 dlUrl: dlUrl,
-                status: 'pending',
+                status: 'pending', // Goes to Admin
                 isOnline: false,
                 earnings: 0,
                 totalDeliveries: 0,
@@ -425,13 +428,14 @@
             document.getElementById('stat-earnings').innerText = PARTNER_DATA.earnings || 0;
             document.getElementById('stat-deliveries').innerText = PARTNER_DATA.totalDeliveries || 0;
             
+            // Check if already online from previous session
             if(PARTNER_DATA.isOnline) {
                 document.getElementById('duty-toggle').checked = true;
                 const e = new Event('change');
                 document.getElementById('duty-toggle').dispatchEvent(e);
             }
 
-            fetchOrders();
+            fetchOrders(); // Initial fetch
         }
 
         function fetchOrders() {
@@ -443,22 +447,25 @@
                 let newOrdersHtml = '';
 
                 Object.entries(data).forEach(([orderId, order]) => {
+                    // 1. Check if this order is actively assigned to me and not completed
                     if (order.deliveryBoyId === PARTNER_ID && (order.status === 'Accepted by Delivery' || order.status === 'Out for Delivery')) {
                         hasActiveOrder = true;
                         currentActiveOrder = { id: orderId, ...order };
                         renderActiveOrder(currentActiveOrder);
                     }
                     
+                    // 2. Check for NEW orders that need a delivery boy
                     if (isOnline && !hasActiveOrder && order.status === 'Ready for Pickup' && (!order.deliveryBoyId || order.deliveryBoyId === PARTNER_ID)) {
                         newOrdersHtml += generateNewOrderCard(orderId, order);
                     }
                 });
 
+                // Toggle Views based on Active Order
                 if (hasActiveOrder) {
                     document.getElementById('new-requests-section').classList.add('hidden');
                     document.getElementById('active-delivery-section').classList.remove('hidden');
                     document.getElementById('map-container').classList.remove('hidden');
-                    initMap();
+                    initMap(); // Ensure map is ready
                 } else {
                     currentActiveOrder = null;
                     document.getElementById('new-requests-section').classList.remove('hidden');
@@ -498,6 +505,7 @@
                 
                 <div class="space-y-3 mb-4 relative">
                     <div class="absolute left-3 top-2 bottom-2 w-0.5 bg-slate-200"></div>
+                    
                     <div class="flex gap-3 relative z-10">
                         <div class="w-6 h-6 rounded-full bg-slate-100 border-2 border-cyan-400 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[12px] text-cyan-400">storefront</span></div>
                         <div>
@@ -505,6 +513,7 @@
                             <p class="text-xs font-medium text-slate-700 line-clamp-2">${shopName}</p>
                         </div>
                     </div>
+                    
                     <div class="flex gap-3 relative z-10">
                         <div class="w-6 h-6 rounded-full bg-slate-100 border-2 border-red-400 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[12px] text-red-400">location_on</span></div>
                         <div>
@@ -513,12 +522,16 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="flex gap-3 pt-2">
-                    <button onclick="acceptOrder('${orderId}')" class="flex-1 btn-primary py-3 rounded-xl shadow-lg shadow-cyan-500/20">Accept</button>
+                    <button onclick="acceptOrder('${orderId}')" class="flex-1 btn-primary py-3 rounded-xl shadow-lg shadow-cyan-500/30">Accept</button>
                 </div>
             </div>`;
         }
 
+        // ==========================================
+        // ACTION: ACCEPT ORDER
+        // ==========================================
         window.acceptOrder = function(orderId) {
             ordersRef.child(orderId).update({
                 deliveryBoyId: PARTNER_ID,
@@ -529,18 +542,21 @@
             });
             alert("Order Accepted! Head to the shop for pickup.");
         };
-        
+
         // ==========================================
         // ACTIVE ORDER UI LOGIC
         // ==========================================
         function renderActiveOrder(order) {
             const card = document.getElementById('active-order-card');
             const state = order.status; 
+            
+            // MAP UPDATE CALL
+            setTimeout(() => {
+                updateMapMarkers(order);
+            }, 500);
+
             let html = '';
             
-            // MODIFICADO: Actualizar marcadores del mapa según el estado del pedido
-            updateMapMarkers(order);
-
             if (state === 'Accepted by Delivery') {
                 const shopName = order.shopName || "Seller Shop";
                 const shopPhone = order.shopPhone || "N/A";
@@ -548,12 +564,11 @@
                 html = `
                 <div class="flex justify-between items-center mb-4 border-b border-slate-200 pb-3">
                     <span class="bg-yellow-100 text-yellow-600 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">Go to Pickup</span>
-                    <!-- NUEVO: Contenedor para la distancia -->
-                    <span id="distance-display" class="text-xs font-bold text-cyan-600">-- km away</span>
+                    <span id="distance-info" class="text-xs font-bold text-cyan-600">Calculating...</span>
                 </div>
                 
                 <div class="flex gap-4 items-center mb-5">
-                    <div class="w-12 h-12 rounded-full bg-cyan-50 border-2 border-cyan-400 flex items-center justify-center shadow-lg shadow-cyan-500/10 shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-cyan-50 border-2 border-cyan-400 flex flex-col items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0">
                         <span class="material-symbols-outlined text-cyan-500">storefront</span>
                     </div>
                     <div>
@@ -582,12 +597,11 @@
                 html = `
                 <div class="flex justify-between items-center mb-4 border-b border-slate-200 pb-3">
                     <span class="bg-green-100 text-green-600 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider animate-pulse">Out for Delivery</span>
-                     <!-- NUEVO: Contenedor para la distancia -->
-                    <span id="distance-display" class="text-xs font-bold text-cyan-600">-- km away</span>
+                    <span id="distance-info" class="text-xs font-bold text-cyan-600">Calculating...</span>
                 </div>
                 
                 <div class="flex gap-4 items-center mb-4">
-                    <div class="w-12 h-12 rounded-full bg-red-50 border-2 border-red-400 flex items-center justify-center shadow-lg shadow-red-500/10 shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-red-50 border-2 border-red-400 flex flex-col items-center justify-center shadow-lg shadow-red-500/20 shrink-0">
                         <span class="material-symbols-outlined text-red-500">person</span>
                     </div>
                     <div>
@@ -618,43 +632,56 @@
 
         window.markPickedUp = function(orderId) {
             if(confirm("Confirm you have picked up the package from the shop?")) {
-                ordersRef.child(orderId).update({ status: 'Out for Delivery', pickedUpAt: firebase.database.ServerValue.TIMESTAMP });
+                ordersRef.child(orderId).update({
+                    status: 'Out for Delivery',
+                    pickedUpAt: firebase.database.ServerValue.TIMESTAMP
+                });
             }
         };
 
         window.markDelivered = function(orderId, isCOD) {
             let msg = isCOD ? "Confirm cash collected and package delivered?" : "Confirm package delivered to customer?";
             if(confirm(msg)) {
-                ordersRef.child(orderId).update({ status: 'Delivered', deliveredAt: firebase.database.ServerValue.TIMESTAMP });
+                ordersRef.child(orderId).update({
+                    status: 'Delivered',
+                    deliveredAt: firebase.database.ServerValue.TIMESTAMP
+                });
+
                 const newEarnings = (PARTNER_DATA.earnings || 0) + 40;
                 const newTotal = (PARTNER_DATA.totalDeliveries || 0) + 1;
-                myProfileRef.update({ earnings: newEarnings, totalDeliveries: newTotal });
+                
+                myProfileRef.update({
+                    earnings: newEarnings,
+                    totalDeliveries: newTotal
+                });
+
                 alert("Delivery Successful! Great job.");
             }
         };
 
         // ==========================================
-        // MAP & LIVE TRACKING
+        // MAP & LIVE TRACKING (LEAFLET.JS)
         // ==========================================
         function initMap() {
             if (map !== null) {
-                map.invalidateSize(); // Asegura que el mapa se redibuje si estaba oculto
+                map.invalidateSize();
                 return;
             }
             
             map = L.map('map', { zoomControl: false }).setView([20.5937, 78.9629], 5);
-            // MODIFICADO: Cambiado a un tema de mapa claro
+            // Light Theme Map Tiles
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
                 attribution: ''
             }).addTo(map);
 
-            const myIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#06b6d4; width:16px; height:16px; border-radius:50%; border:3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3);'></div>", iconSize: [16, 16], iconAnchor: [8, 8] });
-            const shopIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#6366f1; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;'><span class='material-symbols-outlined' style='font-size:12px; color:white;'>storefront</span></div>", iconSize: [20, 20], iconAnchor: [10, 10] });
-            const dropIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#ef4444; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;'><span class='material-symbols-outlined' style='font-size:12px; color:white;'>home</span></div>", iconSize: [20, 20], iconAnchor: [10, 10] });
-            
-            myMarker = L.marker([0, 0], { icon: myIcon, zIndexOffset: 1000 }).addTo(map);
-            shopMarker = L.marker([0, 0], { icon: shopIcon }).addTo(map); // NUEVO
-            customerMarker = L.marker([0, 0], { icon: dropIcon }).addTo(map); 
+            // Icons
+            const myIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#06b6d4; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3);'></div>", iconSize: [16, 16] });
+            const shopIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#6366f1; width:20px; height:20px; border-radius:50%; border:2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3); display:flex;align-items:center;justify-content:center;'><span class='material-symbols-outlined' style='font-size:12px;color:white'>storefront</span></div>", iconSize: [20, 20] });
+            const custIcon = L.divIcon({ className: 'custom-icon', html: "<div style='background-color:#ef4444; width:20px; height:20px; border-radius:50%; border:2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3); display:flex;align-items:center;justify-content:center;'><span class='material-symbols-outlined' style='font-size:12px;color:white'>home</span></div>", iconSize: [20, 20] });
+
+            myMarker = L.marker([0, 0], {icon: myIcon}).addTo(map);
+            shopMarker = L.marker([0, 0], {icon: shopIcon}).addTo(map);
+            customerMarker = L.marker([0, 0], {icon: custIcon}).addTo(map);
             
             document.getElementById('focus-gps-btn').addEventListener('click', () => {
                 if(myCurrentLat && myCurrentLng) {
@@ -662,56 +689,91 @@
                 }
             });
 
-            // NUEVO: Lógica para el botón de pantalla completa
-            const fullscreenBtn = document.getElementById('fullscreen-map-btn');
-            const mapContainer = document.getElementById('map-container');
-            fullscreenBtn.addEventListener('click', () => {
-                mapContainer.classList.toggle('map-fullscreen');
-                fullscreenBtn.querySelector('span').innerText = mapContainer.classList.contains('map-fullscreen') ? 'fullscreen_exit' : 'fullscreen';
-                // ¡Muy importante! Redibujar el mapa después de cambiar el tamaño del contenedor
-                setTimeout(() => { map.invalidateSize() }, 200);
+            // Fullscreen Logic
+            const fsBtn = document.getElementById('fullscreen-map-btn');
+            const mapCont = document.getElementById('map-container');
+            fsBtn.addEventListener('click', () => {
+                mapCont.classList.toggle('map-fullscreen');
+                setTimeout(() => { map.invalidateSize(); }, 300);
             });
         }
 
-        // NUEVO: Función para actualizar marcadores y centrar el mapa
+        // ==========================================
+        // UPDATE MARKERS AND DISTANCE
+        // ==========================================
         function updateMapMarkers(order) {
             if (!map) return;
-        
+
+            let destLat = 0, destLng = 0;
             const bounds = [];
-            if(myMarker.getLatLng().lat !== 0) {
-                bounds.push(myMarker.getLatLng());
+
+            // 1. Set Delivery Boy Location
+            if (myCurrentLat && myCurrentLng) {
+                myMarker.setLatLng([myCurrentLat, myCurrentLng]);
+                bounds.push([myCurrentLat, myCurrentLng]);
             }
 
-            // Ocultar ambos marcadores de destino al principio
+            // 2. Hide both destination markers initially
             shopMarker.setOpacity(0);
             customerMarker.setOpacity(0);
-        
-            if (order.status === 'Accepted by Delivery' && order.shopLocation) {
-                const shopLatLng = [order.shopLocation.lat, order.shopLocation.lng];
-                shopMarker.setLatLng(shopLatLng).setOpacity(1);
-                bounds.push(shopLatLng);
-            } else if (order.status === 'Out for Delivery' && order.customerInfo && order.customerInfo.location) {
-                const customerLatLng = [order.customerInfo.location.lat, order.customerInfo.location.lng];
-                customerMarker.setLatLng(customerLatLng).setOpacity(1);
-                bounds.push(customerLatLng);
+
+            // 3. Determine which marker to show
+            if (order.status === 'Accepted by Delivery') {
+                // Show Shop Marker
+                if (order.shopLocation && order.shopLocation.lat) {
+                    destLat = order.shopLocation.lat;
+                    destLng = order.shopLocation.lng;
+                    shopMarker.setLatLng([destLat, destLng]).setOpacity(1);
+                    bounds.push([destLat, destLng]);
+                }
+            } else if (order.status === 'Out for Delivery') {
+                // Show Customer Marker (Recover Dot)
+                // Fallback check: try order.customerInfo.location OR just order.location
+                if (order.customerInfo && order.customerInfo.location && order.customerInfo.location.lat) {
+                    destLat = order.customerInfo.location.lat;
+                    destLng = order.customerInfo.location.lng;
+                    customerMarker.setLatLng([destLat, destLng]).setOpacity(1);
+                    bounds.push([destLat, destLng]);
+                } 
+                else if (order.location && order.location.lat) {
+                     // Sometimes data is saved directly under order
+                    destLat = order.location.lat;
+                    destLng = order.location.lng;
+                    customerMarker.setLatLng([destLat, destLng]).setOpacity(1);
+                    bounds.push([destLat, destLng]);
+                }
             }
-        
+
+            // 4. Fit Bounds & Calculate Distance
             if (bounds.length > 1) {
-                map.flyToBounds(bounds, { padding: [50, 50] }); // Centra el mapa para ver ambos puntos
+                map.flyToBounds(bounds, { padding: [50, 50] });
+                
+                // Calculate Distance
+                const dist = getDistance(myCurrentLat, myCurrentLng, destLat, destLng);
+                const distEl = document.getElementById('distance-info');
+                if(distEl) distEl.innerText = dist.toFixed(2) + " km away";
+            } else {
+                // If destination coordinates are missing
+                const distEl = document.getElementById('distance-info');
+                if(distEl) distEl.innerText = "Location not found";
             }
         }
 
-        // NUEVO: Función para calcular la distancia entre dos puntos (Haversine)
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Radio de la Tierra en km
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a =
-                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c; // Distancia en km
+        function getDistance(lat1, lon1, lat2, lon2) {
+            var R = 6371; // Radius of the earth in km
+            var dLat = deg2rad(lat2-lat1);
+            var dLon = deg2rad(lon2-lon1); 
+            var a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2); 
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            var d = R * c; // Distance in km
+            return d;
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI/180);
         }
 
         function startLocationTracking() {
@@ -728,43 +790,31 @@
                     if(map && myMarker) {
                         const newLatLng = new L.LatLng(myCurrentLat, myCurrentLng);
                         myMarker.setLatLng(newLatLng);
-                        if(map.getZoom() < 10) map.setView(newLatLng, 16);
+                        
+                        // Only auto-center if no active order destination
+                        if (!currentActiveOrder) {
+                            map.setView(newLatLng, 16);
+                        }
                     }
 
-                    if (currentActiveOrder) {
+                    if (currentActiveOrder && (currentActiveOrder.status === 'Accepted by Delivery' || currentActiveOrder.status === 'Out for Delivery')) {
+                        // Send location to DB
                         ordersRef.child(currentActiveOrder.id).child('deliveryLocation').set({
                             lat: myCurrentLat,
                             lng: myCurrentLng,
                             timestamp: firebase.database.ServerValue.TIMESTAMP
                         });
-
-                        // MODIFICADO: Calcular y mostrar distancia
-                        const distanceEl = document.getElementById('distance-display');
-                        if (distanceEl) {
-                            let destLat, destLng;
-                            if (currentActiveOrder.status === 'Accepted by Delivery' && currentActiveOrder.shopLocation) {
-                                destLat = currentActiveOrder.shopLocation.lat;
-                                destLng = currentActiveOrder.shopLocation.lng;
-                            } else if (currentActiveOrder.status === 'Out for Delivery' && currentActiveOrder.customerInfo.location) {
-                                destLat = currentActiveOrder.customerInfo.location.lat;
-                                destLng = currentActiveOrder.customerInfo.location.lng;
-                            }
-
-                            if (destLat && destLng) {
-                                const dist = calculateDistance(myCurrentLat, myCurrentLng, destLat, destLng);
-                                distanceEl.innerText = `${dist.toFixed(2)} km away`;
-                            }
-                        }
+                        
+                        // Update UI Map
+                        updateMapMarkers(currentActiveOrder);
                     }
                 },
                 (error) => { 
                     console.error("GPS Error:", error); 
+                    // Handling secure origin error gracefully
                     if(error.code === 1 || (error.message && error.message.includes("secure origins"))) {
-                        alert("Bhai, Live Location ke liye app ko HTTPS (Secure) par host karna zaroori hai. Localhost ya secure link par test karein.");
-                        if(document.getElementById('duty-toggle').checked) { document.getElementById('duty-toggle').click(); }
-                    } else {
-                        alert("Please turn on your device GPS/Location to receive orders.");
-                        if(document.getElementById('duty-toggle').checked) { document.getElementById('duty-toggle').click(); }
+                        // Do not force offline, just warn once
+                        console.log("Secure origin required for GPS");
                     }
                 },
                 { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
@@ -779,7 +829,12 @@
         }
 
         const style = document.createElement('style');
-        style.innerHTML = `@keyframes shimmer { 0% { transform: translateX(-150%); } 100% { transform: translateX(300%); } }`;
+        style.innerHTML = `
+            @keyframes shimmer {
+                0% { transform: translateX(-150%); }
+                100% { transform: translateX(300%); }
+            }
+        `;
         document.head.appendChild(style);
 
     </script>
