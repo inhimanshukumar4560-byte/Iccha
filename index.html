@@ -89,6 +89,7 @@
                         'shimmer': 'shimmer 2.5s infinite linear',
                         'slide-up': 'slideUp 0.8s ease-out forwards',
                         'slide-down': 'slideDown 0.5s ease-out forwards',
+                        'typing': 'typing 2s steps(40, end), blink-caret .75s step-end infinite', // NEW: Typing Animation
                     },
                     keyframes: {
                         float: {
@@ -110,6 +111,15 @@
                         slideDown: {
                             '0%': { transform: 'translateY(-50px)', opacity: '0' },
                             '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        // NEW: Keyframes for Typing Animation
+                        typing: {
+                          'from': { width: '0' },
+                          'to': { width: '100%' }
+                        },
+                        'blink-caret': {
+                          'from, to': { borderColor: 'transparent' },
+                          '50%': { borderColor: '#F9E29C' }
                         }
                     }
                 },
@@ -223,6 +233,35 @@
         
         /* Checkbox styling for Filter Modal */
         .filter-checkbox { accent-color: #D4AF37; width: 1.1rem; height: 1.1rem; border-radius: 4px; border: 1px solid #d1d5db; }
+    
+        /* NEW: Styles for the Single Store Page Header */
+        .glassy-store-header {
+            position: relative;
+            width: 100%;
+            height: 120px; /* 120px height */
+            overflow: hidden;
+            background-color: #f0f0f0;
+        }
+        .glassy-store-header-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 1;
+        }
+        .glassy-store-header-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 12px;
+        }
     </style>
 </head>
 
@@ -449,9 +488,10 @@
         </nav>
         <main class="pb-32 selection:bg-gold/30">
             <section class="relative bg-gray-50">
-                <div class="w-full h-80 sm:h-96 overflow-hidden bg-white relative flex items-center justify-center border-b border-gray-200">
+                <!-- NEW: Updated media container to support video or image -->
+                <div id="pdp-main-media-container" class="w-full h-80 sm:h-96 overflow-hidden bg-white relative flex items-center justify-center border-b border-gray-200">
                     <div id="pdp-limited-badge" class="absolute top-4 left-4 z-10 hidden bg-gradient-to-r from-red-500 to-red-700 text-white px-3 py-1 rounded text-xs font-bold tracking-wider uppercase shadow-md font-body">Limited Edition</div>
-                    <img id="product-image-main" class="w-full h-full object-cover transition-opacity duration-300 drop-shadow-lg" src="https://placehold.co/600x600/ffffff/D4AF37?text=Loading..." alt="Product Image"/>
+                    <!-- Media will be injected here by JS -->
                 </div>
                 <div id="product-thumbnails" class="flex gap-3 px-4 py-4 overflow-x-auto no-scrollbar"></div>
             </section>
@@ -689,10 +729,13 @@
             <section class="px-3 pt-4 animate-slide-up" style="animation-delay: 0.1s;">
                 <div id="offer-promo-banner" class="relative w-full h-28 sm:h-36 rounded-2xl shadow-lg overflow-hidden bg-cover bg-center border-[2px] border-luxury-gold/50 flex items-center justify-between p-3 animate-pulse-glow">
                     <div class="absolute inset-0 bg-black/40 z-0 pointer-events-none"></div>
-                    <img id="offer-character-sticker" src="https://placehold.co/200x200/000000/000000?text=..." class="absolute left-1 bottom-0 h-[120%] sm:h-[130%] w-auto drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)] z-10 pointer-events-none object-contain object-bottom" alt="Iccha Offers Character"/>
+                    <!-- NEW: Sticker Animation Target -->
+                    <img id="offer-character-sticker" src="https://placehold.co/200x200/000000/000000?text=..." class="absolute left-1 bottom-0 h-[120%] sm:h-[130%] w-auto drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)] z-10 pointer-events-none object-contain object-bottom transition-transform duration-1000 ease-in-out" alt="Iccha Offers Character"/>
                     <div class="relative z-20 text-white text-right w-full flex flex-col justify-center items-end pr-2">
-                        <p class="font-script text-3xl sm:text-4xl text-gold-light leading-none drop-shadow-md">Surprise!</p>
-                        <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest mt-1.5 drop-shadow-md text-gray-100">Your special discount awaits!</p>
+                        <!-- NEW: Dialogue Animation Target -->
+                        <div id="offer-dialogue-text-wrapper" class="overflow-hidden whitespace-nowrap">
+                            <p id="offer-dialogue-text" class="font-script text-3xl sm:text-4xl text-gold-light leading-none drop-shadow-md border-r-2 border-r-gold-light"></p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -1047,7 +1090,7 @@
     <!-- NEW PAGE 13: SINGLE STORE VIEW PAGE            -->
     <!-- ============================================== -->
     <div id="single-store-page" class="page-container hidden relative h-auto min-h-screen w-full flex-col bg-white opacity-0 font-body">
-        <header class="sticky top-0 z-50 px-4 py-3 bg-white border-b border-gray-100 flex items-center justify-between shadow-sm">
+        <header class="sticky top-0 z-50 px-4 py-3 bg-white/90 backdrop-blur-sm border-b border-gray-100 flex items-center justify-between shadow-sm">
             <button id="back-from-single-store-btn" class="p-2 rounded-full hover:bg-gray-100 transition -ml-2 text-gray-900">
                 <span class="material-symbols-outlined text-2xl">arrow_back</span>
             </button>
@@ -1056,7 +1099,21 @@
         </header>
 
         <main class="flex-1 overflow-y-auto">
-            <div class="w-full bg-gray-50 border-b border-gray-100 py-3 sticky top-0 z-40">
+            <!-- NEW: Glassy Banner Header for the Store -->
+            <div id="single-store-banner-container" class="glassy-store-header">
+                <img id="single-store-banner-img" src="https://placehold.co/600x200/cccccc/969696?text=+" class="glassy-store-header-bg">
+                <div class="glassy-store-header-overlay">
+                    <div class="w-16 h-16 rounded-full border-2 border-white shadow-lg overflow-hidden shrink-0 bg-white">
+                        <img id="single-store-logo-img" src="https://placehold.co/100x100/f1f5f9/D4AF37?text=S" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h2 id="single-store-banner-name" class="text-white text-xl font-bold luxury-text drop-shadow-lg">Store Name</h2>
+                        <span class="bg-luxury-gold text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-md">Official Partner</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full bg-gray-50 border-b border-gray-100 py-3 sticky top-[57px] z-40">
                 <div id="single-store-categories" class="flex overflow-x-auto hide-scrollbar gap-2 px-4">
                     <!-- Dynamic categories injected here -->
                 </div>
@@ -1203,6 +1260,8 @@
             let videoSwiper;
             let offersVideoSwiper; 
             let activeCountdownIntervals = []; 
+            // NEW: Interval for offers page animation
+            let dialogueAnimationInterval = null; 
             
             // Global Data
             let currentProduct = null;
@@ -1212,7 +1271,6 @@
             let globalFiltersData = {};
             let globalSellersData = {}; // Stores
             
-            // MODIFIED: Added location: null to initial state
             let userAddressInfo = JSON.parse(localStorage.getItem('iccha_user_info')) || { name: '', phone: '', address: '', dob: '', location: null };
             
             let leafletMap = null;
@@ -1339,14 +1397,33 @@
             };
             
             function managePageSpecificLogic(activePageId) {
-                if (activePageId !== 'offers-page') { activeCountdownIntervals.forEach(interval => clearInterval(interval)); activeCountdownIntervals = []; }
+                // Clear all intervals
+                if (dialogueAnimationInterval) clearInterval(dialogueAnimationInterval);
+                activeCountdownIntervals.forEach(interval => clearInterval(interval));
+                activeCountdownIntervals = [];
+
+                if (activePageId === 'offers-page') {
+                    // Start animation ONLY for the offers page, after fetching data
+                    mainOfferRef.once('value').then(s => {
+                        const offerData = s.val();
+                        renderOffersPage(offerData); // Render first
+                        startDialogueAnimation(offerData?.dialogs || []); // Then start animation
+                    });
+                }
+                
                 const wishVid = document.getElementById('empty-wishlist-video');
-                if (wishVid) { const hasItems = Object.keys(currentWishlist).length > 0; if(activePageId === 'wishlist-page' && !hasItems) { wishVid.currentTime = 0; wishVid.play().catch(e=>console.log("Video play blocked")); } else { wishVid.pause(); } }
+                if (wishVid) { 
+                    const hasItems = Object.keys(currentWishlist).length > 0; 
+                    if(activePageId === 'wishlist-page' && !hasItems) { wishVid.currentTime = 0; wishVid.play().catch(e=>console.log("Video play blocked")); } 
+                    else { wishVid.pause(); } 
+                }
             }
 
             function transitionTo(targetPage) {
                 const currentPage = document.querySelector('.page-container:not(.hidden)');
                 if (currentPage === targetPage) return;
+                
+                // Stop all page-specific logic (like animations)
                 managePageSpecificLogic(null); 
                 
                 const nonHistoryPages = ['cart-page', 'checkout-page', 'wishlist-page', 'profile-page', 'stores-list-page', 'single-store-page'];
@@ -1365,8 +1442,9 @@
                     
                     if(!['all-categories-page', 'search-page', 'subcategory-page', 'stores-list-page', 'single-store-page'].includes(targetPage.id)) window.scrollTo(0, 0);
                     
+                    // Start new page's logic
                     managePageSpecificLogic(targetPage.id);
-                    if (targetPage.id === 'offers-page') { mainOfferRef.once('value').then(s => renderOffersPage(s.val())); }
+
                     if (targetPage.id === 'shop-page' && videoSwiper) { setTimeout(() => { const activeSlide = videoSwiper.slides[videoSwiper.activeIndex]; if(activeSlide) { const vid = activeSlide.querySelector('.hero-video'); if(vid) vid.play().catch(e=>console.log("Auto-play blocked on return", e)); } }, 500); }
                     if (targetPage.id === 'offers-page' && offersVideoSwiper) { setTimeout(() => { const activeSlide = offersVideoSwiper.slides[offersVideoSwiper.activeIndex]; if(activeSlide) { const vid = activeSlide.querySelector('.offers-hero-video'); if(vid) vid.play().catch(e=>console.log("Auto-play blocked on return", e)); } }, 500); }
                 }, 500);
@@ -1460,7 +1538,7 @@
                 contentArea.innerHTML = html; transitionTo(subcategoryPage);
             };
 
-            // NEW: SELLERS LOGIC FOR STORES TAB
+            // SELLERS LOGIC FOR STORES TAB
             sellersRef.on('value', snap => {
                 globalSellersData = snap.val() || {};
                 renderStoresList();
@@ -1493,8 +1571,13 @@
 
             window.openSingleStore = function(sellerId) {
                 const seller = globalSellersData[sellerId];
-                if(!seller) return;
+                if(!seller || !seller.profile) return;
                 
+                // NEW: Populate the glassy banner
+                document.getElementById('single-store-banner-img').src = seller.profile.bannerUrl || 'https://placehold.co/600x200/cccccc/969696?text=+';
+                document.getElementById('single-store-logo-img').src = seller.profile.logoUrl || 'https://placehold.co/100x100/f1f5f9/D4AF37?text=S';
+                document.getElementById('single-store-banner-name').textContent = seller.profile.storeName;
+
                 document.getElementById('single-store-title').textContent = seller.profile.storeName;
                 
                 const catContainer = document.getElementById('single-store-categories');
@@ -1583,8 +1666,13 @@
                             const activePrice = isActiveOffer ? p.offerPrice : p.nexaraPrice;
                             const discount = Math.round(((p.realPrice - activePrice) / p.realPrice) * 100); 
                             const imgUrl = getValidImagesArray(p.images)[0] || 'https://placehold.co/400x400/ffffff/D4AF37?text=No+Image'; 
+
+                            // NEW: Conditional rendering for Video Thumbnail
+                            const mediaElement = p.videoUrl 
+                                ? `<video class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="${p.videoUrl}" autoplay loop muted playsinline></video><div class="absolute bottom-1 right-1 bg-black/50 text-white rounded p-0.5"><span class="material-symbols-outlined text-[14px]">videocam</span></div>`
+                                : `<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="${imgUrl}"/>`;
                             
-                            return `<div class="flex flex-col product-card-link cursor-pointer w-full font-body" data-product-id="${id}"><div class="relative aspect-square w-full rounded-[20px] overflow-hidden bg-white border border-gray-200 group shadow-sm"><img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="${imgUrl}"/>${discount > 0 ? `<div class="absolute top-1 left-1 sm:top-2 sm:left-2 bg-luxury-gold text-white px-1.5 py-[2px] rounded text-[9px] font-bold shadow-sm">${discount}% OFF</div>` : ''}${p.isLimited ? `<div class="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-1.5 py-[2px] rounded text-[8px] font-bold tracking-widest uppercase shadow-sm">Limited</div>` : ''}</div><div class="mt-2 space-y-0.5 px-0.5"><h4 class="text-[10px] sm:text-[11px] text-gray-800 line-clamp-1 uppercase font-bold tracking-wide leading-tight">${p.name}</h4><div class="flex items-center gap-1.5 flex-wrap"><p class="text-[11px] sm:text-xs text-luxury-gold font-bold">₹${activePrice.toLocaleString()}</p>${discount > 0 ? `<p class="text-[9px] sm:text-[10px] text-gray-400 line-through">₹${p.realPrice.toLocaleString()}</p>` : ''}</div></div></div>`; 
+                            return `<div class="flex flex-col product-card-link cursor-pointer w-full font-body" data-product-id="${id}"><div class="relative aspect-square w-full rounded-[20px] overflow-hidden bg-white border border-gray-200 group shadow-sm">${mediaElement}${discount > 0 ? `<div class="absolute top-1 left-1 sm:top-2 sm:left-2 bg-luxury-gold text-white px-1.5 py-[2px] rounded text-[9px] font-bold shadow-sm">${discount}% OFF</div>` : ''}${p.isLimited ? `<div class="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-1.5 py-[2px] rounded text-[8px] font-bold tracking-widest uppercase shadow-sm">Limited</div>` : ''}</div><div class="mt-2 space-y-0.5 px-0.5"><h4 class="text-[10px] sm:text-[11px] text-gray-800 line-clamp-1 uppercase font-bold tracking-wide leading-tight">${p.name}</h4><div class="flex items-center gap-1.5 flex-wrap"><p class="text-[11px] sm:text-xs text-luxury-gold font-bold">₹${activePrice.toLocaleString()}</p>${discount > 0 ? `<p class="text-[9px] sm:text-[10px] text-gray-400 line-through">₹${p.realPrice.toLocaleString()}</p>` : ''}</div></div></div>`; 
                         }).join('');
                     } else {
                         featuredProductsGrid.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center py-10 text-center font-body w-full"><div class="w-40 h-40 rounded-full overflow-hidden border-4 border-luxury-gold/30 shadow-lg mb-6 relative mx-auto flex items-center justify-center bg-gray-50"><img src="https://i.ibb.co/60stmC4L/v-Ns0e-Rg-HS0mv-Ys1-WGBWb-LA-2k.webp" alt="Empty Category" class="w-full h-full object-cover"></div><span class="text-gray-400 text-xs uppercase tracking-widest font-bold">No items found</span></div>`;
@@ -1608,8 +1696,20 @@
             
             async function populateProductPage(id) {
                 const s = await productsRef.child(id).once('value'); const p = s.val(); if (!p) return;
-                currentProduct = { id: id, ...p }; addToWishlistBtn.dataset.productId = id; document.getElementById('product-name').textContent = p.name;
-                const imageArray = getValidImagesArray(p.images); const mainImg = document.getElementById('product-image-main'); mainImg.src = imageArray.length > 0 ? imageArray[0] : 'https://placehold.co/600x600/ffffff/D4AF37?text=Image+Not+Found';
+                currentProduct = { id: id, ...p }; 
+                addToWishlistBtn.dataset.productId = id; 
+                document.getElementById('product-name').textContent = p.name;
+                
+                const mainMediaContainer = document.getElementById('pdp-main-media-container');
+                // NEW: Logic to show video or image
+                if (p.videoUrl) {
+                    mainMediaContainer.innerHTML = `<video class="w-full h-full object-cover" src="${p.videoUrl}" autoplay loop muted playsinline controls></video>`;
+                } else {
+                    const imageArray = getValidImagesArray(p.images);
+                    const mainImgSrc = imageArray.length > 0 ? imageArray[0] : 'https://placehold.co/600x600/ffffff/D4AF37?text=Image+Not+Found';
+                    mainMediaContainer.innerHTML = `<img id="product-image-main" class="w-full h-full object-cover transition-opacity duration-300 drop-shadow-lg" src="${mainImgSrc}" alt="Product Image"/>`;
+                }
+
                 document.getElementById('pdp-limited-badge').classList.toggle('hidden', !p.isLimited);
                 
                 const isActiveOffer = p.offerPrice && p.offerEndTime && new Date(p.offerEndTime) > new Date();
@@ -1619,37 +1719,14 @@
                 
                 let priceHTML = '';
                 if(isActiveOffer) {
-                    priceHTML = `
-                        <div class="flex flex-col w-full bg-red-50/50 p-3 rounded-[15px] border border-red-100 mt-2">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="bg-gradient-to-r from-red-600 to-red-700 text-white px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase shadow-sm">Special Offer</span>
-                                <span class="text-red-600 font-bold text-sm">Ends Soon!</span>
-                            </div>
-                            <div class="flex items-end gap-3 mb-1">
-                                <span class="text-3xl font-bold text-deep-red drop-shadow-sm">₹${p.offerPrice.toLocaleString()}</span>
-                                <span class="text-gray-500 font-medium text-sm mb-1 line-through">₹${p.nexaraPrice.toLocaleString()}</span>
-                            </div>
-                            <div class="flex items-center gap-2 mt-0.5">
-                                <span class="text-xs text-gray-400">MRP: <span class="line-through">₹${p.realPrice.toLocaleString()}</span></span>
-                                <span class="text-[10px] text-green-600 font-bold bg-green-50 px-1.5 py-0.5 rounded border border-green-200 shadow-sm">${discount}% OFF Total</span>
-                            </div>
-                        </div>`;
+                    priceHTML = `<div class="flex flex-col w-full bg-red-50/50 p-3 rounded-[15px] border border-red-100 mt-2"><div class="flex items-center gap-2 mb-1"><span class="bg-gradient-to-r from-red-600 to-red-700 text-white px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase shadow-sm">Special Offer</span><span class="text-red-600 font-bold text-sm">Ends Soon!</span></div><div class="flex items-end gap-3 mb-1"><span class="text-3xl font-bold text-deep-red drop-shadow-sm">₹${p.offerPrice.toLocaleString()}</span><span class="text-gray-500 font-medium text-sm mb-1 line-through">₹${p.nexaraPrice.toLocaleString()}</span></div><div class="flex items-center gap-2 mt-0.5"><span class="text-xs text-gray-400">MRP: <span class="line-through">₹${p.realPrice.toLocaleString()}</span></span><span class="text-[10px] text-green-600 font-bold bg-green-50 px-1.5 py-0.5 rounded border border-green-200 shadow-sm">${discount}% OFF Total</span></div></div>`;
                 } else {
-                    priceHTML = `
-                        <div class="flex flex-col w-full mt-2">
-                            <div class="flex items-end gap-3 mb-1">
-                                <span class="text-3xl font-bold text-gold drop-shadow-sm">₹${p.nexaraPrice.toLocaleString()}</span>
-                                ${discount > 0 ? `<span class="bg-gradient-to-r from-red-500 to-red-600 text-white px-2 py-0.5 rounded text-xs font-bold shadow-sm mb-1">${discount}% OFF</span>` : ''}
-                            </div>
-                            <div class="mt-0.5 flex items-center gap-2">
-                                <span class="text-sm text-gray-400">MRP: <span class="line-through">₹${p.realPrice.toLocaleString()}</span></span>
-                                <span class="text-[10px] text-gray-500 font-medium">(Inclusive of all taxes)</span>
-                            </div>
-                        </div>`;
+                    priceHTML = `<div class="flex flex-col w-full mt-2"><div class="flex items-end gap-3 mb-1"><span class="text-3xl font-bold text-gold drop-shadow-sm">₹${p.nexaraPrice.toLocaleString()}</span>${discount > 0 ? `<span class="bg-gradient-to-r from-red-500 to-red-600 text-white px-2 py-0.5 rounded text-xs font-bold shadow-sm mb-1">${discount}% OFF</span>` : ''}</div><div class="mt-0.5 flex items-center gap-2"><span class="text-sm text-gray-400">MRP: <span class="line-through">₹${p.realPrice.toLocaleString()}</span></span><span class="text-[10px] text-gray-500 font-medium">(Inclusive of all taxes)</span></div></div>`;
                 }
                 document.getElementById('product-pricing').innerHTML = priceHTML;
                 
-                document.getElementById('product-thumbnails').innerHTML = imageArray.map((img, i) => `<div class="size-20 rounded-xl border-2 ${i===0?'border-gold':'border-gray-200 opacity-70'} flex-shrink-0 overflow-hidden cursor-pointer product-thumbnail transition-all hover:opacity-100 bg-gray-50 p-1" data-img-src="${img}"><img class="w-full h-full object-cover rounded-lg" src="${img}" onerror="this.src='https://placehold.co/200x200/ffffff/D4AF37?text=NA'"/></div>`).join('');
+                const imageArray = getValidImagesArray(p.images);
+                document.getElementById('product-thumbnails').innerHTML = imageArray.map((img, i) => `<div class="size-20 rounded-xl border-2 ${i===0 && !p.videoUrl ?'border-gold':'border-gray-200 opacity-70'} flex-shrink-0 overflow-hidden cursor-pointer product-thumbnail transition-all hover:opacity-100 bg-gray-50 p-1" data-img-src="${img}"><img class="w-full h-full object-cover rounded-lg" src="${img}" onerror="this.src='https://placehold.co/200x200/ffffff/D4AF37?text=NA'"/></div>`).join('');
                 document.getElementById('product-finishes-container').innerHTML = (p.finishes && p.finishes.length) ? `<h3 class="text-sm uppercase text-gray-500 font-bold">Select Finish</h3><div class="flex gap-4">${p.finishes.map((f, i) => `<button class="flex flex-col items-center gap-2 ${i>0?'opacity-50 hover:opacity-100 transition':''}"><div class="size-12 rounded-full p-[2px] ${i===0?'border-2 border-gold shadow-[0_0_15px_rgba(212,175,55,0.2)]':'border border-gray-300'}"><div class="w-full h-full rounded-full border border-gray-100" style="background-color: ${f.color};"></div></div><span class="text-[10px] font-bold ${i===0?'text-gold':'text-gray-700'}">${f.name}</span></button>`).join('')}</div>` : '';
                 document.getElementById('product-specs-container').innerHTML = (p.specifications && p.specifications.length) ? `<h3 class="text-sm uppercase text-gray-500 font-bold">Specifications</h3><ul class="grid grid-cols-1 gap-3 bg-white p-4 rounded-[20px] border border-gray-200 shadow-sm">${p.specifications.map(spec => `<li class="flex items-center gap-3 text-sm text-gray-700 font-medium"><span class="material-symbols-outlined text-gold text-lg">check_circle</span> ${spec}</li>`).join('')}</ul>` : '';
                 updateWishlistButtonState(id); loadReviews(id); transitionTo(productPage);
@@ -1694,7 +1771,6 @@
                 modal.classList.remove('hidden'); modal.classList.add('flex');
                 setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
                 if(!leafletMap) { leafletMap = L.map('map').setView([20.5937, 78.9629], 5); L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '' }).addTo(leafletMap); mapMarker = L.marker([20.5937, 78.9629], {draggable: true}).addTo(leafletMap); mapMarker.on('dragend', function(e) { fetchAddressFromCoords(mapMarker.getLatLng().lat, mapMarker.getLatLng().lng); }); }
-                // MODIFIED: Center map on saved location if exists
                 setTimeout(() => { 
                     leafletMap.invalidateSize(); 
                     if (userAddressInfo.location && userAddressInfo.location.lat) {
@@ -1718,7 +1794,6 @@
                 const n = document.getElementById('input-name').value.trim(); const p = document.getElementById('input-phone').value.trim(); const a = document.getElementById('input-address').value.trim(); const d = document.getElementById('input-dob').value.trim(); 
                 if(!p || p.length < 10) { alert("Please enter a valid 10-digit Mobile Number."); return; } 
                 
-                // MODIFIED: Save actual coordinates
                 let loc = null;
                 if(mapMarker) {
                     const ll = mapMarker.getLatLng();
@@ -1750,7 +1825,6 @@
                         "key": "rzp_live_SLt76BnauOx2Cb", "amount": order.amount, "currency": "INR", "name": "Iccha", "description": "Luxury Redefined Purchase", "order_id": order.id,
                         "handler": function (response) {
                             btn.innerHTML = '<span class="text-white font-bold text-lg uppercase font-body">Success!</span><span class="material-symbols-outlined text-white">check_circle</span>';
-                            // Note: customerInfo already contains the location object now
                             database.ref('orders').push({ customerInfo: userAddressInfo, items: globalCart, totalAmount: totalText, paymentId: response.razorpay_payment_id, paymentMethod: selectedPaymentMethod, timestamp: firebase.database.ServerValue.TIMESTAMP, status: 'Paid & Pending' }).then(() => { setTimeout(() => { alert("Order Placed Successfully!"); globalCart = {}; renderCart(); transitionTo(shopPage); btn.innerHTML = originalBtnHtml; }, 1500); }).catch(err => { alert("Error saving order. Payment was successful."); btn.innerHTML = originalBtnHtml; });
                         },
                         "prefill": { "name": userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : '', "contact": userAddressInfo.phone },
@@ -1775,6 +1849,56 @@
                     timerEl.innerHTML = `${days > 0 ? days + 'd ' : ''}${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
                 };
                 updateTimer(); interval = setInterval(updateTimer, 1000); activeCountdownIntervals.push(interval);
+            }
+
+            // NEW: Animation function for Offers Page
+            function startDialogueAnimation(dialogs) {
+                if (dialogueAnimationInterval) clearInterval(dialogueAnimationInterval);
+                if (!dialogs || dialogs.length === 0) return;
+
+                const sticker = document.getElementById('offer-character-sticker');
+                const dialogueText = document.getElementById('offer-dialogue-text');
+                const dialogueWrapper = document.getElementById('offer-dialogue-text-wrapper');
+                if (!sticker || !dialogueText || !dialogueWrapper) return;
+
+                let currentIndex = 0;
+                let isMovingRight = true;
+
+                const animate = () => {
+                    if (isMovingRight) {
+                        // Move right and wipe (fade out)
+                        sticker.style.transform = 'translateX(50%)';
+                        dialogueWrapper.style.opacity = '0';
+
+                        setTimeout(() => {
+                            currentIndex = (currentIndex + 1) % dialogs.length;
+                            isMovingRight = false;
+                            animate(); // Trigger next phase
+                        }, 1200); // Wait for sticker to move and fade
+                    } else {
+                        // Move left and type
+                        sticker.style.transform = 'translateX(0%)';
+                        dialogueText.textContent = dialogs[currentIndex];
+                        
+                        // Apply typing animation
+                        dialogueText.classList.remove('animate-typing');
+                        void dialogueText.offsetWidth; // Trigger reflow
+                        dialogueText.classList.add('animate-typing');
+                        dialogueWrapper.style.opacity = '1';
+
+                        setTimeout(() => {
+                            isMovingRight = true;
+                        }, 4000); // Wait for typing animation + pause
+                    }
+                };
+
+                // Initial setup
+                dialogueText.textContent = dialogs[0];
+                dialogueText.classList.add('animate-typing');
+                dialogueWrapper.style.opacity = '1';
+                sticker.style.transform = 'translateX(0%)';
+
+                dialogueAnimationInterval = setInterval(animate, 5500); // Total cycle time
             }
             
             function renderOffersPage(data) {
@@ -1806,7 +1930,7 @@
                 }
             }
 
-            function toggleWishlistItem() { const id = addToWishlistBtn.dataset.productId; if (!id) return; if (currentWishlist && currentWishlist[id]) wishlistRef.child(id).remove(); else wishlistRef.child(id).set({ name: document.getElementById('product-name').textContent, price: document.querySelector('#product-pricing .text-gold')?.textContent || document.querySelector('#product-pricing .text-deep-red')?.textContent || '₹0', image: document.getElementById('product-image-main').src }); }
+            function toggleWishlistItem() { const id = addToWishlistBtn.dataset.productId; if (!id) return; if (currentWishlist && currentWishlist[id]) wishlistRef.child(id).remove(); else wishlistRef.child(id).set({ name: document.getElementById('product-name').textContent, price: document.querySelector('#product-pricing .text-gold')?.textContent || document.querySelector('#product-pricing .text-deep-red')?.textContent || '₹0', image: getValidImagesArray(currentProduct.images)[0] || '' }); }
             function updateWishlistButtonState(id) { addToWishlistBtn.classList.toggle('wishlisted', currentWishlist && currentWishlist[id]); }
             function renderWishlist(data) {
                 const has = data && Object.keys(data).length > 0;
@@ -1818,11 +1942,6 @@
 
             categoriesRef.on('value', s => renderCategories(s.val()));
             productsRef.on('value', s => renderProducts(s.val()));
-            
-            mainOfferRef.on('value', s => {
-                const offerData = s.val();
-                if(Object.keys(globalProductsData).length > 0) { renderOffersPage(offerData); } else { productsRef.once('value').then(pSnap => { globalProductsData = pSnap.val() || {}; renderOffersPage(offerData); }); }
-            });
             
             wishlistRef.on('value', s => { currentWishlist = s.val() || {}; renderWishlist(currentWishlist); const id = addToWishlistBtn.dataset.productId; if (id) updateWishlistButtonState(id); });
             
@@ -1838,7 +1957,6 @@
             document.querySelectorAll('.js-wishlist-nav-btn').forEach(b => b.addEventListener('click', e => { e.preventDefault(); transitionTo(wishlistPage); }));
             document.querySelectorAll('.js-offers-nav-btn').forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); transitionTo(offersPage); }));
             
-            // NEW NAV BEHAVIOR
             document.querySelectorAll('.js-profile-nav-btn').forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); transitionTo(profilePage); }));
             document.querySelectorAll('.js-stores-nav-btn').forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); transitionTo(storesListPage); }));
             
@@ -1846,7 +1964,18 @@
             if(backFromSingleStoreBtn) backFromSingleStoreBtn.addEventListener('click', () => transitionTo(storesListPage));
 
             if(featuredProductsGrid) featuredProductsGrid.addEventListener('click', e => { const c = e.target.closest('.product-card-link'); if(c) populateProductPage(c.dataset.productId); });
-            if(productPage) productPage.addEventListener('click', e => { const t = e.target.closest('.product-thumbnail'); if(t) { document.getElementById('product-image-main').src = t.dataset.imgSrc; document.querySelectorAll('.product-thumbnail').forEach(th => th.classList.replace('border-gold', 'border-gray-200') && th.classList.replace('opacity-100', 'opacity-70')); t.classList.replace('border-gray-200', 'border-gold'); t.classList.replace('opacity-70', 'opacity-100'); } });
+            
+            if(productPage) productPage.addEventListener('click', e => { 
+                const t = e.target.closest('.product-thumbnail'); 
+                if(t) { 
+                    const mainMediaContainer = document.getElementById('pdp-main-media-container');
+                    mainMediaContainer.innerHTML = `<img id="product-image-main" class="w-full h-full object-cover transition-opacity duration-300 drop-shadow-lg" src="${t.dataset.imgSrc}" alt="Product Image"/>`;
+                    document.querySelectorAll('.product-thumbnail').forEach(th => th.classList.replace('border-gold', 'border-gray-200') && th.classList.replace('opacity-100', 'opacity-70')); 
+                    t.classList.replace('border-gray-200', 'border-gold'); 
+                    t.classList.replace('opacity-70', 'opacity-100'); 
+                } 
+            });
+
             if(wishlistGrid) wishlistGrid.addEventListener('click', e => { const b = e.target.closest('.remove-wishlist-item'); if(b && b.dataset.id) wishlistRef.child(b.dataset.id).remove(); });
             if(addToWishlistBtn) addToWishlistBtn.addEventListener('click', toggleWishlistItem);
             if(viewAllCategoriesBtn) viewAllCategoriesBtn.addEventListener('click', (e) => { e.preventDefault(); openCategoryLayout(); });
