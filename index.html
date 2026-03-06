@@ -470,7 +470,9 @@
                     <div class="flex items-center gap-3"><span class="material-symbols-outlined text-luxury-gold text-xl">local_shipping</span><div><p class="text-sm font-bold text-gray-900">Free Delivery by Tomorrow</p><p class="text-xs text-luxury-gold mt-0.5">In Stock - Fast Shipping</p></div></div>
                 </div>
                 <div id="product-finishes-container" class="space-y-3 font-body"></div>
-                <div id="product-specs-container" class="space-y-3 pt-4 font-body"></div>
+                
+                <!-- Updated Specs Container (Golden Card injection via JS) -->
+                <div id="product-specs-container" class="font-body"></div>
                 
                 <div class="pt-8 border-t border-gray-200 font-body">
                     <div class="flex items-center justify-between mb-4"><h3 class="text-lg font-bold text-gray-900 luxury-text">Live User Reviews</h3></div>
@@ -485,11 +487,17 @@
                 </div>
             </section>
         </main>
+        
+        <!-- Updated Bottom Nav Buttons (Smaller, Golden, 3D Glass, + Icon) -->
         <div class="fixed bottom-0 left-0 right-0 z-50 p-4 pb-8 glass-nav border-t border-gray-200 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] font-body">
             <div class="flex gap-3 max-w-lg mx-auto items-center">
-                <button id="add-to-wishlist-btn" class="size-14 rounded-[20px] bg-white border border-gray-300 text-gray-700 flex items-center justify-center shadow-[0_4px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out"><span class="material-symbols-outlined text-3xl transition-all duration-300">favorite</span></button>
-                <button id="add-to-cart-btn" class="flex-1 h-14 premium-outline-btn flex items-center justify-center gap-2"><span class="material-symbols-outlined">add_shopping_cart</span> ADD TO CART</button>
-                <button id="buy-now-btn" class="flex-1 h-14 premium-gold-btn flex items-center justify-center gap-2">BUY NOW</button>
+                <button id="add-to-wishlist-btn" class="size-12 rounded-[15px] bg-white border border-gray-300 text-gray-700 flex items-center justify-center shadow-[0_4px_10px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out shrink-0"><span class="material-symbols-outlined text-2xl transition-all duration-300">favorite</span></button>
+                <button id="add-to-cart-btn" class="flex-1 h-12 rounded-[15px] bg-gradient-to-r from-[#e5c05c] to-[#c79822] border border-[#FFD700] shadow-[0_5px_15px_rgba(212,175,55,0.3),inset_0_2px_5px_rgba(255,255,255,0.5)] text-white font-bold flex items-center justify-center gap-1 transition-all active:scale-90 text-sm backdrop-blur-md">
+                    <span class="material-symbols-outlined text-lg">add</span> ADD
+                </button>
+                <button id="buy-now-btn" class="flex-1 h-12 rounded-[15px] bg-gradient-to-r from-[#D4AF37] to-[#996b0b] border border-[#FFD700] shadow-[0_5px_15px_rgba(212,175,55,0.5),inset_0_2px_5px_rgba(255,255,255,0.5)] text-white font-bold flex items-center justify-center gap-1 transition-all active:scale-90 text-sm uppercase tracking-wider backdrop-blur-md">
+                    BUY NOW
+                </button>
             </div>
         </div>
     </div>
@@ -1400,7 +1408,18 @@
             if(clearSearchBtn) clearSearchBtn.addEventListener('click', () => { mainSearchInput.value = ''; clearSearchBtn.classList.add('hidden'); searchDefaultState.classList.remove('hidden'); searchResultsState.classList.add('hidden'); searchResultsState.classList.remove('flex'); mainSearchInput.focus(); });
             function performSearch(query) {
                 const results = Object.entries(globalProductsData).filter(([id, p]) => (p.name && p.name.toLowerCase().includes(query)) || (p.category && p.category.toLowerCase().includes(query))); searchCount.textContent = results.length;
-                if(results.length > 0) { searchResultsContainer.innerHTML = results.map(([id, p]) => { const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/150x150/ffffff/D4AF37?text=NA'; const discount = Math.round(((p.realPrice - p.nexaraPrice) / p.realPrice) * 100); return `<div class="flex gap-4 p-3 bg-white rounded-[20px] border border-gray-100 shadow-sm cursor-pointer hover:border-luxury-gold transition-colors" onclick="addRecentSearch(document.getElementById('main-search-input').value.trim()); window.directToProduct('${id}')"><div class="size-20 rounded-[15px] overflow-hidden shrink-0 bg-gray-50 border border-gray-200"><img src="${img}" class="w-full h-full object-cover" /></div><div class="flex flex-col justify-center"><h4 class="text-sm font-bold text-gray-900 luxury-text line-clamp-1">${p.name}</h4><div class="flex items-center gap-2 mt-1"><span class="text-luxury-gold font-bold text-sm">₹${p.nexaraPrice.toLocaleString()}</span>${discount > 0 ? `<span class="text-xs text-gray-400 line-through">₹${p.realPrice.toLocaleString()}</span>` : ''}</div><div class="flex items-center gap-1 mt-1 text-luxury-gold"><span class="material-symbols-outlined text-[12px] fill-1">star</span><span class="material-symbols-outlined text-[12px] fill-1">star</span><span class="material-symbols-outlined text-[12px] fill-1">star</span><span class="material-symbols-outlined text-[12px] fill-1">star</span><span class="text-[10px] text-gray-400 font-medium ml-1">Premium</span></div></div></div>`; }).join(''); } else { searchResultsContainer.innerHTML = `<div class="flex flex-col items-center justify-center py-20 text-center"><span class="material-symbols-outlined text-5xl text-gray-300 mb-3">search_off</span><h3 class="luxury-text text-lg font-bold text-gray-800">No matching products</h3><p class="text-xs text-gray-500 mt-1">Try searching for "Shoes", "Bags" or "Mobiles"</p></div>`; }
+                if(results.length > 0) { 
+                    searchResultsContainer.innerHTML = results.map(([id, p]) => { 
+                        const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/150x150/ffffff/D4AF37?text=NA'; 
+                        const discount = Math.round(((p.realPrice - p.nexaraPrice) / p.realPrice) * 100); 
+                        const mediaHtml = p.videoUrl 
+                            ? `<video src="${p.videoUrl}" autoplay loop muted playsinline class="w-full h-full object-cover"></video>`
+                            : `<img src="${img}" class="w-full h-full object-cover" />`;
+                        return `<div class="flex gap-4 p-3 bg-white rounded-[20px] border border-gray-100 shadow-sm cursor-pointer hover:border-luxury-gold transition-colors" onclick="addRecentSearch(document.getElementById('main-search-input').value.trim()); window.directToProduct('${id}')"><div class="size-20 rounded-[15px] overflow-hidden shrink-0 bg-black border border-gray-200">${mediaHtml}</div><div class="flex flex-col justify-center"><h4 class="text-sm font-bold text-gray-900 luxury-text line-clamp-1">${p.name}</h4><div class="flex items-center gap-2 mt-1"><span class="text-luxury-gold font-bold text-sm">₹${p.nexaraPrice.toLocaleString()}</span>${discount > 0 ? `<span class="text-xs text-gray-400 line-through">₹${p.realPrice.toLocaleString()}</span>` : ''}</div><div class="flex items-center gap-1 mt-1 text-luxury-gold"><span class="material-symbols-outlined text-[12px] fill-1">star</span><span class="material-symbols-outlined text-[12px] fill-1">star</span><span class="material-symbols-outlined text-[12px] fill-1">star</span><span class="material-symbols-outlined text-[12px] fill-1">star</span><span class="text-[10px] text-gray-400 font-medium ml-1">Premium</span></div></div></div>`; 
+                    }).join(''); 
+                } else { 
+                    searchResultsContainer.innerHTML = `<div class="flex flex-col items-center justify-center py-20 text-center"><span class="material-symbols-outlined text-5xl text-gray-300 mb-3">search_off</span><h3 class="luxury-text text-lg font-bold text-gray-800">No matching products</h3><p class="text-xs text-gray-500 mt-1">Try searching for "Shoes", "Bags" or "Mobiles"</p></div>`; 
+                }
             }
             
             // Category Filtering Logic
@@ -1438,7 +1457,13 @@
                     let html = '';
                     for(const [subcat, prods] of Object.entries(groups)) {
                         const displayProds = prods.slice(0, 16);
-                        html += `<div class="flex flex-col mb-6"><div class="flex items-center justify-between mb-3"><h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider border-l-2 border-luxury-gold pl-2">${subcat}</h3><button onclick="openSubcategoryView('${categoryId}', '${subcat}')" class="flex items-center gap-1 bg-white/40 backdrop-blur-md border border-luxury-gold/50 text-luxury-gold px-3 py-1 rounded-full text-[10px] font-bold shadow-[0_4px_10px_rgba(212,175,55,0.15)] hover:bg-luxury-gold hover:text-white transition-all">More <span class="material-symbols-outlined text-[12px]">chevron_right</span></button></div><div class="grid grid-cols-4 gap-x-2 gap-y-4 w-full">${displayProds.map(([pid, p]) => { const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/150x150/ffffff/D4AF37?text=NA'; return `<div class="flex flex-col items-center cursor-pointer group" onclick="window.directToProduct('${pid}')"><div class="w-full aspect-square rounded-[15px] overflow-hidden border border-gray-200 group-hover:border-luxury-gold transition-colors shadow-sm bg-white p-[2px]"><img src="${img}" class="w-full h-full rounded-[12px] object-cover group-hover:scale-110 transition-transform duration-500" /></div><span class="text-[9px] text-gray-700 text-center mt-1.5 font-semibold group-hover:text-black line-clamp-2 leading-tight px-0.5 font-body">${p.name}</span></div>`; }).join('')}</div></div>`;
+                        html += `<div class="flex flex-col mb-6"><div class="flex items-center justify-between mb-3"><h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider border-l-2 border-luxury-gold pl-2">${subcat}</h3><button onclick="openSubcategoryView('${categoryId}', '${subcat}')" class="flex items-center gap-1 bg-white/40 backdrop-blur-md border border-luxury-gold/50 text-luxury-gold px-3 py-1 rounded-full text-[10px] font-bold shadow-[0_4px_10px_rgba(212,175,55,0.15)] hover:bg-luxury-gold hover:text-white transition-all">View All <span class="material-symbols-outlined text-[12px]">chevron_right</span></button></div><div class="grid grid-cols-4 gap-x-2 gap-y-4 w-full">${displayProds.map(([pid, p]) => { 
+                            const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/150x150/ffffff/D4AF37?text=NA'; 
+                            const mediaHtml = p.videoUrl
+                                ? `<video src="${p.videoUrl}" autoplay loop muted playsinline class="w-full h-full rounded-[12px] object-cover group-hover:scale-110 transition-transform duration-500"></video>`
+                                : `<img src="${img}" class="w-full h-full rounded-[12px] object-cover group-hover:scale-110 transition-transform duration-500" />`;
+                            return `<div class="flex flex-col items-center cursor-pointer group" onclick="window.directToProduct('${pid}')"><div class="w-full aspect-square rounded-[15px] overflow-hidden border border-gray-200 group-hover:border-luxury-gold transition-colors shadow-sm bg-black p-[2px]">${mediaHtml}</div><span class="text-[9px] text-gray-700 text-center mt-1.5 font-semibold group-hover:text-black line-clamp-2 leading-tight px-0.5 font-body">${p.name}</span></div>`; 
+                        }).join('')}</div></div>`;
                     }
                     rightContent.innerHTML = html;
                 } else {
@@ -1455,7 +1480,13 @@
                 let html = '';
                 orderedSubcats.forEach(subcat => {
                     if(!groups[subcat]) return; const prods = groups[subcat];
-                    html += `<div class="flex flex-col mb-8"><div class="flex items-center justify-between mb-4 bg-gray-50 p-3 rounded-[15px] border border-gray-200"><h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider">${subcat}</h3><span class="text-[10px] font-bold text-gray-500 bg-white px-2 py-1 rounded-full shadow-sm">${prods.length} Items</span></div><div class="grid grid-cols-4 gap-x-2 gap-y-5 w-full">${prods.map(([pid, p]) => { const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/150x150/ffffff/D4AF37?text=NA'; return `<div class="flex flex-col items-center cursor-pointer group" onclick="window.directToProduct('${pid}')"><div class="w-full aspect-square rounded-[15px] overflow-hidden border border-gray-200 group-hover:border-luxury-gold transition-colors shadow-sm bg-white p-[2px]"><img src="${img}" class="w-full h-full rounded-[12px] object-cover group-hover:scale-110 transition-transform duration-500" /></div><span class="text-[9px] text-gray-700 text-center mt-1.5 font-semibold group-hover:text-black line-clamp-2 leading-tight px-0.5 font-body">${p.name}</span></div>`; }).join('')}</div></div>`;
+                    html += `<div class="flex flex-col mb-8"><div class="flex items-center justify-between mb-4 bg-gray-50 p-3 rounded-[15px] border border-gray-200"><h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider">${subcat}</h3><span class="text-[10px] font-bold text-gray-500 bg-white px-2 py-1 rounded-full shadow-sm">${prods.length} Items</span></div><div class="grid grid-cols-4 gap-x-2 gap-y-5 w-full">${prods.map(([pid, p]) => { 
+                        const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/150x150/ffffff/D4AF37?text=NA';
+                        const mediaHtml = p.videoUrl
+                            ? `<video src="${p.videoUrl}" autoplay loop muted playsinline class="w-full h-full rounded-[12px] object-cover group-hover:scale-110 transition-transform duration-500"></video>`
+                            : `<img src="${img}" class="w-full h-full rounded-[12px] object-cover group-hover:scale-110 transition-transform duration-500" />`;
+                        return `<div class="flex flex-col items-center cursor-pointer group" onclick="window.directToProduct('${pid}')"><div class="w-full aspect-square rounded-[15px] overflow-hidden border border-gray-200 group-hover:border-luxury-gold transition-colors shadow-sm bg-black p-[2px]">${mediaHtml}</div><span class="text-[9px] text-gray-700 text-center mt-1.5 font-semibold group-hover:text-black line-clamp-2 leading-tight px-0.5 font-body">${p.name}</span></div>`; 
+                    }).join('')}</div></div>`;
                 });
                 contentArea.innerHTML = html; transitionTo(subcategoryPage);
             };
@@ -1493,42 +1524,64 @@
 
             window.openSingleStore = function(sellerId) {
                 const seller = globalSellersData[sellerId];
-                if(!seller) return;
-                
+                if (!seller) return;
+
                 document.getElementById('single-store-title').textContent = seller.profile.storeName;
-                
+
                 const catContainer = document.getElementById('single-store-categories');
-                let catHtml = `<button class="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-luxury-gold text-white shadow-sm" onclick="filterSingleStore('${sellerId}', 'all')">All Products</button>`;
                 
-                if(seller.categories) {
-                    Object.entries(seller.categories).forEach(([catId, cat]) => {
-                        if(cat.status === 'approved') {
-                            catHtml += `<button class="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-white text-gray-600 border border-gray-200 hover:border-luxury-gold transition" onclick="filterSingleStore('${sellerId}', '${cat.name}')">${cat.name}</button>`;
-                        }
-                    });
-                }
+                // NEW LOGIC: Find unique subcategories for this seller's products
+                const storeProducts = Object.values(globalProductsData).filter(p => p.sellerId === sellerId);
+                const subcategories = new Set();
+                storeProducts.forEach(p => {
+                    if (p.subcategory) {
+                        subcategories.add(p.subcategory);
+                    }
+                });
+
+                let catHtml = `<button id="store-filter-all" class="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-luxury-gold text-white shadow-sm" onclick="filterSingleStore('${sellerId}', 'all')">All Products</button>`;
+                
+                subcategories.forEach(subcat => {
+                     catHtml += `<button id="store-filter-${subcat.replace(/\s+/g, '-')}" class="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-white text-gray-600 border border-gray-200 hover:border-luxury-gold transition" onclick="filterSingleStore('${sellerId}', '${subcat}')">${subcat}</button>`;
+                });
+
                 catContainer.innerHTML = catHtml;
                 
                 filterSingleStore(sellerId, 'all');
                 transitionTo(singleStorePage);
             };
 
-            window.filterSingleStore = function(sellerId, categoryName) {
+            window.filterSingleStore = function(sellerId, subcategoryName) {
                 const grid = document.getElementById('single-store-products-grid');
                 let storeProducts = Object.entries(globalProductsData).filter(([pid, p]) => p.sellerId === sellerId);
-                
-                if(categoryName !== 'all') {
-                    storeProducts = storeProducts.filter(([pid, p]) => p.category === categoryName);
+
+                // Update active button style
+                document.querySelectorAll('#single-store-categories button').forEach(btn => {
+                    btn.classList.remove('bg-luxury-gold', 'text-white', 'shadow-sm');
+                    btn.classList.add('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+                });
+                const activeBtnId = subcategoryName === 'all' ? 'store-filter-all' : `store-filter-${subcategoryName.replace(/\s+/g, '-')}`;
+                const activeBtn = document.getElementById(activeBtnId);
+                if(activeBtn) {
+                    activeBtn.classList.add('bg-luxury-gold', 'text-white', 'shadow-sm');
+                    activeBtn.classList.remove('bg-white', 'text-gray-600', 'border', 'border-gray-200');
+                }
+
+                if (subcategoryName !== 'all') {
+                    storeProducts = storeProducts.filter(([pid, p]) => p.subcategory === subcategoryName);
                 }
                 
                 if(storeProducts.length > 0) {
                     grid.innerHTML = storeProducts.map(([id, p]) => {
                         const img = getValidImagesArray(p.images)[0] || 'https://placehold.co/200x200/ffffff/D4AF37?text=NA';
                         const discount = Math.round(((p.realPrice - p.nexaraPrice) / p.realPrice) * 100); 
+                        const mediaHtml = p.videoUrl
+                            ? `<video src="${p.videoUrl}" autoplay loop muted playsinline class="w-full h-full object-cover rounded-[12px] group-hover:scale-110 transition-transform duration-300"></video>`
+                            : `<img src="${img}" class="w-full h-full object-cover rounded-[12px] group-hover:scale-110 transition-transform duration-300">`;
                         return `
                         <div class="flex flex-col product-card-link cursor-pointer group w-full mb-3" onclick="window.directToProduct('${id}')">
-                            <div class="w-full aspect-square rounded-[15px] overflow-hidden bg-gray-50 border border-gray-100 shadow-sm relative p-1 group-hover:border-luxury-gold transition-colors">
-                                <img src="${img}" class="w-full h-full object-cover rounded-[12px] group-hover:scale-110 transition-transform duration-300">
+                            <div class="w-full aspect-square rounded-[15px] overflow-hidden bg-black border border-gray-100 shadow-sm relative p-1 group-hover:border-luxury-gold transition-colors">
+                                ${mediaHtml}
                                 ${discount > 0 ? `<div class="absolute top-1.5 left-1.5 bg-luxury-gold text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow-sm">${discount}% OFF</div>` : ''}
                             </div>
                             <div class="mt-1.5 px-0.5 flex flex-col items-center text-center">
@@ -1578,14 +1631,73 @@
                     });
 
                     if(homeProducts.length > 0) {
-                        featuredProductsGrid.innerHTML = homeProducts.map(([id, p]) => { 
+                        let html = '';
+                        let productCount = 0;
+                        let catIndex = 0;
+                        
+                        // NEW LOGIC: Group products by category for the sliders
+                        const catGroups = {};
+                        homeProducts.forEach(([id, p]) => {
+                            const cName = p.category || 'Other';
+                            if(!catGroups[cName]) catGroups[cName] = [];
+                            catGroups[cName].push([id, p]);
+                        });
+                        // Select categories that have at least 2 products to make a good slider
+                        const availableCats = Object.keys(catGroups).filter(c => catGroups[c].length >= 2); 
+
+                        for (let i = 0; i < homeProducts.length; i++) {
+                            const [id, p] = homeProducts[i];
                             const isActiveOffer = p.offerPrice && p.offerEndTime && new Date(p.offerEndTime) > new Date();
                             const activePrice = isActiveOffer ? p.offerPrice : p.nexaraPrice;
                             const discount = Math.round(((p.realPrice - activePrice) / p.realPrice) * 100); 
-                            const imgUrl = getValidImagesArray(p.images)[0] || 'https://placehold.co/400x400/ffffff/D4AF37?text=No+Image'; 
+                            const imgUrl = getValidImagesArray(p.images)[0] || 'https://placehold.co/400x400/ffffff/D4AF37?text=No+Image';
+                            const mediaHtml = p.videoUrl
+                                ? `<video src="${p.videoUrl}" autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"></video>`
+                                : `<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="${imgUrl}"/>`;
                             
-                            return `<div class="flex flex-col product-card-link cursor-pointer w-full font-body" data-product-id="${id}"><div class="relative aspect-square w-full rounded-[20px] overflow-hidden bg-white border border-gray-200 group shadow-sm"><img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="${imgUrl}"/>${discount > 0 ? `<div class="absolute top-1 left-1 sm:top-2 sm:left-2 bg-luxury-gold text-white px-1.5 py-[2px] rounded text-[9px] font-bold shadow-sm">${discount}% OFF</div>` : ''}${p.isLimited ? `<div class="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-1.5 py-[2px] rounded text-[8px] font-bold tracking-widest uppercase shadow-sm">Limited</div>` : ''}</div><div class="mt-2 space-y-0.5 px-0.5"><h4 class="text-[10px] sm:text-[11px] text-gray-800 line-clamp-1 uppercase font-bold tracking-wide leading-tight">${p.name}</h4><div class="flex items-center gap-1.5 flex-wrap"><p class="text-[11px] sm:text-xs text-luxury-gold font-bold">₹${activePrice.toLocaleString()}</p>${discount > 0 ? `<p class="text-[9px] sm:text-[10px] text-gray-400 line-through">₹${p.realPrice.toLocaleString()}</p>` : ''}</div></div></div>`; 
-                        }).join('');
+                            html += `<div class="flex flex-col product-card-link cursor-pointer w-full font-body" data-product-id="${id}"><div class="relative aspect-square w-full rounded-[20px] overflow-hidden bg-black border border-gray-200 group shadow-sm">${mediaHtml}${discount > 0 ? `<div class="absolute top-1 left-1 sm:top-2 sm:left-2 bg-luxury-gold text-white px-1.5 py-[2px] rounded text-[9px] font-bold shadow-sm">${discount}% OFF</div>` : ''}${p.isLimited ? `<div class="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-1.5 py-[2px] rounded text-[8px] font-bold tracking-widest uppercase shadow-sm">Limited</div>` : ''}</div><div class="mt-2 space-y-0.5 px-0.5"><h4 class="text-[10px] sm:text-[11px] text-gray-800 line-clamp-1 uppercase font-bold tracking-wide leading-tight">${p.name}</h4><div class="flex items-center gap-1.5 flex-wrap"><p class="text-[11px] sm:text-xs text-luxury-gold font-bold">₹${activePrice.toLocaleString()}</p>${discount > 0 ? `<p class="text-[9px] sm:text-[10px] text-gray-400 line-through">₹${p.realPrice.toLocaleString()}</p>` : ''}</div></div></div>`;
+
+                            productCount++;
+
+                            // Inject Category Slider after every 16 products
+                            if (productCount === 16) {
+                                if (catIndex < availableCats.length) {
+                                    const sliderCat = availableCats[catIndex];
+                                    const sliderProducts = catGroups[sliderCat].slice(0, 10); // show up to 10 in slider
+                                    
+                                    html += `
+                                    <div class="col-span-full py-5 my-4 bg-gradient-to-r from-luxury-gold/5 to-white rounded-2xl border-y border-luxury-gold/20 shadow-sm relative overflow-hidden">
+                                        <div class="px-4 flex items-center justify-between mb-4">
+                                            <h3 class="text-base font-bold text-gray-900 luxury-text uppercase tracking-widest border-l-4 border-luxury-gold pl-2">${sliderCat} Showcase</h3>
+                                            <span class="text-[10px] font-bold text-white bg-luxury-gold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1 cursor-pointer" onclick="filterShopByCategory('${sliderCat}')">Explore All <span class="material-symbols-outlined text-[12px]">arrow_forward</span></span>
+                                        </div>
+                                        <div class="flex overflow-x-auto gap-4 px-4 hide-scrollbar pb-2 snap-x">
+                                            ${sliderProducts.map(([sid, sp]) => {
+                                                const sImgUrl = getValidImagesArray(sp.images)[0] || 'https://placehold.co/400x400/ffffff/D4AF37?text=No+Image';
+                                                const sActivePrice = (sp.offerPrice && sp.offerEndTime && new Date(sp.offerEndTime) > new Date()) ? sp.offerPrice : sp.nexaraPrice;
+                                                const sDiscount = Math.round(((sp.realPrice - sActivePrice) / sp.realPrice) * 100); 
+                                                return `
+                                                <div class="shrink-0 w-[42vw] sm:w-[30vw] md:w-[22vw] snap-center cursor-pointer group flex flex-col items-center" onclick="window.directToProduct('${sid}')">
+                                                    <div class="relative aspect-square w-full rounded-[20px] overflow-hidden bg-white border-2 border-transparent group-hover:border-luxury-gold shadow-md transition-colors p-1">
+                                                        <div class="w-full h-full rounded-[15px] overflow-hidden bg-black relative">
+                                                            ${sp.videoUrl ? `<video src="${sp.videoUrl}" autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"></video>` : `<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="${sImgUrl}"/>`}
+                                                            ${sDiscount > 0 ? `<div class="absolute top-1.5 left-1.5 bg-red-500 text-white px-2 py-0.5 rounded text-[9px] font-bold shadow-sm">${sDiscount}% OFF</div>` : ''}
+                                                        </div>
+                                                    </div>
+                                                    <div class="mt-2 w-full px-1 text-center">
+                                                        <h4 class="text-[11px] text-gray-800 line-clamp-1 uppercase font-bold tracking-wide">${sp.name}</h4>
+                                                        <p class="text-xs text-luxury-gold font-bold mt-0.5">₹${sActivePrice.toLocaleString()}</p>
+                                                    </div>
+                                                </div>`;
+                                            }).join('')}
+                                        </div>
+                                    </div>`;
+                                    catIndex++;
+                                }
+                                productCount = 0; // reset for next batch
+                            }
+                        }
+                        featuredProductsGrid.innerHTML = html;
                     } else {
                         featuredProductsGrid.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center py-10 text-center font-body w-full"><div class="w-40 h-40 rounded-full overflow-hidden border-4 border-luxury-gold/30 shadow-lg mb-6 relative mx-auto flex items-center justify-center bg-gray-50"><img src="https://i.ibb.co/60stmC4L/v-Ns0e-Rg-HS0mv-Ys1-WGBWb-LA-2k.webp" alt="Empty Category" class="w-full h-full object-cover"></div><span class="text-gray-400 text-xs uppercase tracking-widest font-bold">No items found</span></div>`;
                     }
@@ -1651,7 +1763,20 @@
                 
                 document.getElementById('product-thumbnails').innerHTML = imageArray.map((img, i) => `<div class="size-20 rounded-xl border-2 ${i===0?'border-gold':'border-gray-200 opacity-70'} flex-shrink-0 overflow-hidden cursor-pointer product-thumbnail transition-all hover:opacity-100 bg-gray-50 p-1" data-img-src="${img}"><img class="w-full h-full object-cover rounded-lg" src="${img}" onerror="this.src='https://placehold.co/200x200/ffffff/D4AF37?text=NA'"/></div>`).join('');
                 document.getElementById('product-finishes-container').innerHTML = (p.finishes && p.finishes.length) ? `<h3 class="text-sm uppercase text-gray-500 font-bold">Select Finish</h3><div class="flex gap-4">${p.finishes.map((f, i) => `<button class="flex flex-col items-center gap-2 ${i>0?'opacity-50 hover:opacity-100 transition':''}"><div class="size-12 rounded-full p-[2px] ${i===0?'border-2 border-gold shadow-[0_0_15px_rgba(212,175,55,0.2)]':'border border-gray-300'}"><div class="w-full h-full rounded-full border border-gray-100" style="background-color: ${f.color};"></div></div><span class="text-[10px] font-bold ${i===0?'text-gold':'text-gray-700'}">${f.name}</span></button>`).join('')}</div>` : '';
-                document.getElementById('product-specs-container').innerHTML = (p.specifications && p.specifications.length) ? `<h3 class="text-sm uppercase text-gray-500 font-bold">Specifications</h3><ul class="grid grid-cols-1 gap-3 bg-white p-4 rounded-[20px] border border-gray-200 shadow-sm">${p.specifications.map(spec => `<li class="flex items-center gap-3 text-sm text-gray-700 font-medium"><span class="material-symbols-outlined text-gold text-lg">check_circle</span> ${spec}</li>`).join('')}</ul>` : '';
+                
+                // NEW: Golden Card injection for Specifications
+                document.getElementById('product-specs-container').innerHTML = (p.specifications && p.specifications.length) ? `
+                <div class="mt-6 p-5 rounded-[20px] bg-gradient-to-br from-yellow-50 to-white border border-luxury-gold/40 shadow-[0_8px_30px_rgba(212,175,55,0.15)] relative overflow-hidden backdrop-blur-sm">
+                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-luxury-gold/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-luxury-gold text-2xl drop-shadow-sm">verified</span>
+                        <h3 class="text-base uppercase text-gray-800 font-bold tracking-widest luxury-text">Specifications</h3>
+                    </div>
+                    <ul class="space-y-3 relative z-10">
+                        ${p.specifications.map(spec => `<li class="flex items-start gap-3 text-sm text-gray-700 font-medium"><span class="material-symbols-outlined text-luxury-gold text-base mt-0.5 shadow-sm rounded-full">check_circle</span> <span class="flex-1 leading-relaxed">${spec}</span></li>`).join('')}
+                    </ul>
+                </div>` : '';
+
                 updateWishlistButtonState(id); loadReviews(id); transitionTo(productPage);
             }
 
@@ -1762,8 +1887,23 @@
                 } catch (error) { console.error("Payment Error:", error); alert("Something went wrong initializing payment. Check server connection."); btn.innerHTML = originalBtnHtml; }
             });
 
+            // NEW: Add to cart interaction (+ active state)
+            document.getElementById('add-to-cart-btn').addEventListener('click', function() { 
+                const btn = this;
+                addToCartItem(currentProduct); 
+                
+                // Show visual feedback without transition to cart page
+                const originalContent = btn.innerHTML;
+                btn.innerHTML = '<span class="material-symbols-outlined text-lg">check_circle</span> ADDED';
+                btn.classList.add('scale-95', 'opacity-90', 'ring-2', 'ring-white');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    btn.classList.remove('scale-95', 'opacity-90', 'ring-2', 'ring-white');
+                }, 1500);
+            });
+
             document.getElementById('buy-now-btn').addEventListener('click', () => { globalCart = {}; addToCartItem(currentProduct); transitionTo(checkoutPage); if(!userAddressInfo.phone) setTimeout(openAddressModal, 800); });
-            document.getElementById('add-to-cart-btn').addEventListener('click', () => { addToCartItem(currentProduct); transitionTo(cartPage); });
             
             function initCountdown(elementId, endTimeStr) {
                 const timerEl = document.getElementById(elementId); if (!timerEl || !endTimeStr) return;
@@ -1799,7 +1939,10 @@
                     if (offerProducts.length > 0) {
                         gridEl.innerHTML = offerProducts.map(([id, p]) => {
                             const img = getValidImagesArray(p.images)[0] || '';
-                            return `<div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-gray-100 group cursor-pointer" onclick="window.directToProduct('${id}')"><div class="relative aspect-square w-full bg-gray-50 overflow-hidden"><img src="${img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"/></div><div class="p-2.5 flex-1 flex flex-col justify-between"><h4 class="text-[11px] font-bold luxury-text line-clamp-2 leading-tight">${p.name}</h4><div class="mt-1.5 space-y-0 text-left"><p class="text-[9px] text-gray-400">MRP: <span class="line-through">₹${p.realPrice.toLocaleString()}</span></p><p class="text-[13px] font-bold text-deep-red">₹${p.offerPrice.toLocaleString()}</p></div><div class="mt-2 bg-iccha-primary text-white text-center p-1.5 rounded-md shadow-inner"><div class="text-[8px] uppercase tracking-widest font-semibold opacity-90">Ends In</div><div id="timer-${id}" class="text-xs font-bold tracking-widest tabular-nums mt-0.5">--:--:--</div></div></div></div>`;
+                            const mediaHtml = p.videoUrl
+                                ? `<video src="${p.videoUrl}" autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"></video>`
+                                : `<img src="${img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"/>`;
+                            return `<div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-gray-100 group cursor-pointer" onclick="window.directToProduct('${id}')"><div class="relative aspect-square w-full bg-black overflow-hidden">${mediaHtml}</div><div class="p-2.5 flex-1 flex flex-col justify-between"><h4 class="text-[11px] font-bold luxury-text line-clamp-2 leading-tight">${p.name}</h4><div class="mt-1.5 space-y-0 text-left"><p class="text-[9px] text-gray-400">MRP: <span class="line-through">₹${p.realPrice.toLocaleString()}</span></p><p class="text-[13px] font-bold text-deep-red">₹${p.offerPrice.toLocaleString()}</p></div><div class="mt-2 bg-iccha-primary text-white text-center p-1.5 rounded-md shadow-inner"><div class="text-[8px] uppercase tracking-widest font-semibold opacity-90">Ends In</div><div id="timer-${id}" class="text-xs font-bold tracking-widest tabular-nums mt-0.5">--:--:--</div></div></div></div>`;
                         }).join('');
                         offerProducts.forEach(([id, p]) => { initCountdown(`timer-${id}`, p.offerEndTime); });
                     } else { gridEl.innerHTML = `<p class="col-span-2 text-center text-gray-500 py-10">No special deals right now. Check back soon!</p>`; }
@@ -1844,6 +1987,8 @@
             
             if(backFromProfileBtn) backFromProfileBtn.addEventListener('click', () => transitionTo(lastPage || shopPage));
             if(backFromSingleStoreBtn) backFromSingleStoreBtn.addEventListener('click', () => transitionTo(storesListPage));
+            if(backFromSubcategoryBtn) backFromSubcategoryBtn.addEventListener('click', () => transitionTo(allCategoriesPage));
+
 
             if(featuredProductsGrid) featuredProductsGrid.addEventListener('click', e => { const c = e.target.closest('.product-card-link'); if(c) populateProductPage(c.dataset.productId); });
             if(productPage) productPage.addEventListener('click', e => { const t = e.target.closest('.product-thumbnail'); if(t) { document.getElementById('product-image-main').src = t.dataset.imgSrc; document.querySelectorAll('.product-thumbnail').forEach(th => th.classList.replace('border-gold', 'border-gray-200') && th.classList.replace('opacity-100', 'opacity-70')); t.classList.replace('border-gray-200', 'border-gold'); t.classList.replace('opacity-70', 'opacity-100'); } });
