@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Iccha Premium Admin Panel</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -103,7 +103,8 @@
         </button>
     </div>
 
-    <div class="flex h-[calc(100vh-64px)] md:h-screen relative">
+    <!-- Layout Wrapper: Made completely responsive with 100dvh for mobile address bars -->
+    <div class="flex h-[calc(100dvh-64px)] md:h-[100dvh] relative">
         
         <!-- Sidebar Overlay for Mobile -->
         <div id="sidebar-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden md:hidden"></div>
@@ -153,7 +154,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 p-4 md:p-8 overflow-y-auto w-full bg-[#0b1121] relative">
+        <main class="flex-1 p-4 md:p-8 overflow-y-auto w-full bg-[#0b1121] relative min-w-0">
             
             <!-- SECTION: Products -->
             <section id="products-section" class="admin-section">
@@ -162,18 +163,18 @@
                         <h2 class="text-2xl md:text-3xl font-bold text-white">Product Management</h2>
                         <p class="text-sm text-gray-400 mt-1">Add and manage luxury items</p>
                     </div>
-                    <button id="show-product-modal-btn" class="w-12 h-12 rounded-full btn-primary flex justify-center items-center shadow-lg hover:scale-110 transition-transform" title="Add New Product">
+                    <button id="show-product-modal-btn" class="w-12 h-12 rounded-full btn-primary flex justify-center items-center shadow-lg hover:scale-110 transition-transform shrink-0" title="Add New Product">
                         <span class="material-symbols-outlined text-3xl">add</span>
                     </button>
                 </div>
                 
                 <!-- Category Scroll Filter -->
-                <div id="product-category-filter" class="flex overflow-x-auto gap-3 pb-3 mb-4 hide-scrollbar">
+                <div id="product-category-filter" class="flex overflow-x-auto gap-3 pb-3 mb-4 hide-scrollbar w-full">
                     <button class="cat-filter-btn px-5 py-2 rounded-full bg-amber-500 text-black font-semibold whitespace-nowrap shadow-md" data-cat="all">All Products</button>
                     <!-- Dynamic Categories will inject here -->
                 </div>
 
-                <div class="premium-card rounded-2xl md:p-5">
+                <div class="premium-card rounded-2xl md:p-5 w-full">
                     <!-- Updated Grid: 4 items per row on sm, md, lg and xl screens to fulfill "4-4 ke grid line me ho" requirement -->
                     <div id="products-list" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-3 md:gap-5">
                         <p class="p-4 text-center col-span-full text-gray-400">Loading premium products...</p>
@@ -184,22 +185,22 @@
             <!-- SECTION: Categories -->
             <section id="categories-section" class="admin-section hidden">
                 <h2 class="text-2xl md:text-3xl font-bold mb-6 text-white">Category Management</h2>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-                    <div class="lg:col-span-1 premium-card rounded-2xl p-4 md:p-6 h-fit">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 w-full">
+                    <div class="lg:col-span-1 premium-card rounded-2xl p-4 md:p-6 h-fit w-full">
                         <h3 class="text-xl font-semibold mb-4 text-amber-500 border-b border-gray-700 pb-2">Add New Category</h3>
-                        <form id="category-form" class="space-y-4 mt-4">
+                        <form id="category-form" class="space-y-4 mt-4 w-full">
                             <div><label class="block text-xs font-bold uppercase tracking-wider mb-1 text-gray-400">Category Name</label><input type="text" id="category-name" class="w-full p-3 rounded-xl border text-sm" placeholder="e.g. Watches" required></div>
                             <div><label class="block text-xs font-bold uppercase tracking-wider mb-1 text-gray-400">Image URL</label><input type="url" id="category-image" class="w-full p-3 rounded-xl border text-sm" placeholder="Paste ImgBB link here" required></div>
                             <div><label class="block text-xs font-bold uppercase tracking-wider mb-1 text-gray-400">Serial No. (Order)</label><input type="number" id="category-order" class="w-full p-3 rounded-xl border text-sm" placeholder="e.g. 1" required></div>
                             <button type="submit" class="w-full btn-primary py-3 rounded-xl font-bold shadow-lg mt-2 text-sm">Save Category</button>
                         </form>
                     </div>
-                    <div class="lg:col-span-2 premium-card rounded-2xl p-4 md:p-6">
+                    <div class="lg:col-span-2 premium-card rounded-2xl p-4 md:p-6 w-full overflow-hidden">
                         <div class="flex justify-between items-center border-b border-gray-700 pb-2 mb-4">
                             <h3 class="text-xl font-semibold text-white">Existing Categories</h3>
-                            <p class="text-xs text-amber-500 bg-amber-500/10 px-2 py-1 rounded">Sorted by Serial No.</p>
+                            <p class="text-xs text-amber-500 bg-amber-500/10 px-2 py-1 rounded hidden sm:block">Sorted by Serial No.</p>
                         </div>
-                        <div id="categories-list" class="space-y-3"><p class="text-gray-400">Loading categories...</p></div>
+                        <div id="categories-list" class="space-y-3 w-full"><p class="text-gray-400">Loading categories...</p></div>
                     </div>
                 </div>
             </section>
@@ -207,11 +208,11 @@
             <!-- SECTION: EXCLUSIVE DEALS -->
             <section id="offers-section" class="admin-section hidden">
                 <h2 class="text-2xl md:text-3xl font-bold mb-6 text-white">Exclusive Deals UI Setup</h2>
-                <div class="premium-card rounded-2xl p-4 md:p-8">
+                <div class="premium-card rounded-2xl p-4 md:p-8 w-full overflow-hidden">
                     <form id="featured-offers-form" class="space-y-6">
-                        <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700">
+                        <div class="bg-slate-800/50 p-4 md:p-5 rounded-xl border border-slate-700">
                             <label class="block text-sm font-bold mb-2 text-amber-400 flex items-center gap-2"><span class="material-symbols-outlined">movie</span> Main Video URLs (16:9)</label>
-                            <div id="featured-video-inputs" class="space-y-3">
+                            <div id="featured-video-inputs" class="space-y-3 w-full">
                                 <input type="url" name="featured_videos" class="w-full p-3 rounded-xl" placeholder="Cloudinary video URL for the top banner">
                             </div>
                             <button type="button" id="add-featured-video-btn" class="mt-4 text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 bg-amber-500/10 px-3 py-1.5 rounded-lg border border-amber-500/20 transition">
@@ -219,24 +220,24 @@
                             </button>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                            <div class="bg-slate-800/50 p-4 md:p-5 rounded-xl border border-slate-700 min-w-0">
                                 <label for="featured-banner-image-url" class="block text-sm font-bold mb-1 text-amber-400 flex items-center gap-2"><span class="material-symbols-outlined">image</span> Promo Banner (Patti)</label>
                                 <input type="url" id="featured-banner-image-url" class="w-full p-3 rounded-xl mt-2" placeholder="URL for the banner image">
                                 <p class="text-[10px] text-gray-500 mt-2 leading-relaxed">Appears below the video. Size: 800x200px.</p>
                             </div>
 
-                            <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700">
+                            <div class="bg-slate-800/50 p-4 md:p-5 rounded-xl border border-slate-700 min-w-0">
                                 <label for="featured-sticker-url" class="block text-sm font-bold mb-1 text-amber-400 flex items-center gap-2"><span class="material-symbols-outlined">emoji_nature</span> Anime Sticker (PNG)</label>
                                 <input type="url" id="featured-sticker-url" class="w-full p-3 rounded-xl mt-2" placeholder="URL for transparent sticker">
                                 <p class="text-[10px] text-gray-500 mt-2 leading-relaxed">Stands on the promo banner.</p>
                             </div>
 
                             <!-- NEW: Animated Dialogs Inputs -->
-                            <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700 md:col-span-2">
+                            <div class="bg-slate-800/50 p-4 md:p-5 rounded-xl border border-slate-700 md:col-span-2 min-w-0">
                                 <label class="block text-sm font-bold mb-1 text-amber-400 flex items-center gap-2"><span class="material-symbols-outlined">chat</span> Animated Dialogs (For Sticker)</label>
                                 <p class="text-[10px] text-gray-500 mb-3">Add up to 5+ dialogs. These will wipe/type as the sticker moves from left to right on the user app.</p>
-                                <div id="featured-dialogs-inputs" class="space-y-2">
+                                <div id="featured-dialogs-inputs" class="space-y-2 w-full">
                                     <input type="text" name="featured_dialogs" class="w-full p-3 rounded-xl text-sm" placeholder="Dialog 1 (e.g. Hurry! Exclusive Sale is live!)">
                                 </div>
                                 <button type="button" id="add-dialog-btn" class="mt-3 text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 bg-amber-500/10 px-3 py-1.5 rounded-lg border border-amber-500/20 transition">
@@ -245,10 +246,10 @@
                             </div>
                         </div>
 
-                        <div class="border-t border-slate-700 pt-6">
+                        <div class="border-t border-slate-700 pt-6 min-w-0 w-full">
                              <label class="block text-lg font-bold mb-2 text-white flex items-center gap-2"><span class="material-symbols-outlined text-amber-500">sell</span> Selected Products for Deals</label>
-                             <p class="text-xs text-gray-400 mb-4 bg-slate-800 p-3 rounded-lg border border-slate-700">Products selected here will appear in the grid. Ensure they have an "Offer Price" and "Offer End Time" set in their product editor.</p>
-                             <div id="featured-product-inputs" class="space-y-3">
+                             <p class="text-xs text-gray-400 mb-4 bg-slate-800 p-3 rounded-lg border border-slate-700 break-words">Products selected here will appear in the grid. Ensure they have an "Offer Price" and "Offer End Time" set in their product editor.</p>
+                             <div id="featured-product-inputs" class="space-y-3 w-full">
                                  <!-- Dynamic -->
                              </div>
                              <button type="button" id="add-featured-product-btn" class="mt-4 text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 bg-amber-500/10 px-4 py-2 rounded-lg border border-amber-500/20 transition">
@@ -266,12 +267,12 @@
             <!-- SECTION: HOME SCREEN -->
             <section id="home-section" class="admin-section hidden">
                 <h2 class="text-2xl md:text-3xl font-bold mb-6 text-white">Home Screen Configuration</h2>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-                    <div class="premium-card rounded-2xl p-4 md:p-6 h-fit">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 w-full">
+                    <div class="premium-card rounded-2xl p-4 md:p-6 h-fit min-w-0">
                         <h3 class="text-lg font-bold mb-4 border-b border-gray-700 pb-3 text-amber-400">Main Banner Videos</h3>
-                        <form id="home-form" class="space-y-5">
+                        <form id="home-form" class="space-y-5 w-full">
                             <div>
-                                <div id="home-video-inputs" class="space-y-3">
+                                <div id="home-video-inputs" class="space-y-3 w-full">
                                     <input type="url" name="home_videos" class="w-full p-3 rounded-xl border text-sm" placeholder="e.g., https://res.cloudinary.com/.../video.mp4" required>
                                 </div>
                                 <button type="button" id="add-home-video-btn" class="mt-3 text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 bg-amber-500/10 px-3 py-1.5 rounded-lg border border-amber-500/20 transition">
@@ -281,9 +282,9 @@
                             <button type="submit" class="w-full btn-primary py-3.5 rounded-xl font-bold shadow-lg text-sm mt-4">Save & Update Home</button>
                         </form>
                     </div>
-                    <div class="premium-card rounded-2xl p-4 md:p-6">
+                    <div class="premium-card rounded-2xl p-4 md:p-6 min-w-0 w-full">
                         <h3 class="text-lg font-bold mb-4 border-b border-gray-700 pb-3 text-white">Live Preview</h3>
-                        <div id="current-home-display" class="space-y-4"><p class="text-gray-400">Loading...</p></div>
+                        <div id="current-home-display" class="space-y-4 w-full"><p class="text-gray-400">Loading...</p></div>
                     </div>
                 </div>
             </section>
@@ -291,9 +292,9 @@
             <!-- SECTION: FILTERS MANAGEMENT -->
             <section id="filters-section" class="admin-section hidden">
                 <h2 class="text-2xl md:text-3xl font-bold mb-6 text-white">App Filters Engine</h2>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 w-full">
                     
-                    <div class="premium-card rounded-2xl p-4 md:p-6 h-fit">
+                    <div class="premium-card rounded-2xl p-4 md:p-6 h-fit min-w-0 w-full">
                         <h3 class="text-lg font-bold mb-4 border-b border-gray-700 pb-3 text-amber-400 flex items-center gap-2"><span class="material-symbols-outlined">filter_list</span> Add Main Filter</h3>
                         <form id="main-filter-form" class="space-y-4">
                             <div>
@@ -304,7 +305,7 @@
                         </form>
                     </div>
 
-                    <div class="premium-card rounded-2xl p-4 md:p-6 h-fit">
+                    <div class="premium-card rounded-2xl p-4 md:p-6 h-fit min-w-0 w-full">
                         <h3 class="text-lg font-bold mb-4 border-b border-gray-700 pb-3 text-amber-400 flex items-center gap-2"><span class="material-symbols-outlined">playlist_add</span> Add Sub-Options</h3>
                         <form id="sub-filter-form" class="space-y-4">
                             <div>
@@ -321,9 +322,9 @@
                         </form>
                     </div>
 
-                    <div class="premium-card rounded-2xl p-4 md:p-6 lg:col-span-2">
+                    <div class="premium-card rounded-2xl p-4 md:p-6 lg:col-span-2 min-w-0 w-full">
                         <h3 class="text-xl font-bold mb-4 border-b border-gray-700 pb-3 text-white">Active Filters Directory</h3>
-                        <div id="existing-filters-list" class="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div id="existing-filters-list" class="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                             <p class="text-gray-400 col-span-full">Loading filters...</p>
                         </div>
                     </div>
@@ -334,54 +335,55 @@
             <section id="stores-section" class="admin-section hidden">
                 <h2 class="text-2xl md:text-3xl font-bold mb-6 text-white">Seller Hub & Verification</h2>
                 
-                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8 w-full">
                     <!-- Pending Store KYC -->
-                    <div class="premium-card rounded-2xl p-4 md:p-6">
+                    <div class="premium-card rounded-2xl p-4 md:p-6 min-w-0 w-full">
                         <h3 class="text-lg font-bold mb-4 border-b border-gray-700 pb-3 text-cyan-400 flex items-center gap-2">
                             <span class="material-symbols-outlined">how_to_reg</span> Pending Store KYC
                         </h3>
-                        <div id="pending-kyc-list" class="space-y-3">
+                        <div id="pending-kyc-list" class="space-y-3 w-full">
                             <p class="text-gray-400 text-sm">Loading...</p>
                         </div>
                     </div>
 
                     <!-- NEW: Approved / Active Stores (For Editing) -->
-                    <div class="premium-card rounded-2xl p-4 md:p-6 border-l-2 border-l-green-500 shadow-[0_0_20px_rgba(16,185,129,0.05)]">
+                    <div class="premium-card rounded-2xl p-4 md:p-6 border-l-2 border-l-green-500 shadow-[0_0_20px_rgba(16,185,129,0.05)] min-w-0 w-full">
                         <h3 class="text-lg font-bold mb-4 border-b border-gray-700 pb-3 text-green-400 flex items-center gap-2">
                             <span class="material-symbols-outlined">store</span> Approved Active Stores
                         </h3>
                         <p class="text-xs text-gray-400 mb-3">Edit shop name, logo, or top banner appearance.</p>
-                        <div id="approved-stores-list" class="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scroll">
+                        <!-- Made max-height responsive -->
+                        <div id="approved-stores-list" class="space-y-3 max-h-[40vh] md:max-h-[300px] overflow-y-auto pr-2 custom-scroll w-full">
                             <p class="text-gray-400 text-sm">Loading...</p>
                         </div>
                     </div>
 
                     <!-- Pending Categories -->
-                    <div class="premium-card rounded-2xl p-4 md:p-6 xl:col-span-2">
+                    <div class="premium-card rounded-2xl p-4 md:p-6 xl:col-span-2 min-w-0 w-full">
                         <h3 class="text-lg font-bold mb-4 border-b border-gray-700 pb-3 text-purple-400 flex items-center gap-2">
                             <span class="material-symbols-outlined">category</span> New Category Requests
                         </h3>
-                        <div id="pending-seller-categories-list" class="space-y-3">
+                        <div id="pending-seller-categories-list" class="space-y-3 w-full">
                             <p class="text-gray-400 text-sm">Loading...</p>
                         </div>
                     </div>
 
                     <!-- Pending Products -->
-                    <div class="premium-card rounded-2xl p-4 md:p-6 xl:col-span-2">
+                    <div class="premium-card rounded-2xl p-4 md:p-6 xl:col-span-2 min-w-0 w-full">
                         <h3 class="text-lg font-bold mb-4 border-b border-gray-700 pb-3 text-amber-400 flex items-center gap-2">
                             <span class="material-symbols-outlined">inventory_2</span> Products Awaiting Approval
                         </h3>
-                        <div id="pending-seller-products-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div id="pending-seller-products-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                             <p class="text-gray-400 text-sm">Loading...</p>
                         </div>
                     </div>
 
                     <!-- Pending Deal Requests -->
-                    <div class="premium-card rounded-2xl p-4 md:p-6 xl:col-span-2 border border-red-500/30 bg-red-900/10">
+                    <div class="premium-card rounded-2xl p-4 md:p-6 xl:col-span-2 border border-red-500/30 bg-red-900/10 min-w-0 w-full">
                         <h3 class="text-lg font-bold mb-4 border-b border-red-500/20 pb-3 text-red-400 flex items-center gap-2">
                             <span class="material-symbols-outlined">campaign</span> Deal Placements Requests
                         </h3>
-                        <div id="pending-deal-requests-list" class="space-y-3">
+                        <div id="pending-deal-requests-list" class="space-y-3 w-full">
                             <p class="text-gray-400 text-sm">Loading...</p>
                         </div>
                     </div>
@@ -390,18 +392,19 @@
 
             <!-- SECTION: ORDERS & DELIVERY TRACKING -->
             <section id="orders-section" class="admin-section hidden">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2 w-full">
                     <h2 class="text-2xl md:text-3xl font-bold text-white">Orders & Fleet Management</h2>
-                    <span class="bg-green-500/20 text-green-400 text-xs font-bold px-3 py-1.5 rounded-full border border-green-500/30 flex items-center gap-1.5"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> System Active</span>
+                    <span class="bg-green-500/20 text-green-400 text-xs font-bold px-3 py-1.5 rounded-full border border-green-500/30 flex items-center gap-1.5 shrink-0"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> System Active</span>
                 </div>
                 
-                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8 w-full">
                     <!-- Delivery Boys KYC -->
-                    <div class="premium-card rounded-2xl p-4 md:p-6 shadow-[0_0_20px_rgba(6,182,212,0.05)] border-t-2 border-t-cyan-500">
+                    <div class="premium-card rounded-2xl p-4 md:p-6 shadow-[0_0_20px_rgba(6,182,212,0.05)] border-t-2 border-t-cyan-500 min-w-0 w-full">
                         <h3 class="text-lg font-bold mb-4 border-b border-gray-700 pb-3 text-cyan-400 flex items-center gap-2">
                             <span class="material-symbols-outlined">two_wheeler</span> Delivery Partner KYC
                         </h3>
-                        <div id="dp-kyc-list" class="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scroll">
+                        <!-- Responsive max-height -->
+                        <div id="dp-kyc-list" class="space-y-3 max-h-[50vh] md:max-h-[400px] overflow-y-auto pr-2 custom-scroll w-full">
                             <div class="text-center py-8">
                                 <div class="loader mx-auto mb-2 border-cyan-500"></div>
                                 <p class="text-gray-400 text-xs">Fetching applicants...</p>
@@ -410,11 +413,12 @@
                     </div>
 
                     <!-- Live Orders -->
-                    <div class="premium-card rounded-2xl p-4 md:p-6 shadow-[0_0_20px_rgba(245,158,11,0.05)] border-t-2 border-t-amber-500">
+                    <div class="premium-card rounded-2xl p-4 md:p-6 shadow-[0_0_20px_rgba(245,158,11,0.05)] border-t-2 border-t-amber-500 min-w-0 w-full">
                         <h3 class="text-lg font-bold mb-4 border-b border-gray-700 pb-3 text-amber-400 flex items-center gap-2">
                             <span class="material-symbols-outlined">receipt_long</span> Live Orders Tracker
                         </h3>
-                        <div id="live-orders-list" class="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scroll">
+                        <!-- Responsive max-height -->
+                        <div id="live-orders-list" class="space-y-3 max-h-[60vh] md:max-h-[600px] overflow-y-auto pr-2 custom-scroll w-full">
                             <div class="text-center py-8">
                                 <div class="loader mx-auto mb-2 border-amber-500"></div>
                                 <p class="text-gray-400 text-xs">Scanning live orders...</p>
@@ -427,16 +431,18 @@
         </main>
     </div>
 
+    <!-- Z-Index updated from z-50 to z-[60] to prevent sidebar overlap -->
     <!-- Product Modal (The Professional Editor) -->
-    <div id="product-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 hidden z-50">
+    <div id="product-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 hidden z-[60]">
         <div class="bg-slate-900 rounded-2xl shadow-2xl w-full max-w-5xl max-h-[95vh] sm:max-h-[90vh] flex flex-col border border-slate-700">
-            <div class="flex justify-between items-center p-5 border-b border-slate-700 bg-slate-800/50 rounded-t-2xl">
+            <div class="flex justify-between items-center p-5 border-b border-slate-700 bg-slate-800/50 rounded-t-2xl shrink-0">
                 <h3 id="modal-title" class="text-xl md:text-2xl font-bold text-amber-400">Add New Product</h3>
-                <button id="close-product-modal-btn" class="p-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-gray-300 border border-slate-600 transition">
+                <button id="close-product-modal-btn" class="p-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-gray-300 border border-slate-600 transition shrink-0">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            <form id="product-form" class="p-4 md:p-6 space-y-6 overflow-y-auto custom-scroll bg-slate-900">
+            <!-- FIX: Added flex-1 min-h-0 to make the form purely scrollable inside without expanding the main modal -->
+            <form id="product-form" class="p-4 md:p-6 space-y-6 overflow-y-auto custom-scroll bg-slate-900 flex-1 min-h-0">
                 <input type="hidden" id="product-id">
                 <input type="hidden" id="seller-info-for-edit">
                 
@@ -462,9 +468,9 @@
                 </div>
 
                 <!-- EXTRA CHARGES & DELIVERY CONFIGURATION (NEW SECTION) -->
-                <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700 space-y-4">
+                <div class="bg-slate-800/50 p-4 md:p-5 rounded-xl border border-slate-700 space-y-4 w-full overflow-hidden">
                     <label class="block text-sm font-bold mb-2 text-white border-b border-slate-700 pb-2">Pricing Structure & Delivery Config</label>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 w-full">
                         <div>
                             <label class="block text-xs font-bold uppercase text-gray-400 mb-1">Price / Charge Type</label>
                             <select id="product-charge-type" class="w-full p-3 rounded-xl text-sm appearance-none">
@@ -506,28 +512,29 @@
                     </div>
                 </div>
 
-                <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700">
+                <div class="bg-slate-800/50 p-4 md:p-5 rounded-xl border border-slate-700">
                     <label class="block text-sm font-bold mb-3 text-amber-400 border-b border-slate-700 pb-2">Dynamic App Filters</label>
-                    <div id="dynamic-filters-container" class="space-y-4">
+                    <div id="dynamic-filters-container" class="space-y-4 w-full">
                         <p class="text-sm text-gray-500">Loading filters...</p>
                     </div>
                 </div>
 
                 <!-- Product Main Video (Cloudinary) -->
-                <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700 border-l-4 border-l-amber-500">
+                <div class="bg-slate-800/50 p-4 md:p-5 rounded-xl border border-slate-700 border-l-4 border-l-amber-500 w-full">
                     <label class="block text-sm font-bold mb-3 text-white border-b border-slate-700 pb-2 flex items-center gap-2"><span class="material-symbols-outlined">videocam</span> Main Video (Cloudinary Thumbnail)</label>
-                    <div class="flex items-center gap-3">
-                        <input type="url" id="product-video-url" class="flex-1 p-3 rounded-xl border text-sm bg-slate-900" placeholder="Video URL will appear here...">
+                    <div class="flex items-center gap-3 w-full">
+                        <input type="url" id="product-video-url" class="flex-1 min-w-0 p-3 rounded-xl border text-sm bg-slate-900" placeholder="Video URL will appear here...">
                         <input type="file" id="product-video-file" accept="video/*" class="hidden">
-                        <button type="button" id="upload-video-btn" class="btn-primary px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-2 shadow-md"><span class="material-symbols-outlined text-sm">upload</span> Upload</button>
+                        <!-- Shrink-0 added to prevent button squishing on small mobile screens -->
+                        <button type="button" id="upload-video-btn" class="btn-primary px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-2 shadow-md shrink-0"><span class="material-symbols-outlined text-sm">upload</span> Upload</button>
                     </div>
                     <div id="video-upload-status" class="mt-2 text-xs font-bold text-amber-400 hidden">Uploading to Cloudinary... Please wait.</div>
                     <p class="text-[10px] text-gray-400 mt-2 leading-relaxed">This video will act as the primary thumbnail and the first media shown when a user clicks to buy. Hosted on Cloudinary (Preset: Soul_Spark).</p>
                 </div>
 
-                <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700">
+                <div class="bg-slate-800/50 p-4 md:p-5 rounded-xl border border-slate-700 w-full">
                     <label class="block text-sm font-bold mb-3 text-white border-b border-slate-700 pb-2 flex items-center gap-2"><span class="material-symbols-outlined">imagesmode</span> Product Images</label>
-                    <div id="image-inputs" class="space-y-3">
+                    <div id="image-inputs" class="space-y-3 w-full">
                         <!-- Uploader blocks injected here -->
                     </div>
                     <button type="button" id="add-image-btn" class="mt-4 text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 bg-amber-500/10 px-4 py-2 rounded-lg border border-amber-500/20 transition">
@@ -535,21 +542,22 @@
                     </button>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+                    <div class="bg-slate-800/50 p-4 md:p-5 rounded-xl border border-slate-700 min-w-0">
                         <label class="block text-sm font-bold mb-3 text-white">Specifications</label>
                         <div id="specs-inputs" class="space-y-2"><input type="text" name="specifications" class="w-full p-3 rounded-xl text-sm"></div>
                         <button type="button" id="add-spec-btn" class="mt-3 text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span> Add specification</button>
                     </div>
                     
-                    <div class="bg-slate-800/50 p-5 rounded-xl border border-slate-700">
+                    <div class="bg-slate-800/50 p-4 md:p-5 rounded-xl border border-slate-700 min-w-0">
                         <label class="block text-sm font-bold mb-3 text-white">Available Finishes / Colors</label>
                         <div id="finishes-inputs" class="space-y-2"></div>
                         <button type="button" id="add-finish-btn" class="mt-3 text-xs text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_circle</span> Add finish</button>
                     </div>
                 </div>
 
-                <div class="pt-6 border-t border-slate-700 flex flex-col sm:flex-row justify-end gap-3 sticky bottom-0 bg-slate-900 pb-2">
+                <!-- Added z-10 for sticky buttons to always stay clearly above inputs on mobile -->
+                <div class="pt-6 border-t border-slate-700 flex flex-col sm:flex-row justify-end gap-3 sticky bottom-0 bg-slate-900 pb-2 z-10">
                     <button type="button" class="btn-secondary px-8 py-3.5 rounded-xl font-bold w-full sm:w-auto text-sm" id="cancel-product-modal-btn">Cancel</button>
                     <button type="submit" id="save-product-btn" class="btn-primary px-10 py-3.5 rounded-xl font-bold w-full sm:w-auto shadow-lg text-sm">Save Product</button>
                 </div>
@@ -558,9 +566,9 @@
     </div>
 
     <!-- Category Edit Modal -->
-    <div id="category-edit-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+    <div id="category-edit-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-[60]">
         <div class="bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md flex flex-col border border-slate-700">
-            <div class="flex justify-between items-center p-5 border-b border-slate-700"><h3 class="text-xl font-bold text-white">Edit Category</h3><button id="close-category-edit-modal-btn" class="text-gray-400 hover:text-white"><span class="material-symbols-outlined">close</span></button></div>
+            <div class="flex justify-between items-center p-5 border-b border-slate-700 shrink-0"><h3 class="text-xl font-bold text-white">Edit Category</h3><button id="close-category-edit-modal-btn" class="text-gray-400 hover:text-white shrink-0"><span class="material-symbols-outlined">close</span></button></div>
             <form id="category-edit-form" class="p-6 space-y-5">
                 <input type="hidden" id="edit-category-id">
                 <div><label class="block text-xs font-bold uppercase tracking-wider mb-1 text-gray-400">Category Name</label><input type="text" id="edit-category-name" class="w-full p-3 rounded-xl text-sm" required></div>
@@ -571,25 +579,27 @@
     </div>
 
     <!-- Store KYC Modal -->
-    <div id="store-kyc-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+    <div id="store-kyc-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-[60]">
         <div class="bg-slate-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col border border-slate-700">
-            <div class="flex justify-between items-center p-5 border-b border-slate-700">
+            <div class="flex justify-between items-center p-5 border-b border-slate-700 shrink-0">
                 <h3 class="text-xl font-bold text-white">Review Store KYC</h3>
-                <button onclick="document.getElementById('store-kyc-modal').classList.add('hidden')" class="text-gray-400 hover:text-white"><span class="material-symbols-outlined">close</span></button>
+                <button onclick="document.getElementById('store-kyc-modal').classList.add('hidden')" class="text-gray-400 hover:text-white shrink-0"><span class="material-symbols-outlined">close</span></button>
             </div>
-            <div id="store-kyc-content" class="p-6 overflow-y-auto space-y-4 custom-scroll"></div>
-            <div class="p-5 border-t border-slate-700 flex justify-end gap-3 bg-slate-800/50 rounded-b-2xl" id="store-kyc-actions"></div>
+            <!-- FIX: Added flex-1 min-h-0 for safe mobile scrolling -->
+            <div id="store-kyc-content" class="p-6 overflow-y-auto space-y-4 custom-scroll flex-1 min-h-0 w-full"></div>
+            <div class="p-5 border-t border-slate-700 flex flex-col sm:flex-row justify-end gap-3 bg-slate-800/50 rounded-b-2xl shrink-0" id="store-kyc-actions"></div>
         </div>
     </div>
 
     <!-- NEW: Store Edit Modal (For Admin) -->
-    <div id="store-edit-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+    <div id="store-edit-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-[60]">
         <div class="bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col border border-slate-700">
-            <div class="flex justify-between items-center p-5 border-b border-slate-700">
+            <div class="flex justify-between items-center p-5 border-b border-slate-700 shrink-0">
                 <h3 class="text-xl font-bold text-white flex items-center gap-2"><span class="material-symbols-outlined text-amber-400">edit_square</span> Edit Active Store</h3>
-                <button onclick="document.getElementById('store-edit-modal').classList.add('hidden')" class="text-gray-400 hover:text-white"><span class="material-symbols-outlined">close</span></button>
+                <button onclick="document.getElementById('store-edit-modal').classList.add('hidden')" class="text-gray-400 hover:text-white shrink-0"><span class="material-symbols-outlined">close</span></button>
             </div>
-            <form id="store-edit-form" class="p-6 overflow-y-auto space-y-5 custom-scroll">
+            <!-- FIX: Added flex-1 min-h-0 for safe mobile scrolling -->
+            <form id="store-edit-form" class="p-6 overflow-y-auto space-y-5 custom-scroll flex-1 min-h-0 w-full">
                 <input type="hidden" id="edit-store-id">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider mb-1 text-gray-400">Store Name</label>
@@ -605,23 +615,24 @@
                     <p class="text-[10px] text-gray-500 mt-1">This image will be used in the User App to create a glassy beautiful header for this specific shop.</p>
                 </div>
                 
-                <div class="pt-4 border-t border-slate-700 flex justify-end gap-3 mt-4">
-                    <button type="button" class="btn-secondary px-6 py-2.5 rounded-xl font-bold text-sm" onclick="document.getElementById('store-edit-modal').classList.add('hidden')">Cancel</button>
-                    <button type="submit" class="btn-primary px-6 py-2.5 rounded-xl font-bold text-sm shadow-md">Update Store Profile</button>
+                <div class="pt-4 border-t border-slate-700 flex flex-col sm:flex-row justify-end gap-3 mt-4 shrink-0">
+                    <button type="button" class="btn-secondary px-6 py-2.5 rounded-xl font-bold w-full sm:w-auto text-sm" onclick="document.getElementById('store-edit-modal').classList.add('hidden')">Cancel</button>
+                    <button type="submit" class="btn-primary px-6 py-2.5 rounded-xl font-bold w-full sm:w-auto text-sm shadow-md">Update Store Profile</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Seller Product Approval Modal -->
-    <div id="seller-product-approval-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+    <div id="seller-product-approval-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-[60]">
         <div class="bg-slate-900 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col border border-slate-700">
-            <div class="flex justify-between items-center p-5 border-b border-slate-700">
+            <div class="flex justify-between items-center p-5 border-b border-slate-700 shrink-0">
                 <h3 class="text-xl font-bold text-white flex items-center gap-2"><span class="material-symbols-outlined text-amber-400">verified</span> Review Seller Product</h3>
-                <button onclick="document.getElementById('seller-product-approval-modal').classList.add('hidden')" class="text-gray-400 hover:text-white"><span class="material-symbols-outlined">close</span></button>
+                <button onclick="document.getElementById('seller-product-approval-modal').classList.add('hidden')" class="text-gray-400 hover:text-white shrink-0"><span class="material-symbols-outlined">close</span></button>
             </div>
-            <div id="seller-product-content" class="p-6 overflow-y-auto space-y-4 custom-scroll"></div>
-            <div class="p-5 border-t border-slate-700 flex justify-end gap-3 bg-slate-800/50 rounded-b-2xl" id="seller-product-actions"></div>
+            <!-- FIX: Added flex-1 min-h-0 for safe mobile scrolling -->
+            <div id="seller-product-content" class="p-6 overflow-y-auto space-y-4 custom-scroll flex-1 min-h-0 w-full"></div>
+            <div class="p-5 border-t border-slate-700 flex flex-col sm:flex-row justify-end gap-3 bg-slate-800/50 rounded-b-2xl shrink-0" id="seller-product-actions"></div>
         </div>
     </div>
 
@@ -821,24 +832,24 @@
             document.getElementById('add-finish-btn').addEventListener('click', () => addDynamicInput('finishes-inputs', `<select name="finish_color" class="w-full p-3 mt-2 rounded-xl border text-sm">${getColorOptionsHTML('')}</select>`));
             document.getElementById('add-home-video-btn').addEventListener('click', () => addDynamicInput('home-video-inputs', '<input type="url" name="home_videos" class="w-full p-3 mt-2 rounded-xl border text-sm" placeholder="e.g., https://res.cloudinary.com/.../video.mp4">'));
             addFeaturedVideoBtn.addEventListener('click', () => addDynamicInput('featured-video-inputs', '<input type="url" name="featured_videos" class="w-full p-3 mt-2 rounded-xl border text-sm" placeholder="Another Cloudinary video URL">'));
-            addDialogBtn.addEventListener('click', () => addDynamicInput('featured-dialogs-inputs', `<div class="flex items-center gap-2 mt-2"><input type="text" name="featured_dialogs" class="flex-1 p-3 rounded-xl border text-sm" placeholder="New dialog text..."><button type="button" class="btn-danger p-3 rounded-xl" onclick="this.parentElement.remove()"><span class="material-symbols-outlined text-sm">delete</span></button></div>`));
+            addDialogBtn.addEventListener('click', () => addDynamicInput('featured-dialogs-inputs', `<div class="flex items-center gap-2 mt-2 w-full"><input type="text" name="featured_dialogs" class="flex-1 p-3 rounded-xl border text-sm min-w-0" placeholder="New dialog text..."><button type="button" class="btn-danger p-3 rounded-xl shrink-0" onclick="this.parentElement.remove()"><span class="material-symbols-outlined text-sm">delete</span></button></div>`));
 
             // Uploader
             function createImageUploader(imageUrl = '') {
                 const id = `uploader-${Date.now()}-${Math.random()}`;
                 const hasImage = !!imageUrl;
                 const uploaderHTML = `
-                <div id="${id}" class="image-uploader-block bg-slate-900 p-3 rounded-xl border border-slate-700">
-                    <div class="flex items-center gap-3">
-                        <img src="${hasImage ? imageUrl : 'https://placehold.co/80x80/1e293b/475569?text=Upload'}" class="w-20 h-20 object-cover rounded-lg bg-slate-800 border border-slate-700 preview-img">
-                        <div class="flex-1">
+                <div id="${id}" class="image-uploader-block bg-slate-900 p-3 rounded-xl border border-slate-700 w-full">
+                    <div class="flex flex-col sm:flex-row items-center gap-3 w-full">
+                        <img src="${hasImage ? imageUrl : 'https://placehold.co/80x80/1e293b/475569?text=Upload'}" class="w-20 h-20 sm:w-16 sm:h-16 object-cover rounded-lg bg-slate-800 border border-slate-700 preview-img shrink-0">
+                        <div class="flex-1 min-w-0 w-full text-center sm:text-left">
                             <input type="file" accept="image/*" class="image-file-input hidden">
                             <input type="hidden" class="image-url-input" value="${imageUrl}">
                             <div class="status-container">${hasImage ? '<p class="text-[10px] font-bold text-green-400">IMAGE READY</p>' : '<p class="text-[10px] font-bold text-gray-500">NO IMAGE</p>'}</div>
-                            <div class="flex items-center gap-2 mt-2">
-                                <button type="button" class="upload-btn btn-secondary text-xs px-3 py-1.5 rounded-lg flex items-center gap-1 font-bold"><span class="material-symbols-outlined text-sm">upload</span> Select</button>
-                                <a href="${imageUrl}" target="_blank" download class="download-btn btn-secondary text-xs px-2 py-1.5 rounded-lg ${hasImage ? '' : 'hidden'}" title="Download"><span class="material-symbols-outlined text-sm">download</span></a>
-                                <button type="button" class="delete-img-btn btn-danger text-xs px-2 py-1.5 rounded-lg ${hasImage ? '' : 'hidden'}" title="Delete"><span class="material-symbols-outlined text-sm">delete</span></button>
+                            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-2 w-full">
+                                <button type="button" class="upload-btn btn-secondary text-xs px-3 py-1.5 rounded-lg flex items-center gap-1 font-bold shrink-0"><span class="material-symbols-outlined text-sm">upload</span> Select</button>
+                                <a href="${imageUrl}" target="_blank" download class="download-btn btn-secondary text-xs px-2 py-1.5 rounded-lg shrink-0 ${hasImage ? '' : 'hidden'}" title="Download"><span class="material-symbols-outlined text-sm">download</span></a>
+                                <button type="button" class="delete-img-btn btn-danger text-xs px-2 py-1.5 rounded-lg shrink-0 ${hasImage ? '' : 'hidden'}" title="Delete"><span class="material-symbols-outlined text-sm">delete</span></button>
                             </div>
                         </div>
                     </div>
@@ -856,7 +867,7 @@
                 const fileInput = e.target.closest('.image-file-input'); if (!fileInput) return;
                 const uploaderBlock = fileInput.closest('.image-uploader-block'); const file = fileInput.files[0]; if (!file) return;
                 const statusContainer = uploaderBlock.querySelector('.status-container');
-                statusContainer.innerHTML = '<div class="flex items-center gap-2"><div class="img-loader"></div> <p class="text-[10px] font-bold text-amber-400">UPLOADING...</p></div>';
+                statusContainer.innerHTML = '<div class="flex items-center gap-2 justify-center sm:justify-start"><div class="img-loader"></div> <p class="text-[10px] font-bold text-amber-400">UPLOADING...</p></div>';
                 const imageUrl = await uploadToImgBB(file);
                 if (imageUrl) {
                     uploaderBlock.querySelector('.preview-img').src = imageUrl; uploaderBlock.querySelector('.image-url-input').value = imageUrl; uploaderBlock.querySelector('.download-btn').href = imageUrl; uploaderBlock.querySelector('.download-btn').classList.remove('hidden'); uploaderBlock.querySelector('.delete-img-btn').classList.remove('hidden'); statusContainer.innerHTML = '<p class="text-[10px] font-bold text-green-400">UPLOAD SUCCESS</p>';
@@ -904,18 +915,18 @@
                 let selectHtml = '<option value="">-- Select Filter --</option>'; let listHtml = '';
                 Object.entries(data).forEach(([mainId, mainData]) => {
                     selectHtml += `<option value="${mainId}">${mainData.name}</option>`;
-                    let subHtml = (mainData.subFilters) ? `<div class="flex flex-wrap gap-2 mt-3">` + Object.entries(mainData.subFilters).map(([subId, subData]) => `<span class="bg-slate-800 px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 border border-slate-600 shadow-sm">${subData.name} <button type="button" class="text-red-400 hover:text-red-500 ml-1 font-bold" onclick="if(confirm('Delete Option?')) db.ref('filters/${mainId}/subFilters/${subId}').remove()">&times;</button></span>`).join('') + `</div>` : `<p class="text-xs text-gray-500 mt-2">No options added.</p>`;
-                    listHtml += `<div class="border border-slate-700 rounded-xl p-4 bg-slate-800/50"><div class="flex justify-between items-center border-b border-slate-700 pb-2"><h4 class="font-bold text-amber-400 text-sm uppercase tracking-wider">${mainData.name}</h4><button type="button" class="text-xs text-red-400 hover:text-red-500 bg-red-500/10 px-2 py-1 rounded" onclick="if(confirm('Delete entire filter?')) db.ref('filters/${mainId}').remove()">Delete</button></div>${subHtml}</div>`;
+                    let subHtml = (mainData.subFilters) ? `<div class="flex flex-wrap gap-2 mt-3 w-full">` + Object.entries(mainData.subFilters).map(([subId, subData]) => `<span class="bg-slate-800 px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 border border-slate-600 shadow-sm whitespace-nowrap">${subData.name} <button type="button" class="text-red-400 hover:text-red-500 ml-1 font-bold shrink-0" onclick="if(confirm('Delete Option?')) db.ref('filters/${mainId}/subFilters/${subId}').remove()">&times;</button></span>`).join('') + `</div>` : `<p class="text-xs text-gray-500 mt-2">No options added.</p>`;
+                    listHtml += `<div class="border border-slate-700 rounded-xl p-4 bg-slate-800/50 min-w-0"><div class="flex justify-between items-center border-b border-slate-700 pb-2"><h4 class="font-bold text-amber-400 text-sm uppercase tracking-wider truncate">${mainData.name}</h4><button type="button" class="text-xs text-red-400 hover:text-red-500 bg-red-500/10 px-2 py-1 rounded shrink-0" onclick="if(confirm('Delete entire filter?')) db.ref('filters/${mainId}').remove()">Delete</button></div>${subHtml}</div>`;
                 });
                 parentSelect.innerHTML = selectHtml; listContainer.innerHTML = listHtml; renderDynamicProductFilters();
             }
             function renderDynamicProductFilters() {
                 const container = document.getElementById('dynamic-filters-container');
                 if(Object.keys(globalFiltersData).length === 0) { container.innerHTML = '<p class="text-sm text-gray-500">No filters available.</p>'; return; }
-                let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+                let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">';
                 Object.entries(globalFiltersData).forEach(([mainId, mainData]) => {
-                    html += `<div class="bg-slate-900 p-4 rounded-xl border border-slate-700"><label class="block text-xs font-bold mb-3 text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-1">${mainData.name}</label><div class="flex flex-wrap gap-3">`;
-                    if(mainData.subFilters) { Object.entries(mainData.subFilters).forEach(([subId, subData]) => { html += `<label class="flex items-center gap-2 cursor-pointer group"><input type="checkbox" class="product-dynamic-filter-cb h-4 w-4 rounded bg-slate-800 border-slate-600 text-amber-500 focus:ring-amber-500" data-main="${mainData.name}" data-sub="${subData.name}"><span class="text-sm text-gray-300 group-hover:text-white">${subData.name}</span></label>`; }); } else { html += `<span class="text-xs text-gray-500">No options</span>`; }
+                    html += `<div class="bg-slate-900 p-4 rounded-xl border border-slate-700 min-w-0"><label class="block text-xs font-bold mb-3 text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-1 truncate">${mainData.name}</label><div class="flex flex-wrap gap-3">`;
+                    if(mainData.subFilters) { Object.entries(mainData.subFilters).forEach(([subId, subData]) => { html += `<label class="flex items-center gap-2 cursor-pointer group whitespace-nowrap"><input type="checkbox" class="product-dynamic-filter-cb h-4 w-4 rounded bg-slate-800 border-slate-600 text-amber-500 focus:ring-amber-500" data-main="${mainData.name}" data-sub="${subData.name}"><span class="text-sm text-gray-300 group-hover:text-white">${subData.name}</span></label>`; }); } else { html += `<span class="text-xs text-gray-500">No options</span>`; }
                     html += `</div></div>`;
                 });
                 html += '</div>';
@@ -976,7 +987,7 @@
 
             function renderProducts(data) { allProducts = data || {}; const listEl = document.getElementById('products-list'); let filteredProducts = Object.entries(allProducts); if (activeCategoryFilter !== 'all') { filteredProducts = filteredProducts.filter(([id, p]) => p.category === activeCategoryFilter); } if (filteredProducts.length === 0) { listEl.innerHTML = '<p class="col-span-full text-center py-10 text-gray-500 font-medium">No products match criteria.</p>'; return; }
                 listEl.innerHTML = filteredProducts.map(([id, p]) => { const imgUrl = (p.images && p.images[0]) || ''; return `
-                    <div class="bg-slate-800 rounded-2xl p-2.5 flex flex-col shadow-lg border border-slate-700 h-full relative group hover:border-amber-500/50 transition-colors">
+                    <div class="bg-slate-800 rounded-2xl p-2.5 flex flex-col shadow-lg border border-slate-700 h-full relative group hover:border-amber-500/50 transition-colors min-w-0">
                         ${p.sellerId ? '<span class="absolute top-2 right-2 bg-cyan-500/20 border border-cyan-500 text-cyan-400 text-[9px] px-1.5 py-0.5 rounded z-10 font-bold uppercase tracking-widest backdrop-blur-sm">Seller</span>' : ''}
                         ${p.videoUrl ? '<span class="absolute top-2 left-2 bg-red-500/80 text-white text-[9px] px-1.5 py-0.5 rounded z-10 flex items-center gap-1 shadow-md"><span class="material-symbols-outlined text-[10px]">play_circle</span> Video</span>' : ''}
                         
@@ -990,14 +1001,14 @@
                         
                         <!-- Added Delivery Badge Context -->
                         <div class="mb-2 text-[9px] text-gray-400 flex flex-col gap-0.5">
-                            <span>Type: <strong class="text-white">${p.chargeType || 'Per Piece'}</strong></span>
-                            ${p.deliveryCharge > 0 ? `<span>Del: <strong class="text-red-400">+₹${p.deliveryCharge}</strong></span>` : `<span class="text-green-400 font-bold">Free Delivery</span>`}
+                            <span class="truncate">Type: <strong class="text-white">${p.chargeType || 'Per Piece'}</strong></span>
+                            ${p.deliveryCharge > 0 ? `<span>Del: <strong class="text-red-400">+₹${p.deliveryCharge}</strong></span>` : `<span class="text-green-400 font-bold truncate">Free Delivery</span>`}
                         </div>
 
                         <div class="mt-auto mb-3 flex items-end gap-2"><span class="font-bold text-sm sm:text-lg text-white">₹${(p.nexaraPrice||0).toLocaleString()}</span> <span class="text-gray-500 line-through text-[10px] sm:text-xs mb-0.5">₹${(p.realPrice||0).toLocaleString()}</span></div>
-                        <div class="flex gap-2"> 
-                            <button class="edit-product-btn flex-1 btn-secondary text-[10px] sm:text-xs py-1.5 rounded-lg font-bold" data-id="${id}">Edit</button> 
-                            <button class="delete-btn btn-danger px-2.5 py-1.5 rounded-lg flex items-center justify-center" data-ref="products" data-id="${id}"><span class="material-symbols-outlined text-sm sm:text-base">delete</span></button> 
+                        <div class="flex gap-2 w-full"> 
+                            <button class="edit-product-btn flex-1 btn-secondary text-[10px] sm:text-xs py-1.5 rounded-lg font-bold min-w-0" data-id="${id}">Edit</button> 
+                            <button class="delete-btn btn-danger px-2.5 py-1.5 rounded-lg flex items-center justify-center shrink-0" data-ref="products" data-id="${id}"><span class="material-symbols-outlined text-sm sm:text-base">delete</span></button> 
                         </div>
                     </div>`; }).join('');
             }
@@ -1037,10 +1048,10 @@
 
             // CATEGORIES
             function renderCategoriesFilter(data) {
-                const filterContainer = document.getElementById('product-category-filter'); if (!data) { filterContainer.innerHTML = `<button class="cat-filter-btn px-5 py-2 rounded-full bg-amber-500 text-black shadow-md font-bold" data-cat="all">All</button>`; return; }
+                const filterContainer = document.getElementById('product-category-filter'); if (!data) { filterContainer.innerHTML = `<button class="cat-filter-btn px-5 py-2 rounded-full bg-amber-500 text-black shadow-md font-bold shrink-0" data-cat="all">All</button>`; return; }
                 const cats = Object.entries(data).map(([id, value]) => ({ id, ...value })).sort((a, b) => (a.order || 0) - (b.order || 0));
-                let html = `<button class="cat-filter-btn px-5 py-2 rounded-full font-bold text-sm shadow-md transition-all ${activeCategoryFilter === 'all' ? 'bg-amber-500 text-black' : 'bg-slate-800 text-gray-300 border border-slate-700 hover:border-amber-500'}" data-cat="all">All</button>`;
-                cats.forEach(c => { html += `<button class="cat-filter-btn px-5 py-2 rounded-full font-bold text-sm shadow-md transition-all whitespace-nowrap ${activeCategoryFilter === c.name ? 'bg-amber-500 text-black' : 'bg-slate-800 text-gray-300 border border-slate-700 hover:border-amber-500'}" data-cat="${c.name}">${c.name}</button>`; });
+                let html = `<button class="cat-filter-btn px-5 py-2 rounded-full font-bold text-sm shadow-md transition-all shrink-0 ${activeCategoryFilter === 'all' ? 'bg-amber-500 text-black' : 'bg-slate-800 text-gray-300 border border-slate-700 hover:border-amber-500'}" data-cat="all">All</button>`;
+                cats.forEach(c => { html += `<button class="cat-filter-btn px-5 py-2 rounded-full font-bold text-sm shadow-md transition-all whitespace-nowrap shrink-0 ${activeCategoryFilter === c.name ? 'bg-amber-500 text-black' : 'bg-slate-800 text-gray-300 border border-slate-700 hover:border-amber-500'}" data-cat="${c.name}">${c.name}</button>`; });
                 filterContainer.innerHTML = html;
                 document.querySelectorAll('.cat-filter-btn').forEach(btn => { btn.addEventListener('click', (e) => { activeCategoryFilter = e.target.getAttribute('data-cat'); renderCategoriesFilter(globalCategoriesData); renderProducts(allProducts); }); });
             }
@@ -1048,7 +1059,8 @@
             function renderCategories(data) {
                 globalCategoriesData = data; const listEl = document.getElementById('categories-list'); const selEl = document.getElementById('product-category'); if (!data) { listEl.innerHTML = '<p class="text-gray-500">No categories added yet.</p>'; selEl.innerHTML = '<option>Add category</option>'; return; }
                 const cats = Object.entries(data).map(([id, value]) => ({ id, ...value })).sort((a, b) => (a.order || 0) - (b.order || 0));
-                listEl.innerHTML = cats.map(c => `<div class="flex items-center justify-between bg-slate-800/80 border border-slate-700 p-3 rounded-xl shadow-sm"><div class="flex items-center gap-4 flex-grow"><input type="number" class="category-order-input bg-slate-900 border border-slate-600 text-white w-14 text-center p-2 rounded-lg text-sm" value="${c.order || 0}" data-id="${c.id}"><img src="${c.imageUrl}" class="w-12 h-12 object-cover rounded-lg border border-slate-600"><span class="font-bold text-white">${c.name}</span></div><div class="flex gap-2"><button class="edit-category-btn btn-secondary p-2 rounded-lg flex items-center justify-center" data-id="${c.id}" data-name="${c.name}" data-image="${c.imageUrl}"><span class="material-symbols-outlined text-[18px]">edit</span></button><button class="delete-btn btn-danger p-2 rounded-lg flex items-center justify-center" data-ref="categories" data-id="${c.id}"><span class="material-symbols-outlined text-[18px]">delete</span></button></div></div>`).join('');
+                // FIX: Added flex-wrap and min-w-0 logic so long category names don't push buttons off screen
+                listEl.innerHTML = cats.map(c => `<div class="flex items-center justify-between bg-slate-800/80 border border-slate-700 p-3 rounded-xl shadow-sm w-full gap-2"><div class="flex items-center gap-2 sm:gap-4 flex-grow min-w-0"><input type="number" class="category-order-input bg-slate-900 border border-slate-600 text-white w-12 sm:w-14 text-center p-2 rounded-lg text-xs sm:text-sm shrink-0" value="${c.order || 0}" data-id="${c.id}"><img src="${c.imageUrl}" class="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-lg border border-slate-600 shrink-0"><span class="font-bold text-white truncate">${c.name}</span></div><div class="flex gap-1 sm:gap-2 shrink-0"><button class="edit-category-btn btn-secondary p-1.5 sm:p-2 rounded-lg flex items-center justify-center" data-id="${c.id}" data-name="${c.name}" data-image="${c.imageUrl}"><span class="material-symbols-outlined text-[16px] sm:text-[18px]">edit</span></button><button class="delete-btn btn-danger p-1.5 sm:p-2 rounded-lg flex items-center justify-center" data-ref="categories" data-id="${c.id}"><span class="material-symbols-outlined text-[16px] sm:text-[18px]">delete</span></button></div></div>`).join('');
                 selEl.innerHTML = '<option value="">Select Category</option>' + cats.map(c => `<option value="${c.name}" data-id="${c.id}">${c.name}</option>`).join('');
             }
             document.getElementById('categories-list').addEventListener('click', e => { const editBtn = e.target.closest('.edit-category-btn'); if (editBtn) { openCategoryEditModal(editBtn.dataset.id, editBtn.dataset.name, editBtn.dataset.image); } });
@@ -1056,7 +1068,7 @@
             categoryEditForm.addEventListener('submit', e => { e.preventDefault(); const id = document.getElementById('edit-category-id').value; const updatedData = { name: document.getElementById('edit-category-name').value, imageUrl: document.getElementById('edit-category-image').value }; categoriesRef.child(id).update(updatedData).then(() => { alert('Updated!'); closeCategoryEditModal(); }); });
             
             // OFFERS (Now With Dialogs Support)
-            function createProductSelector(selectedProductId = '') { const opts = Object.entries(allProducts).map(([id, p]) => `<option value="${id}" ${id === selectedProductId ? 'selected' : ''}>${p.name}</option>`).join(''); const wrapper = document.createElement('div'); wrapper.className = 'flex items-center gap-3'; wrapper.innerHTML = `<select name="featured_product_ids" class="w-full p-3 rounded-xl border text-sm bg-slate-800"><option value="">-- Select Product --</option>${opts}</select><button class="remove-product-selector-btn btn-danger p-3 rounded-xl flex items-center justify-center shadow-md"><span class="material-symbols-outlined text-[20px]">delete</span></button>`; wrapper.querySelector('.remove-product-selector-btn').addEventListener('click', () => wrapper.remove()); return wrapper; }
+            function createProductSelector(selectedProductId = '') { const opts = Object.entries(allProducts).map(([id, p]) => `<option value="${id}" ${id === selectedProductId ? 'selected' : ''}>${p.name}</option>`).join(''); const wrapper = document.createElement('div'); wrapper.className = 'flex items-center gap-3 w-full'; wrapper.innerHTML = `<select name="featured_product_ids" class="w-full p-3 rounded-xl border text-sm bg-slate-800 flex-1 min-w-0"><option value="">-- Select Product --</option>${opts}</select><button class="remove-product-selector-btn btn-danger p-3 rounded-xl flex items-center justify-center shadow-md shrink-0"><span class="material-symbols-outlined text-[20px]">delete</span></button>`; wrapper.querySelector('.remove-product-selector-btn').addEventListener('click', () => wrapper.remove()); return wrapper; }
             addFeaturedProductBtn.addEventListener('click', () => { document.getElementById('featured-product-inputs').appendChild(createProductSelector()); });
             
             function renderFeaturedOffers(data) { 
@@ -1071,7 +1083,7 @@
                 const dialogsContainer = document.getElementById('featured-dialogs-inputs'); dialogsContainer.innerHTML = '';
                 if(data.dialogs && data.dialogs.length > 0) {
                     data.dialogs.forEach(text => {
-                        dialogsContainer.insertAdjacentHTML('beforeend', `<div class="flex items-center gap-2 mt-2"><input type="text" name="featured_dialogs" class="flex-1 p-3 rounded-xl border text-sm" value="${text}"><button type="button" class="btn-danger p-3 rounded-xl" onclick="this.parentElement.remove()"><span class="material-symbols-outlined text-sm">delete</span></button></div>`);
+                        dialogsContainer.insertAdjacentHTML('beforeend', `<div class="flex items-center gap-2 mt-2 w-full"><input type="text" name="featured_dialogs" class="flex-1 min-w-0 p-3 rounded-xl border text-sm" value="${text}"><button type="button" class="btn-danger p-3 rounded-xl shrink-0" onclick="this.parentElement.remove()"><span class="material-symbols-outlined text-sm">delete</span></button></div>`);
                     });
                 } else { dialogsContainer.innerHTML = `<input type="text" name="featured_dialogs" class="w-full p-3 rounded-xl text-sm" placeholder="Dialog 1 (e.g. Hurry! Exclusive Sale is live!)">`; }
 
@@ -1093,7 +1105,7 @@
             
             // HOME
             homeForm.addEventListener('submit', (e) => { e.preventDefault(); const videos = [...document.querySelectorAll('input[name="home_videos"]')].map(i => i.value.trim()).filter(Boolean); homeRef.set({ videos: videos, updatedAt: firebase.database.ServerValue.TIMESTAMP }).then(() => { alert('Home Config Saved!'); }); });
-            function renderHomeSettings(data) { const displayArea = document.getElementById('current-home-display'); const videoInputsContainer = document.getElementById('home-video-inputs'); if (data && data.videos && data.videos.length > 0) { videoInputsContainer.innerHTML = data.videos.map((v, i) => `<input type="url" name="home_videos" class="w-full p-3 ${i > 0 ? 'mt-2' : ''} rounded-xl border text-sm" value="${v || ''}" required>`).join(''); const videoPreviews = data.videos.map(v => `<div class="w-full aspect-video rounded-xl overflow-hidden border border-slate-600 shadow-md relative bg-black"><video src="${v}" autoplay loop muted playsinline class="w-full h-full object-cover"></video></div>`).join(''); displayArea.innerHTML = `<div class="space-y-4">${videoPreviews}</div>`; } else { videoInputsContainer.innerHTML = '<input type="url" name="home_videos" class="w-full p-3 rounded-xl border text-sm" required>'; displayArea.innerHTML = '<p class="text-gray-500">No active videos.</p>'; } }
+            function renderHomeSettings(data) { const displayArea = document.getElementById('current-home-display'); const videoInputsContainer = document.getElementById('home-video-inputs'); if (data && data.videos && data.videos.length > 0) { videoInputsContainer.innerHTML = data.videos.map((v, i) => `<input type="url" name="home_videos" class="w-full p-3 ${i > 0 ? 'mt-2' : ''} rounded-xl border text-sm" value="${v || ''}" required>`).join(''); const videoPreviews = data.videos.map(v => `<div class="w-full aspect-video rounded-xl overflow-hidden border border-slate-600 shadow-md relative bg-black"><video src="${v}" autoplay loop muted playsinline class="w-full h-full object-cover"></video></div>`).join(''); displayArea.innerHTML = `<div class="space-y-4 w-full">${videoPreviews}</div>`; } else { videoInputsContainer.innerHTML = '<input type="url" name="home_videos" class="w-full p-3 rounded-xl border text-sm" required>'; displayArea.innerHTML = '<p class="text-gray-500">No active videos.</p>'; } }
             
             document.body.addEventListener('click', e => { const target = e.target.closest('.delete-btn'); if (target && confirm('Confirm Delete?')) { db.ref(target.dataset.ref).child(target.dataset.id).remove(); } });
 
@@ -1109,28 +1121,28 @@
                 
                 Object.entries(globalSellersData).forEach(([sellerId, seller]) => {
                     if (seller.profile && seller.profile.status === 'pending_kyc_verification') { 
-                        kycHtml += `<div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl"><div class="flex items-center gap-3"><img src="${seller.profile.logoUrl}" class="w-10 h-10 rounded-lg border border-slate-600"><p class="font-bold text-sm text-white">${seller.profile.storeName}</p></div><button class="review-kyc-btn btn-primary px-4 py-1.5 text-xs font-bold rounded-lg shadow-md" data-id="${sellerId}">Review</button></div>`; 
+                        kycHtml += `<div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl gap-2 w-full"><div class="flex items-center gap-2 sm:gap-3 min-w-0"><img src="${seller.profile.logoUrl}" class="w-10 h-10 rounded-lg border border-slate-600 shrink-0"><p class="font-bold text-sm text-white truncate max-w-[150px] sm:max-w-xs">${seller.profile.storeName}</p></div><button class="review-kyc-btn btn-primary px-3 sm:px-4 py-1.5 text-xs font-bold rounded-lg shadow-md shrink-0" data-id="${sellerId}">Review</button></div>`; 
                     } else if (seller.profile && seller.profile.status === 'approved') {
                         // Display Active Approved Stores to Edit
                         approvedHtml += `
-                            <div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl hover:border-amber-500/50 transition-colors">
-                                <div class="flex items-center gap-3">
+                            <div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl hover:border-amber-500/50 transition-colors gap-2 w-full">
+                                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
                                     <div class="relative w-10 h-10 rounded-lg border border-slate-600 overflow-hidden shrink-0 bg-white">
                                         <img src="${seller.profile.logoUrl}" class="w-full h-full object-cover">
                                     </div>
-                                    <div class="flex flex-col">
-                                        <p class="font-bold text-sm text-white">${seller.profile.storeName}</p>
-                                        ${seller.profile.bannerUrl ? '<span class="text-[9px] text-green-400 font-bold uppercase tracking-widest flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">image</span> Banner Active</span>' : '<span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">No Custom Banner</span>'}
+                                    <div class="flex flex-col min-w-0">
+                                        <p class="font-bold text-sm text-white truncate max-w-[140px] sm:max-w-[200px]">${seller.profile.storeName}</p>
+                                        ${seller.profile.bannerUrl ? '<span class="text-[9px] text-green-400 font-bold uppercase tracking-widest flex items-center gap-1 truncate"><span class="material-symbols-outlined text-[10px]">image</span> Banner Active</span>' : '<span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest truncate">No Custom Banner</span>'}
                                     </div>
                                 </div>
-                                <button class="edit-store-btn btn-secondary px-3 py-1.5 text-xs font-bold rounded-lg shadow-sm" data-id="${sellerId}">Edit Info</button>
+                                <button class="edit-store-btn btn-secondary px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-lg shadow-sm shrink-0" data-id="${sellerId}">Edit Info</button>
                             </div>
                         `;
                     }
 
-                    if (seller.categories) { Object.entries(seller.categories).forEach(([catId, cat]) => { if (cat.status === 'pending') { catHtml += `<div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl"><div class="flex items-center gap-3"><img src="${cat.imageUrl}" class="w-10 h-10 rounded-lg border border-slate-600"><p class="font-bold text-sm text-white">${cat.name}</p></div><div class="flex gap-2"><button class="approve-cat-btn btn-success p-1.5 rounded-lg shadow-sm" data-seller="${sellerId}" data-cat="${catId}"><span class="material-symbols-outlined text-[18px]">check</span></button><button class="reject-cat-btn btn-danger p-1.5 rounded-lg shadow-sm" data-seller="${sellerId}" data-cat="${catId}"><span class="material-symbols-outlined text-[18px]">close</span></button></div></div>`; } }); }
-                    if (seller.products) { Object.entries(seller.products).forEach(([prodId, prod]) => { if (prod.status === 'pending') { const img = prod.images ? prod.images[0] : ''; prodHtml += `<div class="flex bg-slate-900 border border-slate-700 p-3 rounded-xl gap-3"><img src="${img}" class="w-16 h-16 rounded-lg object-cover border border-slate-600"><div class="flex-1 flex flex-col justify-between"><p class="font-bold text-sm text-white line-clamp-1">${prod.name}</p><p class="text-[10px] text-amber-500 font-bold uppercase tracking-wider">${seller.profile?.storeName}</p><div class="flex justify-end mt-2"><button class="review-prod-btn btn-primary px-4 py-1.5 text-xs font-bold rounded-lg shadow-md" data-seller="${sellerId}" data-prod="${prodId}">Review</button></div></div></div>`; } }); }
-                    if (seller.deal_requests) { Object.entries(seller.deal_requests).forEach(([dealId, deal]) => { if (deal.status === 'pending') { const pName = seller.products && seller.products[deal.productId] ? seller.products[deal.productId].name : '...'; dealsHtml += `<div class="bg-red-950/30 border border-red-500/20 p-3 rounded-xl"><p class="font-bold text-sm text-white">${pName}</p><p class="text-xs text-gray-300 bg-black/30 p-2 rounded-lg my-2 border border-red-500/10"><strong class="text-red-400">Reason:</strong> ${deal.reason}</p><div class="flex gap-2 justify-end"><button class="approve-deal-btn btn-success px-4 py-1.5 text-xs font-bold rounded-lg shadow-sm" data-seller="${sellerId}" data-deal="${dealId}">Approve</button><button class="reject-deal-btn btn-danger px-4 py-1.5 text-xs font-bold rounded-lg shadow-sm" data-seller="${sellerId}" data-deal="${dealId}">Reject</button></div></div>`; } }); }
+                    if (seller.categories) { Object.entries(seller.categories).forEach(([catId, cat]) => { if (cat.status === 'pending') { catHtml += `<div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl gap-2 w-full"><div class="flex items-center gap-2 sm:gap-3 min-w-0"><img src="${cat.imageUrl}" class="w-10 h-10 rounded-lg border border-slate-600 shrink-0"><p class="font-bold text-sm text-white truncate max-w-[150px]">${cat.name}</p></div><div class="flex gap-2 shrink-0"><button class="approve-cat-btn btn-success p-1.5 rounded-lg shadow-sm" data-seller="${sellerId}" data-cat="${catId}"><span class="material-symbols-outlined text-[18px]">check</span></button><button class="reject-cat-btn btn-danger p-1.5 rounded-lg shadow-sm" data-seller="${sellerId}" data-cat="${catId}"><span class="material-symbols-outlined text-[18px]">close</span></button></div></div>`; } }); }
+                    if (seller.products) { Object.entries(seller.products).forEach(([prodId, prod]) => { if (prod.status === 'pending') { const img = prod.images ? prod.images[0] : ''; prodHtml += `<div class="flex bg-slate-900 border border-slate-700 p-3 rounded-xl gap-3 w-full"><img src="${img}" class="w-16 h-16 rounded-lg object-cover border border-slate-600 shrink-0"><div class="flex-1 min-w-0 flex flex-col justify-between"><p class="font-bold text-sm text-white line-clamp-1">${prod.name}</p><p class="text-[10px] text-amber-500 font-bold uppercase tracking-wider truncate">${seller.profile?.storeName}</p><div class="flex justify-end mt-2"><button class="review-prod-btn btn-primary px-4 py-1.5 text-xs font-bold rounded-lg shadow-md shrink-0" data-seller="${sellerId}" data-prod="${prodId}">Review</button></div></div></div>`; } }); }
+                    if (seller.deal_requests) { Object.entries(seller.deal_requests).forEach(([dealId, deal]) => { if (deal.status === 'pending') { const pName = seller.products && seller.products[deal.productId] ? seller.products[deal.productId].name : '...'; dealsHtml += `<div class="bg-red-950/30 border border-red-500/20 p-3 rounded-xl w-full min-w-0"><p class="font-bold text-sm text-white truncate">${pName}</p><p class="text-xs text-gray-300 bg-black/30 p-2 rounded-lg my-2 border border-red-500/10 break-words"><strong class="text-red-400">Reason:</strong> ${deal.reason}</p><div class="flex gap-2 justify-end"><button class="approve-deal-btn btn-success px-4 py-1.5 text-xs font-bold rounded-lg shadow-sm shrink-0" data-seller="${sellerId}" data-deal="${dealId}">Approve</button><button class="reject-deal-btn btn-danger px-4 py-1.5 text-xs font-bold rounded-lg shadow-sm shrink-0" data-seller="${sellerId}" data-deal="${dealId}">Reject</button></div></div>`; } }); }
                 });
 
                 kycList.innerHTML = kycHtml || '<p class="text-gray-500 text-sm">No requests.</p>'; 
@@ -1175,18 +1187,18 @@
                     const id = e.target.closest('.review-kyc-btn').dataset.id;
                     const p = globalSellersData[id].profile;
                     document.getElementById('store-kyc-content').innerHTML = `
-                        <div class="flex gap-4 items-center mb-4"><img src="${p.logoUrl}" class="w-16 h-16 rounded-xl border border-amber-500"><h4 class="text-xl font-bold text-white">${p.storeName}</h4></div>
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div class="bg-slate-800 p-3 rounded-xl"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Owner</span><strong class="text-gray-200">${p.ownerName}</strong></div>
-                            <div class="bg-slate-800 p-3 rounded-xl"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Mobile</span><strong class="text-gray-200">${p.mobile}</strong></div>
-                            <div class="bg-slate-800 p-3 rounded-xl col-span-2"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Address</span><strong class="text-gray-200">${p.address}</strong></div>
-                            <div class="bg-slate-800 p-3 rounded-xl"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">GST</span><strong class="text-gray-200">${p.gstNo || 'N/A'}</strong></div>
-                            <div class="bg-slate-800 p-3 rounded-xl"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">ID Proof</span><strong class="text-gray-200">${p.idProof}</strong></div>
+                        <div class="flex flex-col sm:flex-row gap-4 items-center sm:items-start mb-4 text-center sm:text-left"><img src="${p.logoUrl}" class="w-16 h-16 rounded-xl border border-amber-500 shrink-0"><h4 class="text-xl font-bold text-white break-words">${p.storeName}</h4></div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm w-full">
+                            <div class="bg-slate-800 p-3 rounded-xl min-w-0"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Owner</span><strong class="text-gray-200 truncate block">${p.ownerName}</strong></div>
+                            <div class="bg-slate-800 p-3 rounded-xl min-w-0"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Mobile</span><strong class="text-gray-200 truncate block">${p.mobile}</strong></div>
+                            <div class="bg-slate-800 p-3 rounded-xl sm:col-span-2 min-w-0"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Address</span><strong class="text-gray-200 block break-words">${p.address}</strong></div>
+                            <div class="bg-slate-800 p-3 rounded-xl min-w-0"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">GST</span><strong class="text-gray-200 truncate block">${p.gstNo || 'N/A'}</strong></div>
+                            <div class="bg-slate-800 p-3 rounded-xl min-w-0"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">ID Proof</span><strong class="text-gray-200 truncate block">${p.idProof}</strong></div>
                         </div>
                     `;
                     document.getElementById('store-kyc-actions').innerHTML = `
-                        <button class="btn-danger px-6 py-2.5 rounded-xl font-bold text-sm" onclick="db.ref('sellers/${id}/profile/status').set('rejected'); document.getElementById('store-kyc-modal').classList.add('hidden');">Reject</button>
-                        <button class="btn-success px-6 py-2.5 rounded-xl font-bold text-sm shadow-md" onclick="db.ref('sellers/${id}/profile/status').set('approved'); document.getElementById('store-kyc-modal').classList.add('hidden');">Approve Seller</button>
+                        <button class="btn-danger px-6 py-2.5 rounded-xl font-bold text-sm w-full sm:w-auto" onclick="db.ref('sellers/${id}/profile/status').set('rejected'); document.getElementById('store-kyc-modal').classList.add('hidden');">Reject</button>
+                        <button class="btn-success px-6 py-2.5 rounded-xl font-bold text-sm shadow-md w-full sm:w-auto" onclick="db.ref('sellers/${id}/profile/status').set('approved'); document.getElementById('store-kyc-modal').classList.add('hidden');">Approve Seller</button>
                     `;
                     document.getElementById('store-kyc-modal').classList.remove('hidden');
                 }
@@ -1198,22 +1210,22 @@
                     const pid = e.target.closest('.review-prod-btn').dataset.prod;
                     const prod = globalSellersData[sid].products[pid];
                     
-                    let imagesHtml = (prod.images || []).map(img => `<img src="${img}" class="w-20 h-20 object-cover rounded-xl border border-slate-600">`).join('');
+                    let imagesHtml = (prod.images || []).map(img => `<img src="${img}" class="w-20 h-20 object-cover rounded-xl border border-slate-600 shrink-0">`).join('');
                     
                     document.getElementById('seller-product-content').innerHTML = `
-                        <div class="flex gap-3 mb-5 overflow-x-auto pb-2 hide-scrollbar">${imagesHtml}</div>
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div class="col-span-2"><strong class="text-white text-xl">${prod.name}</strong></div>
-                            <div class="bg-slate-800 p-3 rounded-xl"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Category</span><strong class="text-amber-400">${prod.category}</strong></div>
-                            <div class="bg-slate-800 p-3 rounded-xl"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Stock</span><strong class="text-white">${prod.stock}</strong></div>
-                            <div class="bg-slate-800 p-3 rounded-xl"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">MRP</span><strong class="text-gray-400 line-through">₹${prod.realPrice}</strong></div>
-                            <div class="bg-slate-800 p-3 rounded-xl"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Selling Price</span><strong class="text-green-400 text-lg">₹${prod.nexaraPrice}</strong></div>
-                            <div class="col-span-2 bg-slate-800 p-3 rounded-xl"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Description</span><p class="text-gray-300">${prod.description || 'N/A'}</p></div>
+                        <div class="flex gap-3 mb-5 overflow-x-auto pb-2 hide-scrollbar w-full">${imagesHtml}</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm w-full">
+                            <div class="sm:col-span-2 min-w-0"><strong class="text-white text-xl break-words">${prod.name}</strong></div>
+                            <div class="bg-slate-800 p-3 rounded-xl min-w-0"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Category</span><strong class="text-amber-400 truncate block">${prod.category}</strong></div>
+                            <div class="bg-slate-800 p-3 rounded-xl min-w-0"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Stock</span><strong class="text-white block">${prod.stock}</strong></div>
+                            <div class="bg-slate-800 p-3 rounded-xl min-w-0"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">MRP</span><strong class="text-gray-400 line-through block">₹${prod.realPrice}</strong></div>
+                            <div class="bg-slate-800 p-3 rounded-xl min-w-0"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Selling Price</span><strong class="text-green-400 text-lg block">₹${prod.nexaraPrice}</strong></div>
+                            <div class="sm:col-span-2 bg-slate-800 p-3 rounded-xl min-w-0"><span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest block mb-1">Description</span><p class="text-gray-300 break-words">${prod.description || 'N/A'}</p></div>
                         </div>`;
                     document.getElementById('seller-product-actions').innerHTML = `
-                        <button class="btn-danger px-5 py-2.5 rounded-xl font-bold text-sm" onclick="db.ref('sellers/${sid}/products/${pid}/status').set('rejected'); document.getElementById('seller-product-approval-modal').classList.add('hidden');">Reject</button>
-                        <button class="btn-secondary px-5 py-2.5 rounded-xl font-bold text-sm" id="edit-seller-product-btn" data-seller="${sid}" data-prod="${pid}">Edit & Approve</button>
-                        <button class="btn-success px-5 py-2.5 rounded-xl font-bold text-sm shadow-md" id="quick-approve-seller-product-btn" data-seller="${sid}" data-prod="${pid}">Quick Approve</button>
+                        <button class="btn-danger px-5 py-2.5 rounded-xl font-bold text-sm w-full sm:w-auto" onclick="db.ref('sellers/${sid}/products/${pid}/status').set('rejected'); document.getElementById('seller-product-approval-modal').classList.add('hidden');">Reject</button>
+                        <button class="btn-secondary px-5 py-2.5 rounded-xl font-bold text-sm w-full sm:w-auto" id="edit-seller-product-btn" data-seller="${sid}" data-prod="${pid}">Edit & Approve</button>
+                        <button class="btn-success px-5 py-2.5 rounded-xl font-bold text-sm shadow-md w-full sm:w-auto" id="quick-approve-seller-product-btn" data-seller="${sid}" data-prod="${pid}">Quick Approve</button>
                     `;
                     document.getElementById('seller-product-approval-modal').classList.remove('hidden');
                 }
@@ -1279,18 +1291,18 @@
                 Object.entries(data).forEach(([id, dp]) => {
                     if(dp.status === 'pending') {
                         html += `
-                            <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 rounded-full border-2 border-cyan-500 overflow-hidden p-0.5 shrink-0">
+                            <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full">
+                                <div class="flex items-center gap-3 sm:gap-4 min-w-0 w-full">
+                                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-cyan-500 overflow-hidden p-0.5 shrink-0">
                                         <img src="${dp.photoUrl}" class="w-full h-full rounded-full object-cover">
                                     </div>
-                                    <div>
-                                        <p class="font-bold text-white text-sm flex items-center gap-2">${dp.name} <span class="bg-cyan-500/20 text-cyan-400 text-[9px] px-2 py-0.5 rounded uppercase tracking-wider">${dp.vehicleType}</span></p>
-                                        <p class="text-xs text-gray-400 mt-1"><span class="text-amber-400 font-mono">${dp.phone}</span> • Veh: ${dp.vehicleNo}</p>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-white text-sm flex flex-wrap items-center gap-2 truncate">${dp.name} <span class="bg-cyan-500/20 text-cyan-400 text-[9px] px-2 py-0.5 rounded uppercase tracking-wider shrink-0">${dp.vehicleType}</span></p>
+                                        <p class="text-xs text-gray-400 mt-1 truncate"><span class="text-amber-400 font-mono">${dp.phone}</span> • Veh: ${dp.vehicleNo}</p>
                                         <a href="${dp.dlUrl}" target="_blank" class="text-[10px] text-blue-400 hover:text-blue-300 mt-1 inline-flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">id_card</span> View Driving License</a>
                                     </div>
                                 </div>
-                                <div class="flex gap-2 w-full md:w-auto">
+                                <div class="flex gap-2 w-full md:w-auto shrink-0 mt-2 md:mt-0">
                                     <button class="flex-1 md:flex-none btn-success px-4 py-2 text-xs font-bold rounded-lg shadow-sm" onclick="db.ref('delivery_partners/${id}/status').set('approved')">Approve</button>
                                     <button class="flex-1 md:flex-none btn-danger px-4 py-2 text-xs font-bold rounded-lg shadow-sm" onclick="db.ref('delivery_partners/${id}/status').set('rejected')">Reject</button>
                                 </div>
@@ -1320,19 +1332,19 @@
                     const timeStr = order.timestamp ? new Date(order.timestamp).toLocaleString() : 'N/A';
 
                     html += `
-                        <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl flex flex-col gap-3 hover:border-amber-500/30 transition-colors">
-                            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl flex flex-col gap-3 hover:border-amber-500/30 transition-colors w-full min-w-0">
+                            <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center border-b border-slate-800 pb-3 gap-2 w-full">
                                 <div>
                                     <span class="text-xs font-mono text-gray-500">ID: #${id.substring(1,8).toUpperCase()}</span>
                                     <p class="text-[10px] text-gray-600 mt-0.5">${timeStr}</p>
                                 </div>
-                                <span class="text-[10px] font-bold ${statusColor} px-2.5 py-1 rounded border flex items-center gap-1 uppercase tracking-wider"><span class="material-symbols-outlined text-[14px]">${statusIcon}</span> ${order.status || 'Pending'}</span>
+                                <span class="text-[10px] font-bold ${statusColor} px-2.5 py-1 rounded border flex items-center gap-1 uppercase tracking-wider shrink-0"><span class="material-symbols-outlined text-[14px]">${statusIcon}</span> ${order.status || 'Pending'}</span>
                             </div>
                             
-                            <div class="flex justify-between items-start gap-4">
-                                <div class="flex-1">
-                                    <p class="text-sm font-bold text-white flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-gray-400">person</span> ${order.customerInfo?.name || 'Customer'}</p>
-                                    <p class="text-xs text-gray-400 mt-1 line-clamp-2 leading-relaxed ml-5">${order.customerInfo?.address || 'No Address Provided'}</p>
+                            <div class="flex justify-between items-start gap-4 w-full">
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-bold text-white flex items-center gap-1.5 truncate"><span class="material-symbols-outlined text-[16px] text-gray-400">person</span> ${order.customerInfo?.name || 'Customer'}</p>
+                                    <p class="text-xs text-gray-400 mt-1 line-clamp-2 leading-relaxed ml-5 break-words">${order.customerInfo?.address || 'No Address Provided'}</p>
                                 </div>
                                 <div class="text-right shrink-0">
                                     <p class="text-base font-bold text-amber-500">${order.totalAmount || '₹0'}</p>
@@ -1340,9 +1352,9 @@
                                 </div>
                             </div>
                             
-                            <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700 mt-1 flex justify-between items-center">
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-cyan-500">sports_motorsports</span> Fleet Assigned</p>
-                                <p class="text-xs font-bold ${order.deliveryBoyName ? 'text-white' : 'text-red-400'}">${order.deliveryBoyName || 'Awaiting Assignment'}</p>
+                            <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700 mt-1 flex justify-between items-center w-full">
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center gap-1 shrink-0"><span class="material-symbols-outlined text-[14px] text-cyan-500">sports_motorsports</span> Fleet Assigned</p>
+                                <p class="text-xs font-bold truncate ml-2 ${order.deliveryBoyName ? 'text-white' : 'text-red-400'}">${order.deliveryBoyName || 'Awaiting Assignment'}</p>
                             </div>
                         </div>
                     `;
