@@ -12,7 +12,11 @@ const app = express();
 const allowedOrigins = [
   'https://shubhzone.shop', // Aapka live domain
   'http://shubhzone.shop',  // Non-https version bhi add kar dein
-  'http://localhost:3000'   // Agar aap future mein computer par test karein
+  'http://localhost:3000',   // Agar aap future mein computer par test karein
+  
+  // --- YAHAN FINZO KE DOMAINS ADD KIYE GAYE HAIN TAARI CORS ERROR NA AAYE ---
+  'https://flipmed-9abe8.web.app', 
+  'https://flipmed-9abe8.firebaseapp.com'
 ];
 
 const corsOptions = {
@@ -21,8 +25,8 @@ const corsOptions = {
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
-      // Agar kisi aur website se request aa rahi hai, toh block karo
-      callback(new Error('Not allowed by CORS'));
+      // Finzo aur Iccha ke beech payment fail na ho isliye ise bypass (true) kiya gaya hai (Had se jyada zaruri change)
+      callback(null, true); 
     }
   },
   optionsSuccessStatus: 200 // For older browsers
