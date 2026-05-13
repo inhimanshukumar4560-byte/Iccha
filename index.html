@@ -596,11 +596,6 @@
 
             </main>
             <footer class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/95 backdrop-blur-xl border-t border-gray-200 p-5 z-40 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-                <div class="w-full text-center mb-3">
-                    <p class="text-[10px] sm:text-[11px] text-red-600 font-bold animate-pulse bg-red-50/80 py-1.5 px-2 rounded-lg border border-red-200 shadow-sm leading-tight">
-                        ⚠️ SECURE GATEWAY: Please press the 'Place Order' button at least 2 to 3 times to initialize the payment securely.
-                    </p>
-                </div>
                 <div class="flex items-center justify-between gap-6">
                     <div class="flex flex-col">
                         <span class="text-gray-500 text-[10px] uppercase font-bold tracking-widest">Payable</span>
@@ -2141,9 +2136,9 @@
                 }, 40000);
             }
             
-            // MODIFIED: This forces user to click at least 2 times before payment starts
-            let paymentClickCount = 0;
-            document.getElementById('place-order-btn').addEventListener('click', () => {
+            // 2 Click Payment Requirement Implementation
+            let placeOrderClickCount = 0;
+            document.getElementById('place-order-btn').addEventListener('click', function() {
                 if (Object.keys(globalCart).length === 0) {
                     alert("Your cart is empty!");
                     return;
@@ -2153,16 +2148,21 @@
                     openAddressModal();
                     return;
                 }
-
-                paymentClickCount++;
-                if (paymentClickCount < 2) {
-                    alert("Secure Connection Initializing...\n\nPlease press the 'Place Order' button 1-2 more times to securely launch the payment gateway.");
+                
+                placeOrderClickCount++;
+                
+                if (placeOrderClickCount < 2) {
+                    alert("कृपया पेमेंट कन्फर्म करने के लिए 'Place Order' बटन को एक बार और दबाएं।\n(Please press the button one more time to confirm your payment).");
+                    const btnSpan = this.querySelector('span.tracking-widest');
+                    if(btnSpan) btnSpan.textContent = "CONFIRM ORDER";
                     return;
                 }
+                
+                // Reset counter after 2nd click
+                placeOrderClickCount = 0;
 
                 // Directly trigger payment without timer as requested
                 initiateRazorpayPayment();
-                paymentClickCount = 0; // Reset after successful initiation
             });
 
 
