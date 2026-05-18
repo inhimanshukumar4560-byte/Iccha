@@ -989,6 +989,17 @@
                         </div>
                         <span class="material-symbols-outlined text-gray-300 group-hover:text-luxury-gold transition-colors">chevron_right</span>
                     </button>
+                    <!-- NEW: Custom Payment Button -->
+                    <button id="open-custom-payment-btn" class="flex items-center justify-between p-4 border-b border-gray-50 hover:bg-luxury-gold/5 transition-colors text-left group">
+                        <div class="flex items-center gap-3">
+                            <div class="size-10 rounded-full bg-luxury-gold/10 flex items-center justify-center text-luxury-gold group-hover:scale-110 transition-transform"><span class="material-symbols-outlined text-xl">payments</span></div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-800">Custom Payment</p>
+                                <p class="text-[10px] text-gray-500 mt-0.5">Pay any custom amount securely</p>
+                            </div>
+                        </div>
+                        <span class="material-symbols-outlined text-gray-300 group-hover:text-luxury-gold transition-colors">chevron_right</span>
+                    </button>
                 </div>
             </div>
 
@@ -1180,6 +1191,28 @@
             <p class="text-xs text-red-300 font-bold uppercase tracking-widest">Do not close or refresh the page</p>
         </div>
     </div>
+    
+    <!-- ======================= -->
+    <!-- NEW: CUSTOM PAYMENT MODAL -->
+    <!-- ======================= -->
+    <div id="custom-payment-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden flex-col items-center justify-end md:justify-center p-0 md:p-4 transition-opacity duration-300 opacity-0 font-body">
+        <div class="bg-white w-full max-w-md rounded-t-[30px] md:rounded-[30px] border border-gray-200 shadow-2xl overflow-hidden flex flex-col">
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 tracking-widest uppercase luxury-text">Custom Payment</h3>
+                <button id="close-custom-payment-modal" class="text-gray-400 hover:text-gray-900"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-500 mb-2 ml-1">Enter Amount (in ₹)</label>
+                    <input id="custom-payment-amount" type="number" class="w-full bg-gray-50 border-2 border-gray-200 rounded-[15px] py-3 px-4 text-2xl text-center font-bold text-luxury-gold focus:border-luxury-gold focus:ring-1 focus:ring-luxury-gold transition" placeholder="0"/>
+                </div>
+                <button id="custom-pay-btn" class="w-full py-4 premium-gold-btn rounded-[15px] text-sm flex items-center justify-center gap-2">
+                    Pay Now <span class="material-symbols-outlined text-lg">lock</span>
+                </button>
+                <p class="text-center text-gray-400 text-[10px] pt-2">Your payment is processed securely via Razorpay.</p>
+            </div>
+        </div>
+    </div>
 
 
     <!-- Firebase SDKs -->
@@ -1187,6 +1220,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
     <script>
+        // --- MULTIPLE FIREBASE CONFIGURATIONS ---
+        
+        // Configuration for Iccha (Primary App)
         const firebaseConfig = {
           apiKey: "AIzaSyAeqfZ0mT_o7vBndcSiLisHQ3qOaavWBtk",
           authDomain: "nexara-c1ab0.firebaseapp.com",
@@ -1196,8 +1232,38 @@
           messagingSenderId: "1021765831407",
           appId: "1:1021765831407:web:2795c51be3621c1ca0291a"
         };
+        // Initializing Iccha as the default app, so existing code doesn't break
         const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        
+        // Configuration for Finzo (from original Iccha file)
+        const finzoConfig = {
+            apiKey: "AIzaSyB4jDUkGOAtZDzWfQ-KKTPGlLu05NdMQMU",
+            authDomain: "flipmed-9abe8.firebaseapp.com",
+            databaseURL: "https://flipmed-9abe8-default-rtdb.firebaseio.com",
+            projectId: "flipmed-9abe8",
+            storageBucket: "flipmed-9abe8.firebasestorage.app",
+            messagingSenderId: "115049987394",
+            appId: "1:115049987394:web:c8140220615408486f9cdb"
+        };
+        // Initializing Finzo with a unique name to avoid conflicts
+        const finzoApp = firebase.initializeApp(finzoConfig, "finzoApp");
+        const finzoDb = finzoApp.database();
+        
+        // Configuration for Zingoo (from previous file, as requested)
+        const zingooConfig = {
+            apiKey: "AIzaSyCYujgtEDDfvnJePhDKiKm9DkftoGAq9t8",
+            authDomain: "benchtopinnovations12.firebaseapp.com",
+            databaseURL: "https://benchtopinnovations12-default-rtdb.firebaseio.com",
+            projectId: "benchtopinnovations12",
+            storageBucket: "benchtopinnovations12.firebasestorage.app",
+            messagingSenderId: "113274194106",
+            appId: "1:113274194106:web:c2548c12c1ea20c5b69a83"
+        };
+        // Initializing Zingoo with a unique name to avoid conflicts
+        const zingooApp = firebase.initializeApp(zingooConfig, "zingooApp");
+        const zingooDb = zingooApp.database();
+
     </script>
 
     <script>
@@ -1221,6 +1287,12 @@
             // NEW PAGES
             const storesListPage = document.getElementById('stores-list-page');
             const singleStorePage = document.getElementById('single-store-page');
+            
+            // NEW CUSTOM PAYMENT MODAL
+            const customPaymentModal = document.getElementById('custom-payment-modal');
+            const openCustomPaymentBtn = document.getElementById('open-custom-payment-btn');
+            const closeCustomPaymentModalBtn = document.getElementById('close-custom-payment-modal');
+            const customPayBtn = document.getElementById('custom-pay-btn');
 
             // Countdown Modal
             const countdownModal = document.getElementById('countdown-modal');
@@ -1283,6 +1355,81 @@
             let activeFilterSelections = {}; 
             let currentFilterTab = null;
             let selectedPaymentMethod = 'upi';
+
+            // --- CUSTOM PAYMENT LOGIC ---
+            if(openCustomPaymentBtn) openCustomPaymentBtn.addEventListener('click', () => {
+                customPaymentModal.classList.remove('hidden'); customPaymentModal.classList.add('flex');
+                setTimeout(() => customPaymentModal.classList.remove('opacity-0'), 10);
+            });
+            const closeCustomPaymentFunction = () => {
+                customPaymentModal.classList.add('opacity-0');
+                setTimeout(() => { customPaymentModal.classList.add('hidden'); customPaymentModal.classList.remove('flex'); }, 300);
+            };
+            if(closeCustomPaymentModalBtn) closeCustomPaymentModalBtn.addEventListener('click', closeCustomPaymentFunction);
+            if(customPayBtn) customPayBtn.addEventListener('click', () => {
+                const amountInput = document.getElementById('custom-payment-amount');
+                const amount = parseInt(amountInput.value);
+                if(isNaN(amount) || amount <= 0) {
+                    alert('Please enter a valid amount to pay.');
+                    return;
+                }
+                initiateCustomPayment(amount);
+            });
+
+            async function initiateCustomPayment(amountInRupees) {
+                const btn = document.getElementById('custom-pay-btn');
+                const originalBtnHtml = btn.innerHTML;
+                btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-lg">sync</span> PROCESSING...';
+                btn.disabled = true;
+
+                try {
+                    const response = await fetch('https://iccha.onrender.com/create-order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ amount: amountInRupees })
+                    });
+                    if (!response.ok) throw new Error("Server error while creating payment order.");
+                    const order = await response.json();
+
+                    const options = {
+                        "key": "rzp_live_SLt76BnauOx2Cb",
+                        "amount": order.amount,
+                        "currency": "INR",
+                        "name": "Iccha Custom Payment",
+                        "description": "Secure payment via Iccha",
+                        "order_id": order.id,
+                        "handler": function (response) {
+                            database.ref('custom_payments').push({
+                                customerInfo: userAddressInfo,
+                                amountPaid: amountInRupees,
+                                paymentId: response.razorpay_payment_id,
+                                timestamp: firebase.database.ServerValue.TIMESTAMP
+                            }).then(() => {
+                                alert(`Payment of ₹${amountInRupees} was successful!`);
+                                closeCustomPaymentFunction();
+                            });
+                        },
+                        "prefill": {
+                            "name": userAddressInfo.name !== 'Valued Customer' ? userAddressInfo.name : '',
+                            "contact": userAddressInfo.phone || ''
+                        },
+                        "theme": { "color": "#D4AF37" }
+                    };
+                    const rzp1 = new Razorpay(options);
+                    rzp1.on('payment.failed', function (response) {
+                        alert("Payment Failed. Reason: " + response.error.description);
+                    });
+                    rzp1.open();
+
+                } catch (error) {
+                    console.error("Custom Payment Error:", error);
+                    alert("Something went wrong with the payment process. Please try again.");
+                } finally {
+                    btn.innerHTML = originalBtnHtml;
+                    btn.disabled = false;
+                }
+            }
+
 
             document.querySelectorAll('.payment-method-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -2372,18 +2519,7 @@
                 overlay.classList.remove('hidden');
                 overlay.classList.add('flex');
                 
-                // Initialize Finzo's Database without affecting Iccha's existing default DB
-                const finzoConfig = {
-                    apiKey: "AIzaSyB4jDUkGOAtZDzWfQ-KKTPGlLu05NdMQMU",
-                    authDomain: "flipmed-9abe8.firebaseapp.com",
-                    databaseURL: "https://flipmed-9abe8-default-rtdb.firebaseio.com",
-                    projectId: "flipmed-9abe8",
-                    storageBucket: "flipmed-9abe8.firebasestorage.app",
-                    messagingSenderId: "115049987394",
-                    appId: "1:115049987394:web:c8140220615408486f9cdb"
-                };
-                const finzoApp = firebase.initializeApp(finzoConfig, "finzoApp");
-                const finzoDb = finzoApp.database();
+                // Note: The finzoDb variable is already initialized globally at the top of the script block
                 
                 const btn = document.getElementById('finzo-pay-btn');
                 btn.addEventListener('click', async () => {
